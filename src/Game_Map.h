@@ -2,7 +2,7 @@
 // Name       		: Game_Map.h
 // Author     		: Thomas Hooks
 // Version    		: 1
-// Last Modified	: 11/2/2019
+// Last Modified	: 11/16/2019
 // Description		:
 //============================================================================
 
@@ -14,9 +14,12 @@
 
 
 #include <iostream>
-#include <SDL.h>
 #include <vector>
 #include <string>
+
+#include <SDL.h>
+
+#include "Game_Tile.h"
 
 
 
@@ -43,23 +46,15 @@ public:
 
 private:
 	//2D vector that contains the tile map
-	std::vector<std::vector<class cTile>> vTileMap;
+	std::vector<std::vector<Game_Tile>> v_tileMap;
 };
-
-//============================================================================
-
-class cTile{
-public://Method
-	cTile(bool soilid, int index, float x, float y);
-	~cTile();
-	void Draw(SDL_Renderer *renderer, SDL_Texture *TileSheet, int width, int height, int scale, float fOffSetX, float fOffSetY);
-
-public://Data
-	bool bSoilid;		//Is the tile passable
-	int nTileIndex;		//Location of the tile's sprite in the sprite sheet
-	float fX, fY;
-};
-
 
 
 #endif /* GAME_MAP_H_ */
+
+
+
+
+
+
+

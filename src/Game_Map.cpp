@@ -2,33 +2,29 @@
 // Name       		: Game_Map.cpp
 // Author     		: Thomas Hooks
 // Version    		: 1
-// Last Modified	: 11/2/2019
+// Last Modified	: 11/16/2019
 // Description		:
 //============================================================================
 
 
-#include "Game_Map.h"
+
 
 #include <iostream>
 #include <sstream>
-#include <list>
+#include <fstream>
+#include <vector>
+#include <string>
+
 #include <SDL.h>
 #include "SDL_image.h"
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
-#include <ctime>
-#include <math.h>
-#include <vector>
-#include <list>
-#include <memory>
-#include <string>
-#include <fstream>
 
 #include "Game.h"
+#include "Game_Map.h"
+#include "Game_Tile.h"
 
 
-//============================================================================
-//                              Class Game_Map
 
 
 Game_Map::Game_Map(std::string name) {
@@ -42,27 +38,34 @@ Game_Map::Game_Map(std::string name) {
 }
 
 
-//============================================================================
+
 
 
 Game_Map::~Game_Map() {
+	//
 
+	return;
 }
 
 
-//============================================================================
+
 
 
 bool Game_Map::IsTileSoilid(int x, int y){
-	//
+	/*
+	 *
+	 */
 
-	if (x >= 0 && x < nMapWidth && y >= 0 && y < nMapHeight && !vTileMap.empty())
-		return vTileMap[x][y].bSoilid;
+
+
+
+	if (x >= 0 && x < nMapWidth && y >= 0 && y < nMapHeight && !v_tileMap.empty())
+		return v_tileMap[x][y].b_solid;
 	else return false;
 }
 
 
-//============================================================================
+//----------------------------------------------------------------------------
 
 
 void Game_Map::SetTileSoilid(int x, int y, bool solid){
@@ -76,39 +79,54 @@ void Game_Map::SetTileSoilid(int x, int y, bool solid){
 	 * */
 
 
-	if (x >= 0 && x < nMapWidth && y >= 0 && y < nMapHeight && !vTileMap.empty())
+
+
+	if (x >= 0 && x < nMapWidth && y >= 0 && y < nMapHeight && !v_tileMap.empty())
 		//Check if the tile is a valid tile if it is set the tile
-			vTileMap[x][y].bSoilid = solid;
+		v_tileMap[x][y].b_solid = solid;
+
 
 	return;
 }
-//============================================================================
+
+
+//----------------------------------------------------------------------------
 
 
 int Game_Map::GetTileIndex(int x, int y){
-	//
+	/*
+	 *
+	 */
 
-	if (x >= 0 && x < nMapWidth && y >= 0 && y < nMapHeight && !vTileMap.empty())
+
+
+
+	if (x >= 0 && x < nMapWidth && y >= 0 && y < nMapHeight && !v_tileMap.empty())
 		//Check if the tile is a valid tile if it is set the tile
-		return vTileMap[x][y].nTileIndex;
+		return v_tileMap[x][y].n_tileIndex;
 
 	else return 0;
 }
 
 
-//============================================================================
+//----------------------------------------------------------------------------
 
 
 void Game_Map::SetTileIndex(int x, int y, int index){
-	//
+	/*
+	 *
+	 */
 
-	if (x >= 0 && x < nMapWidth && y >= 0 && y < nMapHeight && !vTileMap.empty())
+
+
+
+	if (x >= 0 && x < nMapWidth && y >= 0 && y < nMapHeight && !v_tileMap.empty())
 		//Check if the tile is a valid tile if it is set the tile
-		vTileMap[x][y].nTileIndex = index;
+		v_tileMap[x][y].n_tileIndex = index;
 }
 
 
-//============================================================================
+//----------------------------------------------------------------------------
 
 
 void Game_Map::Draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
@@ -119,7 +137,7 @@ void Game_Map::Draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
 	//Loop through the map and draw only the visible tiles
 	for(int y = 0; y < nVisibleTilesY; y++){
 		for(int x = 0; x < nVisibleTilesX; x++){
-			vTileMap[x + (int)fOffSetX][y + (int)fOffSetY].Draw(renderer,
+			v_tileMap[x + (int)fOffSetX][y + (int)fOffSetY].draw(renderer,
 					tTileSheet, nTileWidth, nTileHeight, scale,
 					fOffSetX, fOffSetY);
 		}
@@ -128,7 +146,7 @@ void Game_Map::Draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
 }
 
 
-//============================================================================
+//----------------------------------------------------------------------------
 
 
 bool Game_Map::LoadMap(std::string FileName){
@@ -140,6 +158,9 @@ bool Game_Map::LoadMap(std::string FileName){
 	 * 	param FileName is the directory to the tile map file
 	 *
 	 * */
+
+
+
 
 	bool bMapLoaded = true;		//Flag for map loading
 
@@ -170,10 +191,10 @@ bool Game_Map::LoadMap(std::string FileName){
 		}
 		else{
 			//Resize the tile map with the data provided in the map file
-			vTileMap.clear();
-			vTileMap.resize(nMapWidth,
-					std::vector<class cTile>(nTileHeight,
-							cTile{false, 0, 0, 0}));
+			v_tileMap.clear();
+			v_tileMap.resize(nMapWidth,
+					std::vector<Game_Tile>(nTileHeight,
+							Game_Tile{false, 0, 0, 0}));
 		}
 
 		//Populate map with tiles
@@ -201,10 +222,10 @@ bool Game_Map::LoadMap(std::string FileName){
 					if(nTileIndex > 1) bTileSolid = true;
 					//----All of this should be removed later----
 
-					vTileMap[x][y].bSoilid = bTileSolid;
-					vTileMap[x][y].nTileIndex = nTileIndex;
-					vTileMap[x][y].fX = (float)(x * nTileWidth);
-					vTileMap[x][y].fY = (float)(y * nTileHeight);
+					v_tileMap[x][y].b_solid = bTileSolid;
+					v_tileMap[x][y].n_tileIndex = nTileIndex;
+					v_tileMap[x][y].f_x = (float)(x * nTileWidth);
+					v_tileMap[x][y].f_y = (float)(y * nTileHeight);
 				}
 			}
 		}
@@ -215,56 +236,6 @@ bool Game_Map::LoadMap(std::string FileName){
 
 
 
-//////////////////////////////////////////////////////////////////////////////
-//============================================================================
-//                              Class cTile
-
-
-
-cTile::cTile(bool soilid, int index, float x, float y){
-	//
-
-	bSoilid = soilid;
-	nTileIndex = index;
-	fX = x; fY = y;
-
-	return;
-}
-
-
-//============================================================================
-
-
-cTile::~cTile(){
-	//
-
-	return;
-}
-
-
-//============================================================================
-
-
-void cTile::Draw(SDL_Renderer *renderer, SDL_Texture *TileSheet,
-		int width, int height, int scale, float fOffSetX, float fOffSetY){
-	//
-
-	//Set the draw color to white
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-	//Select the right sprite from the sheet
-	SDL_Rect TileScr = {nTileIndex * width/scale, 0,
-			width/scale, height/scale};
-
-	//Set the sprite size and location on map
-	SDL_Rect TileRect = {(int)(fX - fOffSetX*width), (int)(fY - fOffSetY*height),
-			width, height};//
-
-	//Draw the tile to the screen
-	SDL_RenderCopy(renderer, TileSheet, &TileScr, &TileRect);
-
-	return;
-}
 
 
 
