@@ -2,7 +2,7 @@
 // Name       		: Map_Manager.h
 // Author     		: Thomas Hooks
 // Version    		: 1
-// Last Modified	: 11/2/2019
+// Last Modified	: 11/16/2019
 // Description		:
 //============================================================================
 
@@ -19,26 +19,31 @@
 #include <memory>
 #include <string>
 #include "Game_Map.h"
-#include "Game_Manager.h"
 
 
 
 
-class Map_Manager : public Game_Manager<class Game_Map> {
+class Map_Manager {
 
 public:
 
 	Map_Manager(class Game *game_ptr);
+
 	virtual ~Map_Manager();
 
-	//copy constructor
 	Map_Manager(const Map_Manager &other) = delete;
 
-	//move constructor
 	Map_Manager(Map_Manager &&other) = delete;
 
-	//Draws the current map
-	void Draw(void);
+
+	void init(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr);
+
+	void push_map(std::string tileSheetKey, std::string mapFilePath);
+
+	void pop_map(void);
+
+	void draw(int windowWidth, int windowHeight, float camera_x, float camera_y, struct SDL_Renderer *renderer_ptr);
+
 
 	//Getters and Setters
 	int get_tileSolid(int tile_x, int tile_y) const
@@ -75,11 +80,21 @@ public:
 
 private:
 
+	bool b_hasBeenInit;
+
 	//Number of tiles that are visible on screen
 	int n_visible_tiles_x, n_visible_tiles_y;
 
 	//The amount the tiles are scaled up by
 	int n_scale;
+
+	Game *game;
+
+	Game_Logger *log;
+
+	class Asset_Manager *assets;
+
+	std::vector<std::unique_ptr<Game_Map>> v_stack;
 };
 
 

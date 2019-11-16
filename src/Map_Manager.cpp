@@ -2,7 +2,7 @@
 // Name       		: Map_Manager.cpp
 // Author     		: Thomas Hooks
 // Version    		: 1
-// Last Modified	: 11/2/2019
+// Last Modified	: 11/16/2019
 // Description		:
 //============================================================================
 
@@ -20,41 +20,135 @@
 
 
 
-Map_Manager::Map_Manager(class Game *game_ptr) : Game_Manager(game_ptr) {
-	//
-	n_scale = 1;
-
-	//
-	n_visible_tiles_x = 0;
-	n_visible_tiles_y = 0;
+Map_Manager::Map_Manager(class Game *game_ptr)
+	: b_hasBeenInit(false),
+	  n_visible_tiles_x(0),
+	  n_visible_tiles_y(0),
+	  n_scale(1),
+	  game(game_ptr),
+	  log(nullptr),
+	  assets(nullptr){
+	//Initialize the Map Manager object
 
 	return;
 }
 
 
+
 Map_Manager::~Map_Manager() {
 	//Do nothing
+	return;
 }
 
 
-void Map_Manager::Draw(void){
+
+void Map_Manager::init(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr){
+	/*
+	 * brief		This method initializes the map manager
+	 *
+	 * param		assets_ptr		pointer to the asset manager
+	 *
+	 * param		log_ptr			pointer to the logger
+	 *
+	 * This method will initialize the map manger only once and must be
+	 * called before any maps can be added or removed
+	 */
+
+
+
+
+	if(!b_hasBeenInit){
+		//Only initialize once
+
+		log = log_ptr;
+
+		assets = assets_ptr;
+
+		b_hasBeenInit = true;
+	}
+
+	return;
+}
+
+
+//----------------------------------------------------------------------------
+
+
+void Map_Manager::push_map(std::string tileSheetKey, std::string mapFilePath){
+	/*
+	 * brief	Adds a new element to the back of the map stack
+	 */
+
+
+
+	if(!b_hasBeenInit) return;
+
+
+	v_stack.emplace_back(std::unique_ptr<Game_Map>(new Game_Map(tileSheetKey)));
+
+
+	v_stack.back()->LoadMap(mapFilePath);
+
+
+	return;
+}
+
+
+//----------------------------------------------------------------------------
+
+
+void Map_Manager::pop_map(void){
+	/*
+	 * brief	Removes the back element from the map stack
+	 */
+
+
+
+	if(!b_hasBeenInit) return;
+
+
+	if(v_stack.empty()){
+
+		log->Message(Level::Warning,
+						 "Tried to free element, but map stack is empty!",
+						 Output::File_txt);
+	}
+
+	else v_stack.pop_back();
+
+
+	return;
+}
+
+
+//----------------------------------------------------------------------------
+
+
+void Map_Manager::draw(int windowWidth,
+					   int windowHeight,
+					   float camera_x,
+					   float camera_y,
+					   struct SDL_Renderer *renderer_ptr) {
 	/*
 	 *
 	 */
 
 
 
+	if(!b_hasBeenInit) return;
+
 
 	//Calculate the number of tile that are visible on screen
-	n_visible_tiles_x = (game->get_windowWidth())/get_tileWidth() + 1;
-	n_visible_tiles_y = (game->get_windowHeight())/get_tileHeight();
+	//The x axis is over drawn by 1 to prevent texture popping
+	n_visible_tiles_x = (windowWidth)/get_tileWidth() + 1;
+	n_visible_tiles_y = (windowHeight)/get_tileHeight();
 
 
 	//Calculate the top-left visible tile on screen
-	float f_offset_x = game->get_cameraX()/get_tileWidth()
+	float f_offset_x = camera_x/get_tileWidth()
 			- (float)n_visible_tiles_x/2.0f;
 
-	float f_offset_y = game->get_cameraY()/get_tileHeight()
+	float f_offset_y = camera_y/get_tileHeight()
 			- (float)n_visible_tiles_y/2.0f;
 
 
@@ -73,15 +167,19 @@ void Map_Manager::Draw(void){
 
 
 	//Draw the map that is currently at the top of the stack
-	v_stack.back()->Draw(game->get_renderer(), game->Assets.get_texture("tile_test.png"),
-			n_visible_tiles_x, n_visible_tiles_y, f_offset_x,
-			f_offset_y, n_scale);
+	v_stack.back()->Draw(renderer_ptr,
+						 assets->get_texture(v_stack.back()->sMapName),
+						 n_visible_tiles_x,
+						 n_visible_tiles_y,
+						 f_offset_x,
+						 f_offset_y,
+						 n_scale);
 
 	return;
 }
 
 
-//============================================================================
+
 
 
 
