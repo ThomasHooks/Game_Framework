@@ -1,9 +1,7 @@
 //============================================================================
 // Name       		: Game.cpp
 // Author     		: Thomas Hooks
-// Version    		: 1
-// Last Modified	: 11/2/2019
-// Description		:
+// Last Modified	: 12/19/2019
 //============================================================================
 
 
@@ -20,11 +18,11 @@
 
 
 Game::Game()
-		: State(this), Map(this), Assets(), Timer(), Log(Level::Trace),
+		: State(this), Map(), Assets(), Timer(), Log(Level::Trace),
 		  b_gameOver(false), b_hasBeenInit(false), f_cameraX(0), f_cameraY(0), n_maxFPS(60),
 		  window(nullptr), renderer(nullptr), WindowHeight(0), WindowWidth(0) {
 	/*
-	 * brief			Default constructor, game will need to be initialized by calling init
+	 * brief	Default constructor, game will need to be initialized by calling init
 	 */
 
 
@@ -46,10 +44,10 @@ Game::Game()
 
 
 Game::Game(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS)
-		: State(this), Map(this), Assets(), Timer(), Log(Level::Trace),
+		: State(this), Map(&Log, &Assets), Assets(), Timer(), Log(Level::Trace),
 		  b_gameOver(false), b_hasBeenInit(true), f_cameraX(0), f_cameraY(0), n_maxFPS(Max_FPS) {
 	/*
-	 * brief		Constructor for the game engine class that create a window defined by the caller, and sets SDL flags
+	 * brief	Constructor for the game engine class that create a window defined by the caller, and sets SDL flags
 	 *
 	 * param	title  				The title of the window
 	 *
@@ -179,6 +177,8 @@ bool Game::init(const char * title, int Window_Height, int Window_Width, Uint32 
 
 
 		Assets.init(&Log, renderer);
+
+		Map.init(&Log, &Assets);
 
 
 		set_maxFPS(Max_FPS);

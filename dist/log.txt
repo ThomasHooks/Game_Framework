@@ -1,0 +1,73 @@
+[Info] Logging started: Mon Nov 18 22:43:33 2019
+[Info] Initializing SDL: Mon Nov 18 22:43:33 2019
+[Info] Initializing window: Mon Nov 18 22:43:33 2019
+[Info] File './data/gfx/Mario.png' has been loaded: Mon Nov 18 22:43:33 2019
+[Info] File './data/gfx/tile_test.png' has been loaded: Mon Nov 18 22:43:33 2019
+[Info] Closing window: Mon Nov 18 22:43:37 2019
+[Info] Freeing renderer: Mon Nov 18 22:43:37 2019
+[Info] Freeing all assets: Mon Nov 18 22:43:37 2019
+[Info] Freeing all textures: Mon Nov 18 22:43:37 2019
+[Info] Freeing texture 'Mario.png': Mon Nov 18 22:43:37 2019
+[Info] Texture 'Mario.png' has been freed: Mon Nov 18 22:43:37 2019
+[Info] Freeing texture 'tile_test.png': Mon Nov 18 22:43:37 2019
+[Info] Texture 'tile_test.png' has been freed: Mon Nov 18 22:43:37 2019
+[Info] Terminating SDL: Mon Nov 18 22:43:37 2019
+[Info] Logging stopped: Mon Nov 18 22:43:37 2019
+
+
+[Info] Logging started: Sat Dec 07 20:22:04 2019
+[Info] Initializing SDL: Sat Dec 07 20:22:04 2019
+[Info] Initializing window: Sat Dec 07 20:22:04 2019
+[Info] File './data/gfx/Mario.png' has been loaded: Sat Dec 07 20:22:04 2019
+[Info] File './data/gfx/tile_test.png' has been loaded: Sat Dec 07 20:22:04 2019
+[Info] Logging started: Sat Dec 07 20:22:08 2019
+[Info] Initializing SDL: Sat Dec 07 20:22:08 2019
+[Info] Initializing window: Sat Dec 07 20:22:08 2019
+[Info] File './data/gfx/Mario.png' has been loaded: Sat Dec 07 20:22:08 2019
+[Info] File './data/gfx/tile_test.png' has been loaded: Sat Dec 07 20:22:08 2019
+[Info] Closing window: Sat Dec 07 20:22:21 2019
+[Info] Freeing renderer: Sat Dec 07 20:22:21 2019
+[Info] Freeing all assets: Sat Dec 07 20:22:21 2019
+[Info] Freeing all textures: Sat Dec 07 20:22:21 2019
+[Info] Freeing texture 'Mario.png': Sat Dec 07 20:22:21 2019
+[Info] Texture 'Mario.png' has been freed: Sat Dec 07 20:22:21 2019
+[Info] Freeing texture 'tile_test.png': Sat Dec 07 20:22:21 2019
+[Info] Texture 'tile_test.png' has been freed: Sat Dec 07 20:22:21 2019
+[Info] Terminating SDL: Sat Dec 07 20:22:21 2019
+[Info] Logging stopped: Sat Dec 07 20:22:21 2019
+
+
+[Info] Logging started: Sat Dec 07 20:23:33 2019
+[Info] Initializing SDL: Sat Dec 07 20:23:33 2019
+[Info] Initializing window: Sat Dec 07 20:23:33 2019
+[Info] File './data/gfx/Mario.png' has been loaded: Sat Dec 07 20:23:33 2019
+[Info] File './data/gfx/tile_test.png' has been loaded: Sat Dec 07 20:23:33 2019
+[Info] Closing window: Sat Dec 07 20:23:38 2019
+[Info] Freeing renderer: Sat Dec 07 20:23:38 2019
+[Info] Freeing all assets: Sat Dec 07 20:23:38 2019
+[Info] Freeing all textures: Sat Dec 07 20:23:38 2019
+[Info] Freeing texture 'Mario.png': Sat Dec 07 20:23:38 2019
+[Info] Texture 'Mario.png' has been freed: Sat Dec 07 20:23:38 2019
+[Info] Freeing texture 'tile_test.png': Sat Dec 07 20:23:38 2019
+[Info] Texture 'tile_test.png' has been freed: Sat Dec 07 20:23:38 2019
+[Info] Terminating SDL: Sat Dec 07 20:23:38 2019
+[Info] Logging stopped: Sat Dec 07 20:23:38 2019
+
+
+[Info] Logging started: Thu Dec 19 21:44:09 2019
+[Info] Initializing SDL: Thu Dec 19 21:44:09 2019
+[Info] Initializing window: Thu Dec 19 21:44:09 2019
+[Info] File './data/gfx/Mario.png' has been loaded: Thu Dec 19 21:44:10 2019
+[Info] File './data/gfx/tile_test.png' has been loaded: Thu Dec 19 21:44:10 2019
+[Info] Closing window: Thu Dec 19 21:44:13 2019
+[Info] Freeing renderer: Thu Dec 19 21:44:13 2019
+[Info] Freeing all assets: Thu Dec 19 21:44:13 2019
+[Info] Freeing all textures: Thu Dec 19 21:44:13 2019
+[Info] Freeing texture 'Mario.png': Thu Dec 19 21:44:13 2019
+[Info] Texture 'Mario.png' has been freed: Thu Dec 19 21:44:13 2019
+[Info] Freeing texture 'tile_test.png': Thu Dec 19 21:44:13 2019
+[Info] Texture 'tile_test.png' has been freed: Thu Dec 19 21:44:13 2019
+[Info] Terminating SDL: Thu Dec 19 21:44:13 2019
+[Info] Logging stopped: Thu Dec 19 21:44:13 2019
+
+

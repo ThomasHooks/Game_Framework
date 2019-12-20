@@ -1,9 +1,7 @@
 //============================================================================
 // Name       		: Game_State.cpp
 // Author     		: Thomas Hooks
-// Version    		: 1
-// Last Modified	: 11/2/2019
-// Description		:
+// Last Modified	: 12/19/2019
 //============================================================================
 
 
@@ -35,7 +33,7 @@ cGSBlack::cGSBlack(Game *Game, int StateID) : Game_State(Game, StateID){
 	fCameraX = 0.0f; fCameraY = 0.0f;
 	vMap.emplace_back(Game_Map("Test"));
 	//std::cout<<"Opening test.map"<<std::endl;
-	vMap[0].LoadMap("data/map/test.map");
+	vMap[0].loadMap("data/map/test.map");
 	vEntity.emplace_back(std::unique_ptr<class Game_Dynamic>(new cPlayerCharacter(64.0f, 224.0f, 32, 32, 0)));
 	//----All of this should be removed later----
 
@@ -110,14 +108,14 @@ void cGSBlack::Process(){
 
 	//Keep player x position inside the map
 	if(vEntity[0]->fX < 0.0f) vEntity[0]->fX = 0.0f;
-	else if((vEntity[0]->fX + vEntity[0]->nWidth*2) > (vMap[0].nMapWidth * vMap[0].nTileWidth)){
-		vEntity[0]->fX = vMap[0].nMapWidth * vMap[0].nTileWidth - vEntity[0]->nWidth*2;
+	else if((vEntity[0]->fX + vEntity[0]->nWidth*2) > (vMap[0].n_mapWidth * vMap[0].n_tileWidth)){
+		vEntity[0]->fX = vMap[0].n_mapWidth * vMap[0].n_tileWidth - vEntity[0]->nWidth*2;
 	}
 
 	//Keep player Y position inside the map
 	if(vEntity[0]->fY < 0.0f) vEntity[0]->fY = 0.0f;
-	else if((vEntity[0]->fY + vEntity[0]->nHeight) > vMap[0].nMapHeight * vMap[0].nTileHeight)
-		vEntity[0]->fY = vMap[0].nMapHeight * vMap[0].nTileHeight - vEntity[0]->nHeight;
+	else if((vEntity[0]->fY + vEntity[0]->nHeight) > vMap[0].n_mapHeight * vMap[0].n_tileHeight)
+		vEntity[0]->fY = vMap[0].n_mapHeight * vMap[0].n_tileHeight - vEntity[0]->nHeight;
 
 	vEntity[0]->Update(cGEngine->Timer.get_deltaTime());
 
@@ -140,26 +138,26 @@ void cGSBlack::Draw(){
 
 	//----All of this should be removed later----
 
-	int nVisibleTilesX = (cGEngine->get_windowWidth())/vMap[0].nTileWidth+1;
-	int nVisibleTilesY = (cGEngine->get_windowHeight())/vMap[0].nTileHeight;
+	int nVisibleTilesX = (cGEngine->get_windowWidth())/vMap[0].n_tileWidth+1;
+	int nVisibleTilesY = (cGEngine->get_windowHeight())/vMap[0].n_tileHeight;
 
 	//Calculate the top-left visible tile
-	float fOffSetX = fCameraX/vMap[0].nTileWidth - (float)nVisibleTilesX/2.0f;
-	float fOffSetY = fCameraY/vMap[0].nTileHeight - (float)nVisibleTilesY/2.0f;
+	float fOffSetX = fCameraX/vMap[0].n_tileWidth - (float)nVisibleTilesX/2.0f;
+	float fOffSetY = fCameraY/vMap[0].n_tileHeight - (float)nVisibleTilesY/2.0f;
 
 	//Keep camera inside game boundaries
 	if(fOffSetX < 0) fOffSetX = 0;
 
 	if(fOffSetY < 0) fOffSetY = 0;
 
-	if(fOffSetX > (vMap[0].nMapWidth) - nVisibleTilesX)
-		fOffSetX = (vMap[0].nMapWidth) - nVisibleTilesX;
+	if(fOffSetX > (vMap[0].n_mapWidth) - nVisibleTilesX)
+		fOffSetX = (vMap[0].n_mapWidth) - nVisibleTilesX;
 
-	if(fOffSetY > (vMap[0].nMapHeight) - nVisibleTilesY)
-		fOffSetY = (vMap[0].nMapHeight) - nVisibleTilesY;
+	if(fOffSetY > (vMap[0].n_mapHeight) - nVisibleTilesY)
+		fOffSetY = (vMap[0].n_mapHeight) - nVisibleTilesY;
 
 
-	vMap[0].Draw(cGEngine->get_renderer(), cGEngine->Assets.get_texture("tile_test.png"), nVisibleTilesX, nVisibleTilesY, fOffSetX, fOffSetY, 2);
+	vMap[0].draw(cGEngine->get_renderer(), cGEngine->Assets.get_texture("tile_test.png"), nVisibleTilesX, nVisibleTilesY, fOffSetX, fOffSetY, 2);
 	vEntity[0]->Draw(cGEngine->get_renderer(), cGEngine->Assets.get_texture("Mario.png"), fOffSetX, fOffSetY);
 
 	//----All of this should be removed later----
@@ -216,8 +214,8 @@ void cGSBlack::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 	int MinY = -1;
 
 	//This puts the entity into the maps tile unit coordinate
-	int tX = vEntity[EntityIndex]->fX / vMap[MapIndex].nTileWidth;
-	int tY = vEntity[EntityIndex]->fY / vMap[MapIndex].nTileHeight;
+	int tX = vEntity[EntityIndex]->fX / vMap[MapIndex].n_tileWidth;
+	int tY = vEntity[EntityIndex]->fY / vMap[MapIndex].n_tileHeight;
 
 	//Check if the entity collides with any of the tiles around it
 	for(int y = MinY; y < MaxY; y++){
@@ -225,20 +223,20 @@ void cGSBlack::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 			//Check if coordinate is valid
 			//Check x coordinate
 			if((x + tX) < 0) x = 0;
-			else if((x + tX) > (vMap[MapIndex].nMapWidth)) MaxX--;
+			else if((x + tX) > (vMap[MapIndex].n_mapWidth)) MaxX--;
 			//Check y coordinate
 			if((y + tY) < 0) y = 0;
-			else if((y + tY) > (vMap[MapIndex].nMapHeight)) MaxY--;
+			else if((y + tY) > (vMap[MapIndex].n_mapHeight)) MaxY--;
 
 			//Check for collision if the tile is solid
-			if(vMap[MapIndex].IsTileSoilid(x + tX, y + tY)){
+			if(vMap[MapIndex].is_tileSolid(x + tX, y + tY)){
 				//Set the Tiles bounding Box
-				float RectB_X1 = (x + tX) * vMap[MapIndex].nTileWidth;
-				float RectB_X2 = (x + tX) * vMap[MapIndex].nTileWidth + vMap[MapIndex].nTileWidth;
-				float RectB_Y1 = (y + tY) * vMap[MapIndex].nTileHeight;
-				float RectB_Y2 = (y + tY) * vMap[MapIndex].nTileHeight + vMap[MapIndex].nTileHeight;
-				float RectB_XCenter = (x + tX) * vMap[MapIndex].nTileWidth + vMap[MapIndex].nTileWidth/2;
-				float RectB_YCenter = (y + tY) * vMap[MapIndex].nTileHeight + vMap[MapIndex].nTileHeight/2;
+				float RectB_X1 = (x + tX) * vMap[MapIndex].n_tileWidth;
+				float RectB_X2 = (x + tX) * vMap[MapIndex].n_tileWidth + vMap[MapIndex].n_tileWidth;
+				float RectB_Y1 = (y + tY) * vMap[MapIndex].n_tileHeight;
+				float RectB_Y2 = (y + tY) * vMap[MapIndex].n_tileHeight + vMap[MapIndex].n_tileHeight;
+				float RectB_XCenter = (x + tX) * vMap[MapIndex].n_tileWidth + vMap[MapIndex].n_tileWidth/2;
+				float RectB_YCenter = (y + tY) * vMap[MapIndex].n_tileHeight + vMap[MapIndex].n_tileHeight/2;
 
 				//Check if the entity collides with the tile
 				if(RectA_X1 < RectB_X2 && RectA_X2 > RectB_X1 &&
@@ -251,7 +249,7 @@ void cGSBlack::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 						if(RectA_YCenter < RectB_YCenter){
 							//Entity is above the tile
 							//Check if there is a solid tile above the ledge
-							if(!vMap[MapIndex].IsTileSoilid(x + tX, y + tY - 1)){
+							if(!vMap[MapIndex].is_tileSolid(x + tX, y + tY - 1)){
 								//There isn't a solid tile
 								vEntity[EntityIndex]->fY = RectB_Y1 - vEntity[EntityIndex]->nHeight;
 								vEntity[EntityIndex]->fdY = 0.0f;
@@ -261,7 +259,7 @@ void cGSBlack::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 						else{
 							//Entity is below the tile
 							//Check if there is a solid tile below the ledge
-							if(!vMap[MapIndex].IsTileSoilid(x + tX, y + tY + 1)){
+							if(!vMap[MapIndex].is_tileSolid(x + tX, y + tY + 1)){
 								//There isn't a solid tile
 								vEntity[EntityIndex]->fY = RectB_Y2;
 								vEntity[EntityIndex]->fdY = 0.0f;
@@ -276,7 +274,7 @@ void cGSBlack::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 						if(RectA_XCenter <= RectB_XCenter){
 							//Entity is left of the tile
 							//Check if there is a solid tile to the left of the ledge
-							if(!vMap[MapIndex].IsTileSoilid(x + tX - 1, y + tY)){
+							if(!vMap[MapIndex].is_tileSolid(x + tX - 1, y + tY)){
 								//There isn't a solid tile
 								vEntity[EntityIndex]->fX = RectB_X1 - vEntity[EntityIndex]->nWidth +8; // made a change +8
 								vEntity[EntityIndex]->fdX = 0.0f;
@@ -286,7 +284,7 @@ void cGSBlack::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 						else{
 							//Entity is right of the tile
 							//Check if there is a solid tile to the right of the ledge
-							if(!vMap[MapIndex].IsTileSoilid(x + tX + 1, y + tY)){
+							if(!vMap[MapIndex].is_tileSolid(x + tX + 1, y + tY)){
 								//There isn't a solid tile
 								vEntity[EntityIndex]->fX = RectB_X2;
 								vEntity[EntityIndex]->fdX = 0.0f;

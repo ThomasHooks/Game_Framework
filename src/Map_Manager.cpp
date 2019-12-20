@@ -1,9 +1,7 @@
 //============================================================================
 // Name       		: Map_Manager.cpp
 // Author     		: Thomas Hooks
-// Version    		: 1
-// Last Modified	: 11/16/2019
-// Description		:
+// Last Modified	: 12/19/2019
 //============================================================================
 
 
@@ -13,6 +11,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+
 #include "Game.h"
 #include "Map_Manager.h"
 #include "Game_Map.h"
@@ -20,15 +19,34 @@
 
 
 
-Map_Manager::Map_Manager(class Game *game_ptr)
+Map_Manager::Map_Manager()
 	: b_hasBeenInit(false),
 	  n_visible_tiles_x(0),
 	  n_visible_tiles_y(0),
 	  n_scale(1),
-	  game(game_ptr),
 	  log(nullptr),
 	  assets(nullptr){
-	//Initialize the Map Manager object
+
+	/* The method 'init' must be called when using this constructor
+	 * before using the map_manager object
+	 */
+
+	return;
+}
+
+
+
+Map_Manager::Map_Manager(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr)
+	: b_hasBeenInit(true),
+	  n_visible_tiles_x(0),
+	  n_visible_tiles_y(0),
+	  n_scale(1),
+	  log(log_ptr),
+	  assets(assets_ptr){
+
+	log->Message(Level::Info,
+				 "Map Manager has been initialized",
+				 Output::File_txt);
 
 	return;
 }
@@ -65,6 +83,10 @@ void Map_Manager::init(class Game_Logger *log_ptr, class Asset_Manager *assets_p
 		assets = assets_ptr;
 
 		b_hasBeenInit = true;
+
+		log->Message(Level::Info,
+					 "Map Manager has been initialized",
+					 Output::File_txt);
 	}
 
 	return;
@@ -87,7 +109,7 @@ void Map_Manager::push_map(std::string tileSheetKey, std::string mapFilePath){
 	v_stack.emplace_back(std::unique_ptr<Game_Map>(new Game_Map(tileSheetKey)));
 
 
-	v_stack.back()->LoadMap(mapFilePath);
+	v_stack.back()->loadMap(mapFilePath);
 
 
 	return;
@@ -110,8 +132,8 @@ void Map_Manager::pop_map(void){
 	if(v_stack.empty()){
 
 		log->Message(Level::Warning,
-						 "Tried to free element, but map stack is empty!",
-						 Output::File_txt);
+					 "Tried to free element, but map stack is empty!",
+					 Output::File_txt);
 	}
 
 	else v_stack.pop_back();
@@ -130,7 +152,17 @@ void Map_Manager::draw(int windowWidth,
 					   float camera_y,
 					   struct SDL_Renderer *renderer_ptr) {
 	/*
+	 * brief	draws the map at the back of the stack
 	 *
+	 * parma	windowWidth		width of the game window
+	 *
+	 * parma	windowHeight	height of the game window
+	 *
+	 * parma	camera_x		x coordinate of the camera
+	 *
+	 * parma	camera_y		y coordinate of the camera
+	 *
+	 * parma	renderer_ptr	pointer to the game renderer
 	 */
 
 
@@ -167,13 +199,36 @@ void Map_Manager::draw(int windowWidth,
 
 
 	//Draw the map that is currently at the top of the stack
-	v_stack.back()->Draw(renderer_ptr,
-						 assets->get_texture(v_stack.back()->sMapName),
+	v_stack.back()->draw(renderer_ptr,
+						 assets->get_texture(v_stack.back()->mapName),
 						 n_visible_tiles_x,
 						 n_visible_tiles_y,
 						 f_offset_x,
 						 f_offset_y,
 						 n_scale);
+
+	return;
+}
+
+
+//----------------------------------------------------------------------------
+
+
+void Map_Manager::set_scale(int scale){
+	/*
+	 * brief	sets the map's scale with the given amount
+	 *
+	 * parma	scale	the map's new scale
+	 */
+
+
+
+	static int MIN_SCALE = 1;
+
+	if(scale < MIN_SCALE){
+		this->n_scale = MIN_SCALE;
+	}
+	else this->n_scale = scale;
 
 	return;
 }
