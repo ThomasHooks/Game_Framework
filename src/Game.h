@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.h
 // Author     		: Thomas Hooks
-// Last Modified	: 12/19/2019
+// Last Modified	: 02/22/2020
 //============================================================================
 
 
@@ -14,11 +14,10 @@
 
 
 #include "State_Manager.h"
-#include "Map_Manager.h"
-//#include "Entity_Manager.h"
 #include "Asset_Manager.h"
 #include "Game_Timer.h"
 #include "Game_Logger.h"
+#include "MapManager.h"
 
 
 
@@ -29,6 +28,7 @@ public:
 
 	Game();
 	Game(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS);
+
 	~Game();
 
 	void run(void);
@@ -37,7 +37,7 @@ public:
 
 	class State_Manager State;
 
-	class Map_Manager Map;				//TODO Map_Manager
+	class MapManager Map;				//TODO Map_Manager
 
 	//Entity_Manager Entities;			//TODO Entity_Manager
 

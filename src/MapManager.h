@@ -1,5 +1,5 @@
 //============================================================================
-// Name       		: Map_Manager.h
+// Name       		: MapManager.h
 // Author     		: Thomas Hooks
 // Last Modified	: 12/19/2019
 //============================================================================
@@ -7,8 +7,8 @@
 
 
 
-#ifndef SRC_MAP_MANAGER_H_
-#define SRC_MAP_MANAGER_H_
+#ifndef SRC_MAPMANAGER_H_
+#define SRC_MAPMANAGER_H_
 
 
 
@@ -22,19 +22,19 @@
 
 
 
-class Map_Manager {
+class MapManager {
 
 public:
 
-	Map_Manager();
+	MapManager();
 
-	Map_Manager(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr);
+	MapManager(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr);
 
-	~Map_Manager();
+	~MapManager();
 
-	Map_Manager(const Map_Manager &other) = delete;
+	MapManager(const MapManager &other) = delete;
 
-	Map_Manager(Map_Manager &&other) = delete;
+	MapManager(MapManager &&other) = delete;
 
 
 	void init(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr);
@@ -43,10 +43,10 @@ public:
 
 	void pop_map(void);
 
-	void draw(int windowWidth,
-			  int windowHeight,
-			  float camera_x,
-			  float camera_y,
+	void draw(float offsetHor,
+			  float offsetVer,
+			  int visibleTilesHor,
+			  int visibleTilesVer,
 			  struct SDL_Renderer *renderer_ptr);
 
 
@@ -94,7 +94,7 @@ private:
 	//The amount the tiles are scaled up by
 	int n_scale;
 
-	Game_Logger *log;
+	class Game_Logger *log;
 
 	class Asset_Manager *assets;
 
@@ -104,7 +104,7 @@ private:
 
 
 
-#endif /* SRC_MAP_MANAGER_H_ */
+#endif /* SRC_MAPMANAGER_H_ */
 
 
 

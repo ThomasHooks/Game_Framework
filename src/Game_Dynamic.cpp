@@ -23,7 +23,8 @@
 
 #include "Game.h"
 #include "Game_Dynamic.h"
-#include "Game_State.h"
+
+#include "GameState.h"
 
 
 //============================================================================

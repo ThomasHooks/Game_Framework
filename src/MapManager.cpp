@@ -1,5 +1,5 @@
 //============================================================================
-// Name       		: Map_Manager.cpp
+// Name       		: MapManager.cpp
 // Author     		: Thomas Hooks
 // Last Modified	: 12/19/2019
 //============================================================================
@@ -7,19 +7,20 @@
 
 
 
+#include "MapManager.h"
+
 #include <iostream>
 #include <vector>
 #include <memory>
 #include <string>
 
 #include "Game.h"
-#include "Map_Manager.h"
 #include "Game_Map.h"
 
 
 
 
-Map_Manager::Map_Manager()
+MapManager::MapManager()
 	: b_hasBeenInit(false),
 	  n_visible_tiles_x(0),
 	  n_visible_tiles_y(0),
@@ -36,7 +37,7 @@ Map_Manager::Map_Manager()
 
 
 
-Map_Manager::Map_Manager(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr)
+MapManager::MapManager(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr)
 	: b_hasBeenInit(true),
 	  n_visible_tiles_x(0),
 	  n_visible_tiles_y(0),
@@ -53,14 +54,14 @@ Map_Manager::Map_Manager(class Game_Logger *log_ptr, class Asset_Manager *assets
 
 
 
-Map_Manager::~Map_Manager() {
+MapManager::~MapManager() {
 	//Do nothing
 	return;
 }
 
 
 
-void Map_Manager::init(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr){
+void MapManager::init(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr){
 	/*
 	 * brief		This method initializes the map manager
 	 *
@@ -96,7 +97,7 @@ void Map_Manager::init(class Game_Logger *log_ptr, class Asset_Manager *assets_p
 //----------------------------------------------------------------------------
 
 
-void Map_Manager::push_map(std::string tileSheetKey, std::string mapFilePath){
+void MapManager::push_map(std::string tileSheetKey, std::string mapFilePath){
 	/*
 	 * brief	Adds a new element to the back of the map stack
 	 */
@@ -119,7 +120,7 @@ void Map_Manager::push_map(std::string tileSheetKey, std::string mapFilePath){
 //----------------------------------------------------------------------------
 
 
-void Map_Manager::pop_map(void){
+void MapManager::pop_map(void){
 	/*
 	 * brief	Removes the back element from the map stack
 	 */
@@ -146,65 +147,36 @@ void Map_Manager::pop_map(void){
 //----------------------------------------------------------------------------
 
 
-void Map_Manager::draw(int windowWidth,
-					   int windowHeight,
-					   float camera_x,
-					   float camera_y,
+void MapManager::draw(float offsetHor,
+					   float offsetVer,
+					   int visibleTilesHor,
+					   int visibleTilesVer,
 					   struct SDL_Renderer *renderer_ptr) {
 	/*
 	 * brief	draws the map at the back of the stack
 	 *
-	 * parma	windowWidth		width of the game window
+	 * parma	offsetHor			X coordinate of the top left tile
 	 *
-	 * parma	windowHeight	height of the game window
+	 * parma	offsetVer			Y coordinate of the top left tile
 	 *
-	 * parma	camera_x		x coordinate of the camera
+	 * parma	visibleTilesHor		number of horizontal tiles on screen
 	 *
-	 * parma	camera_y		y coordinate of the camera
+	 * parma	visibleTilesVer		number of vertical tiles on screen
 	 *
-	 * parma	renderer_ptr	pointer to the game renderer
+	 * parma	renderer_ptr		pointer to the game renderer
 	 */
 
 
 
 	if(!b_hasBeenInit) return;
 
-
-	//Calculate the number of tile that are visible on screen
-	//The x axis is over drawn by 1 to prevent texture popping
-	n_visible_tiles_x = (windowWidth)/get_tileWidth() + 1;
-	n_visible_tiles_y = (windowHeight)/get_tileHeight();
-
-
-	//Calculate the top-left visible tile on screen
-	float f_offset_x = camera_x/get_tileWidth()
-			- (float)n_visible_tiles_x/2.0f;
-
-	float f_offset_y = camera_y/get_tileHeight()
-			- (float)n_visible_tiles_y/2.0f;
-
-
-	//Keep camera inside of the game window boundaries
-	const int leftBoundary = 0, topBoundary = 0;
-
-	if(f_offset_x < leftBoundary) f_offset_x = leftBoundary;
-
-	if(f_offset_y < topBoundary) f_offset_y = topBoundary;
-
-	if(f_offset_x > get_width() - n_visible_tiles_x)
-		f_offset_x = get_width() - n_visible_tiles_x;
-
-	if(f_offset_y > get_height() - n_visible_tiles_y)
-		f_offset_y = get_height() - n_visible_tiles_y;
-
-
 	//Draw the map that is currently at the top of the stack
 	v_stack.back()->draw(renderer_ptr,
 						 assets->get_texture(v_stack.back()->mapName),
-						 n_visible_tiles_x,
-						 n_visible_tiles_y,
-						 f_offset_x,
-						 f_offset_y,
+						 visibleTilesHor,
+						 visibleTilesVer,
+						 offsetHor,
+						 offsetVer,
 						 n_scale);
 
 	return;
@@ -214,7 +186,7 @@ void Map_Manager::draw(int windowWidth,
 //----------------------------------------------------------------------------
 
 
-void Map_Manager::set_scale(int scale){
+void MapManager::set_scale(int scale){
 	/*
 	 * brief	sets the map's scale with the given amount
 	 *

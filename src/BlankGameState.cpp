@@ -1,51 +1,56 @@
 //============================================================================
-// Name       		: Game_State.cpp
+// Name       		: BlankGameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 12/19/2019
+// Last Modified	: 02/22/2020
 //============================================================================
 
 
-#include "Game_State.h"
+
+
+#include "BlankGameState.h"
 
 #include <sstream>
 #include <list>
-#include <SDL.h>
-#include "SDL_image.h"
-#include "SDL_ttf.h"
-#include "SDL_mixer.h"
 #include <ctime>
 #include <math.h>
 #include <vector>
 #include <memory>
+
+#include <SDL.h>
+#include "SDL_image.h"
+#include "SDL_ttf.h"
+#include "SDL_mixer.h"
 
 #include "Game.h"
 #include "Game_Dynamic.h"
 #include "Game_Map.h"
 
 
-//============================================================================
 
 
-cGSBlack::cGSBlack(Game *Game, int StateID) : Game_State(Game, StateID){
-	//
+BlankGameState::BlankGameState(class Game *Game, int StateID) : GameState(Game, StateID) {
 
 	//----All of this should be removed later----
-	fCameraX = 0.0f; fCameraY = 0.0f;
+	//This is still here because it is needed for tile v entity collision this will be changed later
 	vMap.emplace_back(Game_Map("Test"));
-	//std::cout<<"Opening test.map"<<std::endl;
 	vMap[0].loadMap("data/map/test.map");
-	vEntity.emplace_back(std::unique_ptr<class Game_Dynamic>(new cPlayerCharacter(64.0f, 224.0f, 32, 32, 0)));
-	//----All of this should be removed later----
 
+	this->vEntity.emplace_back(std::unique_ptr<class Game_Dynamic>(new cPlayerCharacter(64.0f, 224.0f, 32, 32, 0)));
+
+	this->game->Map.push_map("tile_test.png","data/map/test.map");
+	this->game->Map.set_scale(2);
+	//----All of this should be removed later----
 
 	return;
 }
 
 
-//============================================================================
+
+BlankGameState::~BlankGameState() {}
 
 
-void cGSBlack::GetUserInput(){
+
+void BlankGameState::GetUserInput(){
 	//
 
 	//Begin polling
@@ -53,9 +58,9 @@ void cGSBlack::GetUserInput(){
 	while(SDL_PollEvent(&event)){
 		switch(event.type){
 		case SDL_WINDOWEVENT_CLOSE:{
-			if(cGEngine->get_window()){
+			if(game->get_window()){
 				//Window has been closed by user
-				cGEngine->set_gameOver(true);
+				game->set_gameOver(true);
 			}
 		}
 		break;
@@ -63,14 +68,14 @@ void cGSBlack::GetUserInput(){
 			switch(event.key.keysym.sym){
 			case SDLK_ESCAPE:
 				//Escape has been pressed by user
-				cGEngine->set_gameOver(true);
+				game->set_gameOver(true);
 				break;
 			}
 		}
 		break;
 		case SDL_QUIT:
 			//SDL has been closed
-			cGEngine->set_gameOver(true);
+			game->set_gameOver(true);
 			break;
 		}
 	}
@@ -78,17 +83,14 @@ void cGSBlack::GetUserInput(){
 	//----All of this should be removed later----
 	const Uint8*state = SDL_GetKeyboardState(NULL);
 	if(state[SDL_SCANCODE_SPACE]){
-		vEntity[0]->fdY = -128.0f;	//-192.0f
+		vEntity[0]->fdY = -128.0f;
 	}
-	/*else if(state[SDL_SCANCODE_DOWN]){
-		vEntity[0]->fdY = 96.0f;
-	}*/
 
 	if(state[SDL_SCANCODE_A]){
-		vEntity[0]->fdX = -192.0f; //96.0f
+		vEntity[0]->fdX = -192.0f;
 	}
 	else if(state[SDL_SCANCODE_D]){
-		vEntity[0]->fdX = 192.0f; //96.0f
+		vEntity[0]->fdX = 192.0f;
 	}
 	//----All of this should be removed later----
 
@@ -96,15 +98,13 @@ void cGSBlack::GetUserInput(){
 }
 
 
-//============================================================================
 
-
-void cGSBlack::Process(){
+void BlankGameState::Process(){
 	//
 
 	//----All of this should be removed later----
-	fCameraX = vEntity[0]->fX;
-	fCameraY = vEntity[0]->fY;
+	this->game->set_cameraX(vEntity[0]->fX);
+	this->game->set_cameraY(vEntity[0]->fY);
 
 	//Keep player x position inside the map
 	if(vEntity[0]->fX < 0.0f) vEntity[0]->fX = 0.0f;
@@ -117,7 +117,7 @@ void cGSBlack::Process(){
 	else if((vEntity[0]->fY + vEntity[0]->nHeight) > vMap[0].n_mapHeight * vMap[0].n_tileHeight)
 		vEntity[0]->fY = vMap[0].n_mapHeight * vMap[0].n_tileHeight - vEntity[0]->nHeight;
 
-	vEntity[0]->Update(cGEngine->Timer.get_deltaTime());
+	vEntity[0]->Update(game->Timer.get_deltaTime());
 
 	EntityMapCollisionRect(0, 0);
 	//----All of this should be removed later----
@@ -126,63 +126,35 @@ void cGSBlack::Process(){
 }
 
 
-//============================================================================
 
+void BlankGameState::customDraw(float offsetX, float offsetY, int visibleTilesHor, int visibleTilesVer){
+	/*
+	 *
+	 */
 
-void cGSBlack::Draw(){
-	//
-
-	//Set the window to black
-	SDL_SetRenderDrawColor(cGEngine->get_renderer(), 0, 0, 0, 255);
-	SDL_RenderClear(cGEngine->get_renderer());
 
 	//----All of this should be removed later----
+	this->game->Map.draw(offsetX, offsetY, visibleTilesHor, visibleTilesVer, this->game->get_renderer());
 
-	int nVisibleTilesX = (cGEngine->get_windowWidth())/vMap[0].n_tileWidth+1;
-	int nVisibleTilesY = (cGEngine->get_windowHeight())/vMap[0].n_tileHeight;
+	//vMap[0].draw(game->get_renderer(), game->Assets.get_texture("tile_test.png"), visibleTilesHor, visibleTilesVer, offsetX, offsetY, 2);
 
-	//Calculate the top-left visible tile
-	float fOffSetX = fCameraX/vMap[0].n_tileWidth - (float)nVisibleTilesX/2.0f;
-	float fOffSetY = fCameraY/vMap[0].n_tileHeight - (float)nVisibleTilesY/2.0f;
-
-	//Keep camera inside game boundaries
-	if(fOffSetX < 0) fOffSetX = 0;
-
-	if(fOffSetY < 0) fOffSetY = 0;
-
-	if(fOffSetX > (vMap[0].n_mapWidth) - nVisibleTilesX)
-		fOffSetX = (vMap[0].n_mapWidth) - nVisibleTilesX;
-
-	if(fOffSetY > (vMap[0].n_mapHeight) - nVisibleTilesY)
-		fOffSetY = (vMap[0].n_mapHeight) - nVisibleTilesY;
-
-
-	vMap[0].draw(cGEngine->get_renderer(), cGEngine->Assets.get_texture("tile_test.png"), nVisibleTilesX, nVisibleTilesY, fOffSetX, fOffSetY, 2);
-	vEntity[0]->Draw(cGEngine->get_renderer(), cGEngine->Assets.get_texture("Mario.png"), fOffSetX, fOffSetY);
-
+	vEntity[0]->Draw(game->get_renderer(), game->Assets.get_texture("Mario.png"), offsetX, offsetY);
 	//----All of this should be removed later----
-
-	//Update the window
-	SDL_RenderPresent(cGEngine->get_renderer());
 
 	return;
 }
 
 
-//============================================================================
 
-
-void cGSBlack::ChangeState(int StateFlag, Game *Game) {
+void BlankGameState::ChangeState(int StateFlag, Game *Game) {
 	//
 
 	return;
 }
 
 
-//============================================================================
 
-
-void cGSBlack::EntityMapCollisionRect(int EntityIndex, int MapIndex){
+void BlankGameState::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 	/*
 	 * *brief*	This method checks if an entity has collided with any of the
 	 * 			tiles around them in a 3x3 grid
@@ -199,7 +171,7 @@ void cGSBlack::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 
 	//Set the entity's bounding box
 	float RectA_X1 = vEntity[EntityIndex]->fX;
-	float RectA_X2 = vEntity[EntityIndex]->fX + vEntity[EntityIndex]->nWidth -8;	// made a change -8
+	float RectA_X2 = vEntity[EntityIndex]->fX + vEntity[EntityIndex]->nWidth -8;
 	float RectA_Y1 = vEntity[EntityIndex]->fY;
 	float RectA_Y2 = vEntity[EntityIndex]->fY + vEntity[EntityIndex]->nHeight;
 	float RectA_XCenter = vEntity[EntityIndex]->fX + vEntity[EntityIndex]->nWidth/2;
@@ -301,8 +273,6 @@ void cGSBlack::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 	return;
 }
 
-
-//============================================================================
 
 
 
