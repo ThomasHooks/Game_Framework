@@ -1,9 +1,7 @@
 //============================================================================
 // Name       		: Game_Map.h
 // Author     		: Thomas Hooks
-// Version    		: 1
-// Last Modified	: 11/2/2019
-// Description		:
+// Last Modified	: 12/19/2019
 //============================================================================
 
 
@@ -13,53 +11,89 @@
 #define GAME_MAP_H_
 
 
+
+
 #include <iostream>
-#include <SDL.h>
 #include <vector>
 #include <string>
+
+#include <SDL.h>
+
+#include "Game_Tile.h"
 
 
 
 
 class Game_Map {
 public:
-	Game_Map(std::string name); //class Game_State *State
+	Game_Map(std::string name);
+
 	~Game_Map();
 
-	bool IsTileSoilid(int x, int y);
-	void SetTileSoilid(int x, int y, bool solid);
 
-	int GetTileIndex(int x, int y);
-	void SetTileIndex(int x, int y, int index);
+	bool is_tileSolid (int x, int y);
 
-	bool LoadMap(std::string FileName);
-	void Draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
+	void set_tileSolid (int x, int y, bool solid);
+
+
+	int get_tileIndex(int x, int y);
+
+	void set_tileIndex(int x, int y, int index);
+
+
+	bool loadMap(std::string FileName);
+
+	void draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
 			int nVisibleTilesX, int nVisibleTilesY,
 			float fOffSetX, float fOffSetY, int scale);
 
-	int nMapWidth, nMapHeight;		//Size of the map
-	int nTileWidth, nTileHeight;		//Size of the tile in px
-	std::string sMapName;		//Name of map
+
+	int get_mapWidth(void) const {return n_mapWidth;}
+
+	void set_mapWidth(const int width) {n_mapWidth = width;}
+
+
+	int get_mapHeight(void) const {return n_mapHeight;}
+
+	void set_mapHeight(const int height) {n_mapHeight = height;}
+
+
+	int get_tileWidth(void) const {return n_tileWidth;}
+
+	void set_tileWidth(const int width) {n_tileWidth = width;}
+
+
+	int get_tileHeight(void) const {return n_tileHeight;}
+
+	void set_tileHeight(const int height) {n_tileHeight = height;}
+
+
+	std::string get_mapName(void) const {return mapName;}
+
+	void set_mapName(const std::string &name) {mapName = name;}
+
+
+	//Size of the map
+	int n_mapWidth, n_mapHeight;
+
+	//Size of the tile in pixel
+	int n_tileWidth, n_tileHeight;
+
+	//Name of map
+	std::string mapName;
 
 private:
+
 	//2D vector that contains the tile map
-	std::vector<std::vector<class cTile>> vTileMap;
+	std::vector<std::vector<Game_Tile>> v_tileMap;
 };
-
-//============================================================================
-
-class cTile{
-public://Method
-	cTile(bool soilid, int index, float x, float y);
-	~cTile();
-	void Draw(SDL_Renderer *renderer, SDL_Texture *TileSheet, int width, int height, int scale, float fOffSetX, float fOffSetY);
-
-public://Data
-	bool bSoilid;		//Is the tile passable
-	int nTileIndex;		//Location of the tile's sprite in the sprite sheet
-	float fX, fY;
-};
-
 
 
 #endif /* GAME_MAP_H_ */
+
+
+
+
+
+
+

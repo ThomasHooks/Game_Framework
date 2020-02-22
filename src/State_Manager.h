@@ -18,13 +18,13 @@
 
 #include <vector>
 #include <memory>
-#include "Game_State.h"
 #include "Game_Manager.h"
+#include "GameState.h"
 
 
 
 
-class State_Manager : public Game_Manager<class Game_State> {
+class State_Manager : public Game_Manager<class GameState> {
 public:
 
 	State_Manager(class Game *gamePtr);
