@@ -10,10 +10,10 @@
 #include <SDL.h>
 
 #include "Game.h"
-#include "Game_Dynamic.h"
+
 #include "BlankGameState.h"
+#include "Game_Dynamic.h"
 #include "GameState.h"
-//#include "Entity_Manager.h"
 #include "State_Manager.h"
 
 

@@ -7,6 +7,8 @@
 
 
 
+#include "GameState.h"
+
 #include <sstream>
 #include <list>
 #include <ctime>
@@ -19,10 +21,9 @@
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
 
+#include "Game_Map.h"
 #include "Game.h"
 #include "Game_Dynamic.h"
-#include "Game_Map.h"
-#include "GameState.h"
 
 
 

@@ -7,8 +7,10 @@
 //============================================================================
 
 
+#include "Game_Dynamic.h"
+
 #include <iostream>
-#include<sstream>
+#include <sstream>
 #include <list>
 #include <SDL.h>
 #include "SDL_image.h"
@@ -21,10 +23,8 @@
 #include <memory>
 #include <string>
 
-#include "Game.h"
-#include "Game_Dynamic.h"
-
 #include "GameState.h"
+#include "Game.h"
 
 
 //============================================================================

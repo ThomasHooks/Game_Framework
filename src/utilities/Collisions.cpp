@@ -1,117 +1,16 @@
 //============================================================================
-// Name       		: Game_Utilities.cpp
+// Name       		: Collisions.cpp
 // Author     		: Thomas Hooks
-// Version    		: 1
-// Last Modified	: 11/2/2019
-// Description		:
+// Last Modified	: 02/23/2020
 //============================================================================
 
 
 
 
-#include "Game_Utilities.h"
+#include "Collisions.h"
+
 #include <math.h>
 
-
-
-
-//----------------------------------------------------------------------------
-//							Position2D Constructors
-
-Position2D::Position2D(){
-
-	//position
-	f_x = 0.0f;
-	f_y = 0.0f;
-
-	//velocity
-	f_dx = 0.0f;
-	f_dy = 0.0f;
-
-	//acceleration
-	f_2dx = 0.0f;
-	f_2dy = 0.0f;
-
-	return;
-}
-
-
-Position2D::Position2D(float x, float y){
-
-	//position
-	f_x = x;
-	f_y = y;
-
-	//velocity
-	f_dx = 0.0f;
-	f_dy = 0.0f;
-
-	//acceleration
-	f_2dx = 0.0f;
-	f_2dy = 0.0f;
-
-	return;
-}
-
-
-Position2D::Position2D(float x, float y, float dx, float dy){
-
-	//position
-	f_x = x;
-	f_y = y;
-
-	//velocity
-	f_dx = dx;
-	f_dy = dy;
-
-	//acceleration
-	f_2dx = 0.0f;
-	f_2dy = 0.0f;
-
-	return;
-}
-
-
-Position2D::Position2D(float x, float y,
-		float dx, float dy, float d2x, float d2y){
-
-	//position
-	f_x = x;
-	f_y = y;
-
-	//velocity
-	f_dx = dx;
-	f_dy = dy;
-
-	//acceleration
-	f_2dx = d2x;
-	f_2dy = d2y;
-
-	return;
-}
-
-
-//----------------------------------------------------------------------------
-//							Dimension2D Constructors
-
-Dimension2D::Dimension2D(){
-
-	//dimension
-	n_width = 0;
-	n_height = 0;
-
-	return;
-}
-
-
-Dimension2D::Dimension2D(int width, int height){
-
-	//dimension
-	n_width = width;
-	n_height = height;
-
-	return;
-}
 
 
 //----------------------------------------------------------------------------
@@ -146,6 +45,7 @@ bool CollisionPointRect(float rect_x, float rect_y, int rect_w, int rect_h,
 
 	return false;
 }
+
 
 
 bool CollisionPointRect(const Position2D &rect_p, const Dimension2D &rect_d,
@@ -212,6 +112,7 @@ bool CollisionRectRect(float x1, float y1, int w1, int h1,
 
 	return false;
 }
+
 
 
 bool CollisionRectRect(const Position2D &rect1_p, const Dimension2D &rect1_d,
@@ -295,28 +196,24 @@ Side EdgeRectRect(const Position2D &rect1_p, const Dimension2D &rect1_d,
 		if(abs(f_x_distance) < abs(f_y_distance)){
 			//Because the x component of rectangle 2 is closer to rectangle 1's center
 			//Check if rectangle 2 is to the right or left of rectangle 1's center
-			if(f_x_distance < center) return Side::Left;
+			if(f_x_distance < center) return Side::LEFT;
 
-			else return Side::Right;
+			else return Side::RIGHT;
 		}
 
 		else{
 			//Because the y component of rectangle 2 is closer to rectangle 1's center
 			//Check if rectangle 2 is above or below rectangle 1's center
 			//*Note* values become negative when going above rectangle 1's center
-			if(f_y_distance < center) return Side::Top;
+			if(f_y_distance < center) return Side::UP;
 
-			else return Side::Bottom;
+			else return Side::DOWN;
 		}
 	}
 
 	//Because neither rectangles overlap
-	return Side::None;
+	return Side::NONE;
 }
-
-
-//----------------------------------------------------------------------------
-
 
 
 

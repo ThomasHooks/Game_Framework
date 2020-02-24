@@ -13,10 +13,10 @@
 
 
 
-#include "GameState.h"
-
 #include <memory>
 #include <vector>
+
+#include "GameState.h"
 
 
 class BlankGameState : public GameState {

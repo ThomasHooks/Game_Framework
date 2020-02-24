@@ -7,6 +7,8 @@
 
 
 
+#include "Game_Map.h"
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -18,9 +20,8 @@
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
 
-#include "Game.h"
-#include "Game_Map.h"
 #include "Game_Tile.h"
+#include "Game.h"
 
 
 

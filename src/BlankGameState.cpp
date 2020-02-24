@@ -21,9 +21,9 @@
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
 
+#include "Game_Map.h"
 #include "Game.h"
 #include "Game_Dynamic.h"
-#include "Game_Map.h"
 
 
 
