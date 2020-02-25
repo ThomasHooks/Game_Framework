@@ -1,9 +1,7 @@
 //============================================================================
 // Name       		: State_Manager.h
 // Author     		: Thomas Hooks
-// Version    		: 1
 // Last Modified	: 11/2/2019
-// Description		:
 //============================================================================
 
 
@@ -19,22 +17,22 @@
 #include <vector>
 #include <memory>
 
-#include "Game_Manager.h"
-#include "GameState.h"
+#include "../gamestates/GameState.h"
+#include "GameManager.h"
 
 
 
 
-class State_Manager : public Game_Manager<class GameState> {
+class StateManager : public GameManager<class GameState> {
 public:
 
-	State_Manager(class Game *gamePtr);
+	StateManager(class Game *gamePtr);
 
-	~State_Manager();
+	~StateManager();
 
-	State_Manager(const State_Manager &other) = delete;
+	StateManager(const StateManager &other) = delete;
 
-	State_Manager(State_Manager &&other) = delete;
+	StateManager(StateManager &&other) = delete;
 
 	//------------------------------------------------------------------------
 

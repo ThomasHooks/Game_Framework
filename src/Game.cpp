@@ -11,10 +11,10 @@
 
 #include "Game.h"
 
-#include "BlankGameState.h"
-#include "Game_Dynamic.h"
-#include "GameState.h"
-#include "State_Manager.h"
+#include "entities/Game_Dynamic.h"
+#include "gamestates/BlankGameState.h"
+#include "gamestates/GameState.h"
+#include "managers/StateManager.h"
 
 
 

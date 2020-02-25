@@ -21,9 +21,9 @@
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
 
-#include "Game_Map.h"
-#include "Game.h"
-#include "Game_Dynamic.h"
+#include "../entities/Game_Dynamic.h"
+#include "../Game.h"
+#include "../world/GameMap.h"
 
 
 
@@ -32,7 +32,7 @@ BlankGameState::BlankGameState(class Game *Game, int StateID) : GameState(Game, 
 
 	//----All of this should be removed later----
 	//This is still here because it is needed for tile v entity collision this will be changed later
-	vMap.emplace_back(Game_Map("Test"));
+	vMap.emplace_back(GameMap("Test"));
 	vMap[0].loadMap("data/map/test.map");
 
 	this->vEntity.emplace_back(std::unique_ptr<class Game_Dynamic>(new cPlayerCharacter(64.0f, 224.0f, 32, 32, 0)));

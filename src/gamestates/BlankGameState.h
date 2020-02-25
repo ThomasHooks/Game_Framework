@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: BlankGameState.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/22/2020
+// Last Modified	: 02/24/2020
 //============================================================================
 
 
@@ -48,7 +48,7 @@ protected:
 
 	//----All of this should be removed later----
 	std::vector<std::unique_ptr<class Game_Dynamic>> vEntity;
-	std::vector<class Game_Map> vMap;
+	std::vector<class GameMap> vMap;
 	//----All of this should be removed later----
 };
 

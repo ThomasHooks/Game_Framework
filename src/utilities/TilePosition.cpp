@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: TilePosition.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/23/2020
+// Last Modified	: 02/24/2020
 //============================================================================
 
 
@@ -170,6 +170,13 @@ bool TilePosition::isPoint(void){
 
 	if(this->get_width() == 0 && this->get_height() == 0) return true;
 	else return false;
+}
+
+
+
+Position TilePosition::getCenter(void){
+
+	return Position(this->position.x - this->dimension.width/2, this->position.y + this->dimension.height/2);
 }
 
 

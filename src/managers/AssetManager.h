@@ -1,9 +1,7 @@
 //============================================================================
-// Name       		: Asset_Manager.h
+// Name       		: AssetManager.h
 // Author     		: Thomas Hooks
-// Version    		: 1
 // Last Modified	: 11/2/2019
-// Description		:
 //============================================================================
 
 
@@ -22,20 +20,20 @@
 //TODO add SDL ttf assets
 
 
-class Asset_Manager {
+class AssetManager {
 
 public:
 
-	Asset_Manager();
+	AssetManager();
 
-	~Asset_Manager();
+	~AssetManager();
 
-	Asset_Manager(const Asset_Manager &other) = delete;
+	AssetManager(const AssetManager &other) = delete;
 
-	Asset_Manager(Asset_Manager &&other) = delete;
+	AssetManager(AssetManager &&other) = delete;
 
 
-	void init(class Game_Logger *log_ptr, struct SDL_Renderer *renderer_ptr);
+	void init(class GameLogger *log_ptr, struct SDL_Renderer *renderer_ptr);
 
 	bool add_texture(std::string key, std::string fileDirectory);
 
@@ -52,7 +50,7 @@ private:
 
 	bool b_hasBeenInit;
 
-	class Game_Logger *log;
+	class GameLogger *log;
 
 	struct SDL_Renderer *renderer;
 };

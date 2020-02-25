@@ -1,25 +1,23 @@
 //============================================================================
 // Name       		: Game_Tile.h
 // Author     		: Thomas Hooks
-// Version    		: 1
 // Last Modified	: 11/14/2019
-// Description		:
 //============================================================================
 
 
 
 
-#ifndef GAME_TILE_H_
-#define GAME_TILE_H_
+#ifndef TILE_H_
+#define TILE_H_
 
 
-class Game_Tile {
+class Tile {
 
 public:
 
-	Game_Tile(bool solid, int index, float x, float y);
+	Tile(bool solid, int index, float x, float y);
 
-	~Game_Tile();
+	~Tile();
 
 	void draw(struct SDL_Renderer *renderer,
 			struct SDL_Texture *tileSheet,
@@ -38,7 +36,7 @@ public:
 };
 
 
-#endif /* GAME_TILE_H_ */
+#endif /* TILE_H_ */
 
 
 

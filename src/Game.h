@@ -13,11 +13,11 @@
 
 
 
-#include "Asset_Manager.h"
-#include "Game_Logger.h"
-#include "Game_Timer.h"
-#include "MapManager.h"
-#include "State_Manager.h"
+#include "managers/AssetManager.h"
+#include "managers/MapManager.h"
+#include "managers/StateManager.h"
+#include "utilities/GameLogger.h"
+#include "utilities/GameTimer.h"
 
 
 
@@ -35,17 +35,17 @@ public:
 
 	bool init(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS);
 
-	class State_Manager State;
+	class StateManager State;
 
-	class MapManager Map;				//TODO Map_Manager
+	class MapManager Map;
 
-	//Entity_Manager Entities;			//TODO Entity_Manager
+	//EntityManager Entities;			//TODO Entity_Manager
 
-	class Asset_Manager Assets;
+	class AssetManager Assets;
 
-	class Game_Timer Timer;
+	class GameTimer Timer;
 
-	class Game_Logger Log;
+	class GameLogger Log;
 
 
 	//Getters and setters

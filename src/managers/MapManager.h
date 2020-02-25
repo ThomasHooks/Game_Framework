@@ -17,7 +17,7 @@
 #include <memory>
 #include <string>
 
-#include "Game_Map.h"
+#include "../world/GameMap.h"
 
 
 
@@ -28,7 +28,7 @@ public:
 
 	MapManager();
 
-	MapManager(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr);
+	MapManager(class GameLogger *log_ptr, class AssetManager *assets_ptr);
 
 	~MapManager();
 
@@ -37,7 +37,7 @@ public:
 	MapManager(MapManager &&other) = delete;
 
 
-	void init(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr);
+	void init(class GameLogger *log_ptr, class AssetManager *assets_ptr);
 
 	void push_map(std::string tileSheetKey, std::string mapFilePath);
 
@@ -94,11 +94,11 @@ private:
 	//The amount the tiles are scaled up by
 	int n_scale;
 
-	class Game_Logger *log;
+	class GameLogger *log;
 
-	class Asset_Manager *assets;
+	class AssetManager *assets;
 
-	std::vector<std::unique_ptr<Game_Map>> v_stack;
+	std::vector<std::unique_ptr<GameMap>> v_stack;
 };
 
 

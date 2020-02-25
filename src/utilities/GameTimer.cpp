@@ -1,15 +1,13 @@
 //============================================================================
-// Name       		: Game_Timer.cpp
+// Name       		: GameTimer.cpp
 // Author     		: Thomas Hooks
-// Version    		: 1
-// Last Modified	: 11/2/2019
-// Description		:
+// Last Modified	: 02/24/2020
 //============================================================================
 
 
 
 
-#include "Game_Timer.h"
+#include "GameTimer.h"
 
 #include <SDL.h>
 #include <ctime>
@@ -17,7 +15,7 @@
 
 
 
-Game_Timer::Game_Timer() {
+GameTimer::GameTimer() {
 	//Initialize clock
 
 	frameStart = SDL_GetTicks();
@@ -27,13 +25,13 @@ Game_Timer::Game_Timer() {
 }
 
 
-Game_Timer::~Game_Timer() {
+GameTimer::~GameTimer() {
 	//Nothing to free
 	//Do nothing
 }
 
 
-void Game_Timer::Start(void){
+void GameTimer::Start(void){
 	/*
 	 * *brief* Starts a timer that measure the length of a frame in (ms)
 	 *
@@ -52,7 +50,7 @@ void Game_Timer::Start(void){
 }
 
 
-void Game_Timer::Check(const int Max_FPS){
+void GameTimer::Check(const int Max_FPS){
 	/*
 	 * *brief* Prevents the game from exceeding its maximum frames rate
 	 *

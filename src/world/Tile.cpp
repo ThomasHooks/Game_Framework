@@ -1,15 +1,13 @@
 //============================================================================
 // Name       		: Game_Tile.cpp
 // Author     		: Thomas Hooks
-// Version    		: 1
 // Last Modified	: 11/14/2019
-// Description		:
 //============================================================================
 
 
 
 
-#include "Game_Tile.h"
+#include "Tile.h"
 
 #include <SDL.h>
 #include "SDL_image.h"
@@ -18,20 +16,20 @@
 
 
 
-Game_Tile::Game_Tile(bool solid, int index, float x, float y)
+Tile::Tile(bool solid, int index, float x, float y)
 	: b_solid(solid), n_tileIndex(index), f_x(x), f_y(y) {
 	return;
 }
 
 
 
-Game_Tile::~Game_Tile() {
+Tile::~Tile() {
 	return;
 }
 
 
 
-void Game_Tile::draw(SDL_Renderer *renderer,
+void Tile::draw(SDL_Renderer *renderer,
 					 SDL_Texture *tileSheet,
 					 int width, int height,
 					 int scale,

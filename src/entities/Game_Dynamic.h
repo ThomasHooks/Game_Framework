@@ -1,9 +1,7 @@
 //============================================================================
 // Name       		: Game_Dynamic.h
 // Author     		: Thomas Hooks
-// Version    		: 1
 // Last Modified	: 11/2/2019
-// Description		:
 //============================================================================
 
 
@@ -15,6 +13,7 @@
 #include "SDL_image.h"
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
+
 #include <string>
 
 //#include "Game.h"

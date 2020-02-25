@@ -1,5 +1,5 @@
 //============================================================================
-// Name       		: Game_Map.cpp
+// Name       		: GameMap.cpp
 // Author     		: Thomas Hooks
 // Last Modified	: 12/19/2019
 //============================================================================
@@ -7,7 +7,7 @@
 
 
 
-#include "Game_Map.h"
+#include "GameMap.h"
 
 #include <iostream>
 #include <sstream>
@@ -20,13 +20,13 @@
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
 
-#include "Game_Tile.h"
-#include "Game.h"
+#include "../Game.h"
+#include "Tile.h"
 
 
 
 
-Game_Map::Game_Map(std::string name)
+GameMap::GameMap(std::string name)
 	: n_mapWidth(5),
 	  n_mapHeight(5),
 	  n_tileWidth(32),
@@ -40,7 +40,7 @@ Game_Map::Game_Map(std::string name)
 
 
 
-Game_Map::~Game_Map() {
+GameMap::~GameMap() {
 	return;
 }
 
@@ -48,7 +48,7 @@ Game_Map::~Game_Map() {
 
 
 
-bool Game_Map::is_tileSolid(int x, int y){
+bool GameMap::is_tileSolid(int x, int y){
 	/*
 	 * brief	Checks if a tile is solid
 	 *
@@ -70,7 +70,7 @@ bool Game_Map::is_tileSolid(int x, int y){
 //----------------------------------------------------------------------------
 
 
-void Game_Map::set_tileSolid(int x, int y, bool solid){
+void GameMap::set_tileSolid(int x, int y, bool solid){
 	/*
 	 * brief	This method will set the give tile's solid state
 	 *
@@ -98,7 +98,7 @@ void Game_Map::set_tileSolid(int x, int y, bool solid){
 //----------------------------------------------------------------------------
 
 
-int Game_Map::get_tileIndex(int x, int y){
+int GameMap::get_tileIndex(int x, int y){
 	/*
 	 *
 	 */
@@ -117,7 +117,7 @@ int Game_Map::get_tileIndex(int x, int y){
 //----------------------------------------------------------------------------
 
 
-void Game_Map::set_tileIndex(int x, int y, int index){
+void GameMap::set_tileIndex(int x, int y, int index){
 	/*
 	 *
 	 */
@@ -134,7 +134,7 @@ void Game_Map::set_tileIndex(int x, int y, int index){
 //----------------------------------------------------------------------------
 
 
-void Game_Map::draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
+void GameMap::draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
 		int nVisibleTilesX, int nVisibleTilesY, float fOffSetX,
 		float fOffSetY, int scale){
 	//
@@ -154,7 +154,7 @@ void Game_Map::draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
 //----------------------------------------------------------------------------
 
 
-bool Game_Map::loadMap(std::string FileName){
+bool GameMap::loadMap(std::string FileName){
 	/*
 	 * brief	This method load the map file given by the user and will return
 	 * 		    true if successful, false otherwise
@@ -198,8 +198,8 @@ bool Game_Map::loadMap(std::string FileName){
 			//Resize the tile map with the data provided in the map file
 			v_tileMap.clear();
 			v_tileMap.resize(n_mapWidth,
-					std::vector<Game_Tile>(n_tileHeight,
-							Game_Tile{false, 0, 0, 0}));
+					std::vector<Tile>(n_tileHeight,
+							Tile{false, 0, 0, 0}));
 		}
 
 		//Populate map with tiles

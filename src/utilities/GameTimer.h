@@ -1,9 +1,7 @@
 //============================================================================
 // Name       		: Game_Timer.h
 // Author     		: Thomas Hooks
-// Version    		: 1
-// Last Modified	: 11/2/2019
-// Description		:
+// Last Modified	: 02/24/2020
 //============================================================================
 
 
@@ -16,12 +14,12 @@
 #include <stdint.h>
 
 
-class Game_Timer {
+class GameTimer {
 
 public:
 
-	Game_Timer();
-	~Game_Timer();
+	GameTimer();
+	~GameTimer();
 
 	//Starts a timer that measure the length of a frame in (ms)
 	void Start(void);

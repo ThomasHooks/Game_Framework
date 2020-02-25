@@ -1,15 +1,13 @@
 //============================================================================
-// Name       		: Game_Logger.cpp
+// Name       		: GameLogger.cpp
 // Author     		: Thomas Hooks
-// Version    		: 1
-// Last Modified	: 11/2/2019
-// Description		:
+// Last Modified	: 02/24/2020
 //============================================================================
 
 
 
 
-#include "Game_Logger.h"
+#include "GameLogger.h"
 
 #include <iostream>
 #include <fstream>
@@ -19,7 +17,7 @@
 
 
 
-Game_Logger::Game_Logger()
+GameLogger::GameLogger()
 	: e_level(Level::Info), filePath("./log.txt"){
 	//Set default logging level to info
 	//Set default log file location to the applications relative directory
@@ -28,7 +26,7 @@ Game_Logger::Game_Logger()
 
 
 
-Game_Logger::Game_Logger(Level level)
+GameLogger::GameLogger(Level level)
 	: e_level(level), filePath("./log.txt"){
 	//Set default log file location to the applications relative directory
 	Message(Level::Info, "Logging started", Output::File_txt);
@@ -36,14 +34,14 @@ Game_Logger::Game_Logger(Level level)
 
 
 
-Game_Logger::Game_Logger(Level level, std::string fileLocation)
+GameLogger::GameLogger(Level level, std::string fileLocation)
 	: e_level(level), filePath(fileLocation){
 	Message(Level::Info, "Logging started", Output::File_txt);
 }
 
 
 
-Game_Logger::~Game_Logger() {
+GameLogger::~GameLogger() {
 	//Nothing to free from the heap
 
 	Message(Level::Info, "Logging stopped", Output::File_txt);
@@ -52,7 +50,7 @@ Game_Logger::~Game_Logger() {
 
 //----------------------------------------------------------------------------
 
-void Game_Logger::Message(Level level,
+void GameLogger::Message(Level level,
 		const std::string &message, Output out){
 	/*
 	 *	brief				This method will log a message if its level is
@@ -161,7 +159,7 @@ void Game_Logger::Message(Level level,
 
 //----------------------------------------------------------------------------
 
-void Game_Logger::WriteToFile(const std::string &message){
+void GameLogger::WriteToFile(const std::string &message){
 	/*
 	 * brief				Writes a message in the log file set by the user
 	 *

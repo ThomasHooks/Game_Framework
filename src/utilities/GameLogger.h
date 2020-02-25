@@ -1,9 +1,7 @@
 //============================================================================
-// Name       		: Game_Logger.h
+// Name       		: GameLogger.h
 // Author     		: Thomas Hooks
-// Version    		: 1
-// Last Modified	: 11/2/2019
-// Description		:
+// Last Modified	: 02/24/2020
 //============================================================================
 
 
@@ -47,21 +45,21 @@ enum struct Output : unsigned char{
 
 //----------------------------------------------------------------------------
 
-class Game_Logger {
+class GameLogger {
 
 public:
 
-	Game_Logger();
+	GameLogger();
 
-	Game_Logger(Level level);
+	GameLogger(Level level);
 
-	Game_Logger(Level level, std::string fileLocation);
+	GameLogger(Level level, std::string fileLocation);
 
-	~Game_Logger();
+	~GameLogger();
 
-	Game_Logger(const Game_Logger &other) = delete;
+	GameLogger(const GameLogger &other) = delete;
 
-	Game_Logger(Game_Logger &&other) = delete;
+	GameLogger(GameLogger &&other) = delete;
 
 
 	void Message(Level level, const std::string &message, Output out);

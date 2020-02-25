@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: TilePosition.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/23/2020
+// Last Modified	: 02/24/2020
 //============================================================================
 
 
@@ -61,15 +61,14 @@ public:
 
 	bool isPoint(void);
 
+	Position getCenter(void);
+
 private:
 
 	Position position;
 
 	Dimension dimension;
 };
-
-
-
 
 
 #endif /* SRC_TILEPOSITION_H_ */

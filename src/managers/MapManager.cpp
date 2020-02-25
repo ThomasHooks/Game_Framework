@@ -14,8 +14,8 @@
 #include <memory>
 #include <string>
 
-#include "Game_Map.h"
-#include "Game.h"
+#include "../GameMap.h"
+#include "../Game.h"
 
 
 
@@ -37,7 +37,7 @@ MapManager::MapManager()
 
 
 
-MapManager::MapManager(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr)
+MapManager::MapManager(class GameLogger *log_ptr, class AssetManager *assets_ptr)
 	: b_hasBeenInit(true),
 	  n_visible_tiles_x(0),
 	  n_visible_tiles_y(0),
@@ -61,7 +61,7 @@ MapManager::~MapManager() {
 
 
 
-void MapManager::init(class Game_Logger *log_ptr, class Asset_Manager *assets_ptr){
+void MapManager::init(class GameLogger *log_ptr, class AssetManager *assets_ptr){
 	/*
 	 * brief		This method initializes the map manager
 	 *
@@ -107,7 +107,7 @@ void MapManager::push_map(std::string tileSheetKey, std::string mapFilePath){
 	if(!b_hasBeenInit) return;
 
 
-	v_stack.emplace_back(std::unique_ptr<Game_Map>(new Game_Map(tileSheetKey)));
+	v_stack.emplace_back(std::unique_ptr<GameMap>(new GameMap(tileSheetKey)));
 
 
 	v_stack.back()->loadMap(mapFilePath);

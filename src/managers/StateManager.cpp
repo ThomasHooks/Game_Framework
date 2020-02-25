@@ -1,25 +1,23 @@
 //============================================================================
 // Name       		: State_Manager.cpp
 // Author     		: Thomas Hooks
-// Version    		: 1
 // Last Modified	: 11/2/2019
-// Description		:
 //============================================================================
 
 
 
 
-#include "State_Manager.h"
+#include "StateManager.h"
 
-#include "Game_Manager.h"
-#include "Game.h"
-#include "GameState.h"
-
-
+#include "../gamestates/GameState.h"
+#include "../Game.h"
+#include "GameManager.h"
 
 
-State_Manager::State_Manager(class Game *gamePtr)
-	: Game_Manager(gamePtr) {
+
+
+StateManager::StateManager(class Game *gamePtr)
+	: GameManager(gamePtr) {
 	//Initialize the state manager object
 
 	const int initialFlag = 0;
@@ -30,7 +28,7 @@ State_Manager::State_Manager(class Game *gamePtr)
 }
 
 
-State_Manager::~State_Manager() {
+StateManager::~StateManager() {
 	// Do Nothing
 	return;
 }
@@ -39,7 +37,7 @@ State_Manager::~State_Manager() {
 //----------------------------------------------------------------------------
 
 
-void State_Manager::Process(void){
+void StateManager::Process(void){
 	/*
 	 * *brief*	Processes the current game state
 	 *
@@ -86,7 +84,7 @@ void State_Manager::Process(void){
 //----------------------------------------------------------------------------
 
 
-void State_Manager::Check(void){
+void StateManager::Check(void){
 	/*
 	 * *brief*	Checks if the current game state needs to be changed
 	 *

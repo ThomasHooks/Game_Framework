@@ -1,26 +1,25 @@
 //============================================================================
-// Name       		: Asset_Manager.cpp
+// Name       		: AssetManager.cpp
 // Author     		: Thomas Hooks
-// Version    		: 1
 // Last Modified	: 11/2/2019
-// Description		:
 //============================================================================
 
 
 
 
-#include "Asset_Manager.h"
+#include "AssetManager.h"
 
-#include "Game.h"
 #include <SDL.h>
 #include "SDL_image.h"
 #include "SDL_ttf.h"
 #include "SDL_mixer.h"
 
+#include "../Game.h"
 
 
 
-Asset_Manager::Asset_Manager()
+
+AssetManager::AssetManager()
 	: b_hasBeenInit(false), log(nullptr), renderer(nullptr){
 
 	return;
@@ -28,7 +27,7 @@ Asset_Manager::Asset_Manager()
 
 
 
-Asset_Manager::~Asset_Manager() {
+AssetManager::~AssetManager() {
 	//Destructor
 }
 
@@ -36,7 +35,7 @@ Asset_Manager::~Asset_Manager() {
 //----------------------------------------------------------------------------
 
 
-void Asset_Manager::init(class Game_Logger *log_ptr, struct SDL_Renderer *renderer_ptr){
+void AssetManager::init(class GameLogger *log_ptr, struct SDL_Renderer *renderer_ptr){
 	/*
 	 * brief		This method initializes the asset manager
 	 *
@@ -68,7 +67,7 @@ void Asset_Manager::init(class Game_Logger *log_ptr, struct SDL_Renderer *render
 //----------------------------------------------------------------------------
 
 
-bool Asset_Manager::add_texture(std::string key, std::string fileDirectory){
+bool AssetManager::add_texture(std::string key, std::string fileDirectory){
 	/*
 	 * brief		This method will add a texture with the given key
 	 *
@@ -149,7 +148,7 @@ bool Asset_Manager::add_texture(std::string key, std::string fileDirectory){
 //----------------------------------------------------------------------------
 
 
-struct SDL_Texture* Asset_Manager::get_texture(std::string key){
+struct SDL_Texture* AssetManager::get_texture(std::string key){
 	/*
 	 * brief		This method will return a texture for the given key
 	 *
@@ -188,7 +187,7 @@ struct SDL_Texture* Asset_Manager::get_texture(std::string key){
 //----------------------------------------------------------------------------
 
 
-bool Asset_Manager::remove_texture(std::string key){
+bool AssetManager::remove_texture(std::string key){
 	/*
 	 * brief		This method will remove a texture for the given key
 	 *
@@ -235,7 +234,7 @@ bool Asset_Manager::remove_texture(std::string key){
 //----------------------------------------------------------------------------
 
 
-void Asset_Manager::remove_allTextures(void){
+void AssetManager::remove_allTextures(void){
 	/*
 	 * brief		This method will free all textures in the asset manager
 	 * 				and should be called at the end of the application

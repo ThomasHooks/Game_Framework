@@ -1,9 +1,7 @@
 //============================================================================
 // Name       		: Game_Dynamic.cpp
 // Author     		: Thomas Hooks
-// Version    		: 1
 // Last Modified	: 11/2/2019
-// Description		:
 //============================================================================
 
 
@@ -23,8 +21,8 @@
 #include <memory>
 #include <string>
 
-#include "GameState.h"
-#include "Game.h"
+#include "../gamestates/GameState.h"
+#include "../Game.h"
 
 
 //============================================================================

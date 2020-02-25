@@ -1,5 +1,5 @@
 //============================================================================
-// Name       		: Game_Map.h
+// Name       		: GameMap.h
 // Author     		: Thomas Hooks
 // Last Modified	: 12/19/2019
 //============================================================================
@@ -7,8 +7,8 @@
 
 
 
-#ifndef GAME_MAP_H_
-#define GAME_MAP_H_
+#ifndef GAMEMAP_H_
+#define GAMEMAP_H_
 
 
 
@@ -19,16 +19,17 @@
 
 #include <SDL.h>
 
-#include "Game_Tile.h"
+#include "Tile.h"
 
 
 
 
-class Game_Map {
+class GameMap {
+
 public:
-	Game_Map(std::string name);
+	GameMap(std::string name);
 
-	~Game_Map();
+	~GameMap();
 
 
 	bool is_tileSolid (int x, int y);
@@ -85,11 +86,11 @@ public:
 private:
 
 	//2D vector that contains the tile map
-	std::vector<std::vector<Game_Tile>> v_tileMap;
+	std::vector<std::vector<Tile>> v_tileMap;
 };
 
 
-#endif /* GAME_MAP_H_ */
+#endif /* GAMEMAP_H_ */
 
 
 

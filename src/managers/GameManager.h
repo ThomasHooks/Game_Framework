@@ -1,9 +1,7 @@
 //============================================================================
 // Name       		: Game_Manager.h
 // Author     		: Thomas Hooks
-// Version    		: 1
-// Last Modified	: 11/2/2019
-// Description		:
+// Last Modified	: 02/24/2020
 //============================================================================
 
 
@@ -18,27 +16,22 @@
 #include <vector>
 #include <memory>
 
-#include "Game_Logger.h"
+#include "../utilities/GameLogger.h"
 
 
 
 
-template<typename T> class Game_Manager {
+template<typename T> class GameManager {
+
 public:
 
-	//constructor
-	Game_Manager(class Game *gamePtr){game = gamePtr;}
+	GameManager(class Game *gamePtr){game = gamePtr;}
 
-	//destructor
-	~Game_Manager(){
-		//Do Nothing
-		}
+	~GameManager(){}
 
-	//copy constructor
-	Game_Manager(const Game_Manager &other) = delete;
+	GameManager(const GameManager &other) = delete;
 
-	//move constructor
-	Game_Manager(Game_Manager &&other) = delete;
+	GameManager(GameManager &&other) = delete;
 
 
 	//------------------------------------------------------------------------
@@ -117,6 +110,7 @@ protected:
 };
 
 
-
-
 #endif /* SRC_GAME_MANAGER_H_ */
+
+
+
