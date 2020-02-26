@@ -18,6 +18,7 @@
 Entity::Entity(std::string tagIn, Position posIn, Dimension dimIn, EnumBehavior behaviorIn)
 	: tag(tagIn),
 	  tilePosition(posIn, dimIn),
+	  spriteLocation(),
 	  velocity(),
 	  acceleration(),
 	  health(1),
@@ -34,6 +35,7 @@ Entity::~Entity() {}
 Entity::Entity(const Entity &other)
 	: tag(other.tag),
 	  tilePosition(other.tilePosition),
+	  spriteLocation(other.spriteLocation.width, other.spriteLocation.height),
 	  velocity(other.velocity),
 	  acceleration(other.acceleration),
 	  health(other.health),
@@ -46,6 +48,7 @@ Entity::Entity(const Entity &other)
 Entity::Entity(Entity &&other)
 	: tag(other.tag),
 	  tilePosition(other.tilePosition),
+	  spriteLocation(other.spriteLocation.width, other.spriteLocation.height),
 	  velocity(other.velocity),
 	  acceleration(other.acceleration),
 	  health(other.health),
@@ -68,7 +71,10 @@ void Entity::draw(struct SDL_Renderer *rendererIn,
 	SDL_SetRenderDrawColor(rendererIn, 255, 255, 255, 255);
 
 	//Select the right sprite from the sprite sheet
-	SDL_Rect spriteRect = {0, 0, this->tilePosition.get_width(), this->tilePosition.get_height()};
+	SDL_Rect spriteRect = {this->spriteLocation.width * this->tilePosition.get_width(),
+						   this->spriteLocation.height * this->tilePosition.get_height(),
+						   this->tilePosition.get_width(),
+						   this->tilePosition.get_height()};
 
 	//calculate the entities size and location in the world
 	int xPos = this->tilePosition.get_xPosN() - offset.x * this->tilePosition.get_width();

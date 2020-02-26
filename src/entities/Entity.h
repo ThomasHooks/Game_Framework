@@ -54,6 +54,8 @@ protected:
 
 	TilePosition tilePosition;
 
+	Dimension spriteLocation;
+
 	Position velocity;
 	Position acceleration;
 
