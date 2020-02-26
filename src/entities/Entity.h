@@ -21,7 +21,10 @@ class Entity {
 
 public:
 
-	Entity(std::string tagIn, Position posIn, Dimension dimIn);
+	Entity(std::string tagIn,
+		   Position posIn,
+		   Dimension dimIn,
+		   EnumBehavior behaviorIn);
 
 	virtual ~Entity();
 
@@ -33,7 +36,7 @@ public:
 
 	void draw(struct SDL_Renderer *rendererIn,
 			  struct SDL_Texture *texture,
-			  struct Position offset);
+			  const Position offset);
 
 	std::string get_tag(void) const {return tag;}
 
@@ -43,7 +46,7 @@ public:
 	bool isNeutral(void);
 	bool isAggressive(void);
 
-	virtual bool isSolid(void) {return true;}
+	bool isSolid(void) {return solid;}
 
 protected:
 
@@ -56,6 +59,8 @@ protected:
 
 	int health;
 	int maxHealth;
+
+	bool solid;
 
 	EnumBehavior behavior;
 };

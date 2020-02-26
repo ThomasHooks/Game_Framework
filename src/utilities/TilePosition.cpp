@@ -66,14 +66,14 @@ TilePosition::TilePosition(TilePosition &&other)
 
 float TilePosition::get_xPosF(void){
 
-	return static_cast<float>(this->position.x + 0.5);
+	return static_cast<float>(this->position.x);
 }
 
 
 
 float TilePosition::get_yPosF(void){
 
-	return static_cast<float>(this->position.y + 0.5);
+	return static_cast<float>(this->position.y);
 }
 
 
