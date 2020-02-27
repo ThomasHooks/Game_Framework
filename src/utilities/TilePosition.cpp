@@ -1,11 +1,13 @@
 //============================================================================
 // Name       		: TilePosition.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/24/2020
+// Last Modified	: 02/27/2020
 //============================================================================
 
 
 
+
+#include <algorithm>
 
 #include "TilePosition.h"
 
@@ -92,8 +94,19 @@ int TilePosition::get_yPosN(void){
 
 
 
-void TilePosition::set_position(double x, double y) {
-	//
+void TilePosition::move_xPos(double amout){
+	this->position.x += amout;
+}
+
+
+
+void TilePosition::move_yPos(double amout){
+	this->position.y += amout;
+}
+
+
+
+void TilePosition::move_position(double x, double y) {
 
 	this->position.x = x;
 	this->position.y = y;
@@ -103,8 +116,7 @@ void TilePosition::set_position(double x, double y) {
 
 
 
-void TilePosition::set_position(const Position &pos){
-	//
+void TilePosition::move_position(const Position &pos){
 
 	this->position.x = pos.x;
 	this->position.y = pos.y;
@@ -114,7 +126,7 @@ void TilePosition::set_position(const Position &pos){
 
 
 
-void TilePosition::set_dimensions(int width, int height){
+void TilePosition::changeDimensions(int width, int height){
 	//
 
 	if(width >= 0) this->dimension.width = width;
@@ -128,7 +140,7 @@ void TilePosition::set_dimensions(int width, int height){
 
 
 
-void TilePosition::set_dimensions(const Dimension &dim){
+void TilePosition::changeDimensions(const Dimension &dim){
 	//
 
 	this->dimension.width = dim.width;
@@ -139,26 +151,26 @@ void TilePosition::set_dimensions(const Dimension &dim){
 
 
 
-void TilePosition::offsetBy(Side direction, double distance){
+void TilePosition::offsetBy(EnumSide direction, double distance){
 	//
 
 	switch(direction){
-	case Side::NONE:
+	case EnumSide::NONE:
 		break;
 
-	case Side::UP:
+	case EnumSide::UP:
 		this->position.y -= distance;
 		break;
 
-	case Side::RIGHT:
+	case EnumSide::RIGHT:
 		this->position.x += distance;
 		break;
 
-	case Side::DOWN:
+	case EnumSide::DOWN:
 		this->position.y += distance;
 		break;
 
-	case Side::LEFT:
+	case EnumSide::LEFT:
 		this->position.x -= distance;
 		break;
 	}

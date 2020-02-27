@@ -13,7 +13,7 @@
 
 
 
-enum struct Side : int {
+enum struct EnumSide : unsigned char {
 	//This enumeration encapsulates the sides of a tile/entity
 
 	NONE = 0,

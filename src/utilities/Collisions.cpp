@@ -148,7 +148,7 @@ bool CollisionRectRect(const Position2D &rect1_p, const Dimension2D &rect1_d,
 //----------------------------------------------------------------------------
 //					Which Edge of Rectangle Vs Rectangle
 
-Side EdgeRectRect(const Position2D &rect1_p, const Dimension2D &rect1_d,
+EnumSide EdgeRectRect(const Position2D &rect1_p, const Dimension2D &rect1_d,
 		const Position2D &rect2_p, const Dimension2D &rect2_d){
 	/*
 	 * *brief*	This function will return which side the rectangles collied,
@@ -196,23 +196,23 @@ Side EdgeRectRect(const Position2D &rect1_p, const Dimension2D &rect1_d,
 		if(abs(f_x_distance) < abs(f_y_distance)){
 			//Because the x component of rectangle 2 is closer to rectangle 1's center
 			//Check if rectangle 2 is to the right or left of rectangle 1's center
-			if(f_x_distance < center) return Side::LEFT;
+			if(f_x_distance < center) return EnumSide::LEFT;
 
-			else return Side::RIGHT;
+			else return EnumSide::RIGHT;
 		}
 
 		else{
 			//Because the y component of rectangle 2 is closer to rectangle 1's center
 			//Check if rectangle 2 is above or below rectangle 1's center
 			//*Note* values become negative when going above rectangle 1's center
-			if(f_y_distance < center) return Side::UP;
+			if(f_y_distance < center) return EnumSide::UP;
 
-			else return Side::DOWN;
+			else return EnumSide::DOWN;
 		}
 	}
 
 	//Because neither rectangles overlap
-	return Side::NONE;
+	return EnumSide::NONE;
 }
 
 

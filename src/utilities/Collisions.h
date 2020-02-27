@@ -83,7 +83,7 @@ bool CollisionRectRect(const Position2D &rect1_p,
 					   const Dimension2D &rect2_d);
 
 
-Side EdgeRectRect(float x1,
+EnumSide EdgeRectRect(float x1,
 				  float y1,
 				  int w1,
 				  int h1,
@@ -92,7 +92,7 @@ Side EdgeRectRect(float x1,
 				  int w2,
 				  int h2);
 
-Side EdgeRectRect(const Position2D &rect1_p,
+EnumSide EdgeRectRect(const Position2D &rect1_p,
 				  const Dimension2D &rect1_d,
 				  const Position2D &rect2_p,
 				  const Dimension2D &rect2_d);

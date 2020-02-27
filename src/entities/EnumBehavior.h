@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: EnumBehavior.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/25/2020
+// Last Modified	: 02/27/2020
 //============================================================================
 
 
@@ -16,7 +16,8 @@ enum struct EnumBehavior : unsigned char {
 
 	PASSIVE = 0,
 	NEUTRAL,
-	AGGRESSIVE
+	AGGRESSIVE,
+	PLAYER
 };
 
 

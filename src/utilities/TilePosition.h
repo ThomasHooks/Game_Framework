@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: TilePosition.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/24/2020
+// Last Modified	: 02/27/2020
 //============================================================================
 
 
@@ -47,17 +47,18 @@ public:
 	int get_xPosN(void);
 	int get_yPosN(void);
 
-	void set_position(double x, double y);
-	void set_position(const Position &pos);
-
+	void move_xPos(double amout);
+	void move_yPos(double amout);
+	void move_position(double x, double y);
+	void move_position(const Position &pos);
 
 	int get_width(void) const {return this->dimension.width;}
 	int get_height(void) const {return this->dimension.height;}
 
-	void set_dimensions(int width, int height);
-	void set_dimensions(const Dimension &dim);
+	void changeDimensions(int width, int height);
+	void changeDimensions(const Dimension &dim);
 
-	void offsetBy(Side direction, double distance);
+	void offsetBy(EnumSide direction, double distance);
 
 	bool isPoint(void);
 
