@@ -30,3 +30,13 @@
 
 *.out
 *.app
+
+# Log files
+
+log.txt
+
+# Folders
+
+Debug/
+Default/
+Release/
