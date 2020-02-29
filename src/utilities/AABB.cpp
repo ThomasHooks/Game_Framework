@@ -14,7 +14,9 @@
 
 
 
-AABB::AABB() : p1(), p2() {}
+AABB::AABB()
+	: p1(),
+	  p2() {}
 
 
 
@@ -25,8 +27,8 @@ AABB::AABB(double x1, double y1, double x2, double y2)
 
 
 AABB::AABB(const Position &topLeft, const Position &bottomRight)
-	: p1(topLeft.x, topLeft.y),
-	  p2(bottomRight.x, bottomRight.y) {}
+	: p1(topLeft.xPos(), topLeft.yPos()),
+	  p2(bottomRight.xPos(), bottomRight.yPos()) {}
 
 
 
@@ -34,32 +36,71 @@ AABB::~AABB() {}
 
 
 
-double AABB::get_width(void){
-	return std::abs(this->p2.x - this->p1.x);
+double AABB::width(void){
+	return std::abs(this->p2.xPos() - this->p1.xPos());
 }
 
 
 
-int AABB::get_widthN(void){
-	return static_cast<int>(this->get_width());
+int AABB::widthN(void){
+	return static_cast<int>(this->width());
 }
 
 
 
-double AABB::get_height(void){
-	return std::abs(this->p2.y - this->p1.y);
+double AABB::height(void){
+	return std::abs(this->p2.yPos() - this->p1.yPos());
 }
 
 
 
-int AABB::get_heightN(void){
-	return static_cast<int>(this->get_height());
+int AABB::heightN(void){
+	return static_cast<int>(this->height());
 }
 
 
 
-Position AABB::get_center(void){
-	return Position((this->p2.x - this->p1.x)/2, (this->p2.y - this->p1.y)/2);
+Position AABB::getCenter(void){
+	/*
+	 * @return	The relative coordinates of the AABB's center
+	 *
+	 * The returned Position is not the Global coordinates of the AABB's center
+	 */
+
+
+
+
+	return Position((std::max(this->p2, this->p1) - std::min(this->p2, this->p1))/2);
+}
+
+
+
+Position AABB::getTopLeftPoint(const Position& posIn) const {
+	/*
+	 * @param	posIn	The Global position of the Entity/Tile
+	 *
+	 * @return	The top-left position of the AABB in the Global coordinates
+	 */
+
+
+
+
+	return Position(this->p1 + posIn);
+}
+
+
+
+Position AABB::getBottomRightPoint(const Position& posIn) const {
+	/*
+	 * @param	posIn	The Global position of the Entity/Tile
+	 *
+	 * @return	The bottom-right position of the AABB in the Global coordinates
+	 */
+
+
+
+
+	return Position(this->p2 + posIn);
 }
 
 
@@ -76,11 +117,11 @@ void AABB::grow(double amount){
 
 	double delta = std::abs(amount);
 
-	this->p1.x -= delta;
-	this->p2.x += delta;
+	this->p1.move_xPos(-delta);
+	this->p1.move_xPos(delta);
 
-	this->p1.y -= delta;
-	this->p2.y += delta;
+	this->p1.move_yPos(-delta);
+	this->p1.move_yPos(delta);
 
 	return;
 }
@@ -98,14 +139,14 @@ void AABB::shrink(double amount){
 
 
 	double delta = std::abs(amount);
-	Position center = this->get_center();
+	Position center = this->getCenter();
 
 	//This is done so that the corners of the AABB do not flip
-	this->get_width() < delta ? this->p1.x = center.x : this->p1.x += delta;
-	this->get_width() < delta ? this->p2.x = center.x : this->p2.x -= delta;
+	this->width() < delta ? this->p1.move_xPos(center.xPos()) : this->p1.move_xPos(delta);
+	this->width() < delta ? this->p2.move_xPos(center.xPos()) : this->p2.move_xPos(-delta);
 
-	this->get_height() < delta ? this->p1.y = center.y : this->p1.y += delta;
-	this->get_height() < delta ? this->p2.y = center.y : this->p2.y -= delta;
+	this->height() < delta ? this->p1.move_yPos(center.yPos()) : this->p1.move_yPos(delta);
+	this->height() < delta ? this->p2.move_yPos(center.yPos()) : this->p2.move_yPos(-delta);
 
 	return;
 }
@@ -128,19 +169,19 @@ void AABB::modify(EnumSide direction, double amount){
 	switch(direction){
 
 	case EnumSide::UP:
-		this->p1.y -= delta;
+		this->p1.move_yPos(-delta);
 		break;
 
 	case EnumSide::RIGHT:
-		this->p2.x += delta;
+		this->p2.move_xPos(delta);
 		break;
 
 	case EnumSide::DOWN:
-		this->p2.y += delta;
+		this->p2.move_yPos(delta);
 		break;
 
 	case EnumSide::LEFT:
-		this->p1.x -= delta;
+		this->p1.move_xPos(-delta);
 		break;
 	}
 }
@@ -159,10 +200,11 @@ void AABB::offset(double x, double y){
 
 
 
-	this->p1.x += x;
-	this->p1.y += y;
-	this->p2.x += x;
-	this->p2.y += y;
+	this->p1.move_xPos(x);
+	this->p1.move_yPos(y);
+
+	this->p2.move_xPos(x);
+	this->p2.move_yPos(y);
 
 	return;
 }
@@ -185,23 +227,23 @@ void AABB::nudge(EnumSide direction, double amount){
 	switch(direction){
 
 	case EnumSide::UP:
-		this->p1.y -= delta;
-		this->p2.y -= delta;
+		this->p1.move_yPos(-delta);
+		this->p2.move_yPos(-delta);
 		break;
 
 	case EnumSide::RIGHT:
-		this->p1.x += delta;
-		this->p2.x += delta;
+		this->p1.move_xPos(delta);
+		this->p2.move_xPos(delta);
 		break;
 
 	case EnumSide::DOWN:
-		this->p1.y += delta;
-		this->p2.y += delta;
+		this->p1.move_yPos(delta);
+		this->p2.move_yPos(delta);
 		break;
 
 	case EnumSide::LEFT:
-		this->p1.x -= delta;
-		this->p2.x -= delta;
+		this->p1.move_xPos(-delta);
+		this->p2.move_xPos(-delta);
 		break;
 	}
 

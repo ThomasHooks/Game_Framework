@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Entity.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/27/2020
+// Last Modified	: 02/29/2020
 //============================================================================
 
 
@@ -13,7 +13,8 @@
 
 #include <string>
 
-#include "../utilities/TilePosition.h"
+#include "../utilities/Position.h"
+#include "../utilities/Dimension.h"
 #include "EnumBehavior.h"
 #include "../utilities/AABB.h"
 
@@ -23,8 +24,7 @@ class Entity {
 public:
 
 	Entity(std::string tagIn,
-		   Position posIn,
-		   Dimension dimIn);
+		   Dimension dimensionIn);
 
 	virtual ~Entity();
 
@@ -38,26 +38,25 @@ public:
 			  struct SDL_Texture *texture,
 			  const Position offset);
 
-	std::string get_tag(void) const;
+	const std::string& getTag(void) const;
 
-	TilePosition& get_position(void);
 	void teleport(double x, double y);
 	void teleport(const Position &pos);
 	void updateVelocity(const Position &acceleration, float deltaTime);
 	void updateVelocity(double xAcc, double yAcc, float deltaTime);
 	void updatePosition(float deltaTime);
 
-	AABB& get_BoundingBox(void);
+	AABB& getBoundingBox(void);
 
 	bool isAlive(void);
 
 	void increaseHealth(int healthIn);
 	void decreaseHealth(int healthIn);
-	int get_health(void);
+	int getHealth(void);
 
 	void increaseMaxHealth(int healthIn);
 	void decreaseMaxHealth(int healthIn);
-	int get_maxHealth(void);
+	int getMaxHealth(void);
 
 	bool isFriendly(void);
 	bool isNeutral(void);
@@ -69,16 +68,20 @@ public:
 
 	bool isFalling(void);
 	bool isFlying(void);
-	void setOnGround(bool state);
+	void setFlying(bool stateIn);
+	void setOnGround(bool stateIn);
 
 protected:
 
+	Position& getPosition(void);
+
 	std::string tag;
 
-	TilePosition tilePosition;
+	Position tilePosition;
 	Position lastPosition;
 	Position velocity;
 
+	Dimension spriteSize;
 	Dimension spriteLocation;
 
 	int health;

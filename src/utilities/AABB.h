@@ -25,15 +25,15 @@ public:
 
 	~AABB();
 
-	double get_width(void);
-	int get_widthN(void);
-	double get_height(void);
-	int get_heightN(void);
+	double width(void);
+	int widthN(void);
+	double height(void);
+	int heightN(void);
 
-	Position get_center(void);
+	Position getCenter(void);
 
-	Position get_topLeftPoint(void) const {return p1;}
-	Position get_bottomRightPoint(void) const {return p2;}
+	Position getTopLeftPoint(const Position& posIn) const;
+	Position getBottomRightPoint(const Position& posIn) const;
 
 	void grow(double amount);
 	void shrink(double amount);

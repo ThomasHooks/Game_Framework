@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Entity.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/27/2020
+// Last Modified	: 02/29/2020
 //============================================================================
 
 
@@ -17,18 +17,19 @@
 
 
 
-Entity::Entity(std::string tagIn, Position posIn, Dimension dimIn)
+Entity::Entity(std::string tagIn, Dimension dimensionIn)
 	: tag(tagIn),
-	  tilePosition(posIn, dimIn),
+	  tilePosition(),
 	  lastPosition(),
 	  velocity(),
+	  spriteSize(dimensionIn),
 	  spriteLocation(),
 	  health(1),
 	  maxHealth(1),
 	  solid(true),
 	  flying(false),
 	  onGround(true),
-	  hitBox(posIn.x, posIn.y, posIn.x + dimIn.width, posIn.y + dimIn.height),
+	  hitBox(0.0, 0.0, 0.0, 0.0),
 	  behavior(EnumBehavior::PASSIVE) {}
 
 
@@ -40,15 +41,16 @@ Entity::~Entity() {}
 Entity::Entity(const Entity &other)
 	: tag(other.tag),
 	  tilePosition(other.tilePosition),
-	  lastPosition(other.lastPosition.x, other.lastPosition.y),
+	  lastPosition(other.lastPosition),
 	  velocity(other.velocity),
+	  spriteSize(other.spriteSize),
 	  spriteLocation(other.spriteLocation.width, other.spriteLocation.height),
 	  health(other.health),
 	  maxHealth(other.maxHealth),
 	  solid(other.solid),
 	  flying(other.flying),
 	  onGround(other.onGround),
-	  hitBox(other.hitBox.get_topLeftPoint(), other.hitBox.get_bottomRightPoint()),
+	  hitBox(other.hitBox),
 	  behavior(other.behavior) {}
 
 
@@ -56,15 +58,16 @@ Entity::Entity(const Entity &other)
 Entity::Entity(Entity &&other)
 	: tag(other.tag),
 	  tilePosition(other.tilePosition),
-	  lastPosition(other.lastPosition.x, other.lastPosition.y),
+	  lastPosition(other.lastPosition),
 	  velocity(other.velocity),
+	  spriteSize(other.spriteSize),
 	  spriteLocation(other.spriteLocation.width, other.spriteLocation.height),
 	  health(other.health),
 	  maxHealth(other.maxHealth),
 	  solid(other.solid),
 	  flying(other.flying),
 	  onGround(other.onGround),
-	  hitBox(other.hitBox.get_topLeftPoint(), other.hitBox.get_bottomRightPoint()),
+	  hitBox(other.hitBox),
 	  behavior(other.behavior) {
 
 	other.tag = nullptr;
@@ -82,15 +85,15 @@ void Entity::draw(struct SDL_Renderer *rendererIn,
 	SDL_SetRenderDrawColor(rendererIn, 255, 255, 255, 255);
 
 	//Select the right sprite from the sprite sheet
-	SDL_Rect spriteRect = {this->spriteLocation.width * this->tilePosition.get_width(),
-						   this->spriteLocation.height * this->tilePosition.get_height(),
-						   this->tilePosition.get_width(),
-						   this->tilePosition.get_height()};
+	SDL_Rect spriteRect = {this->spriteLocation.width * this->spriteSize.width,
+						   this->spriteLocation.height * this->spriteSize.height,
+						   this->spriteSize.width,
+						   this->spriteSize.height};
 
 	//calculate the entities size and location in the world
-	int xPos = this->tilePosition.get_xPosN() - offset.x * this->tilePosition.get_width();
-	int yPos = this->tilePosition.get_yPosN() - offset.y * this->tilePosition.get_height();
-	SDL_Rect entityRect = {xPos, yPos, this->tilePosition.get_width(), this->tilePosition.get_height()};
+	int xPos = this->tilePosition.xPosN() - offset.xPosN() * this->spriteSize.width;
+	int yPos = this->tilePosition.yPosN() - offset.yPosN() * this->spriteSize.height;
+	SDL_Rect entityRect = {xPos, yPos, this->spriteSize.width, this->spriteSize.height};
 
 	//Draw the Character to the screen
 	SDL_RenderCopyEx(rendererIn, texture, &spriteRect, &entityRect, 0, NULL, SDL_FLIP_NONE);
@@ -100,26 +103,26 @@ void Entity::draw(struct SDL_Renderer *rendererIn,
 
 
 
-std::string Entity::get_tag(void) const {
+const std::string& Entity::getTag(void) const {
 	return this->tag;
 }
 
 
 
-TilePosition& Entity::get_position(){
+Position& Entity::getPosition(){
 	return this->tilePosition;
 }
 
 
 
 void Entity::teleport(double x, double y){
-	this->get_position().move_position(x, y);
+	this->getPosition().move(x, y);
 }
 
 
 
 void Entity::teleport(const Position &pos){
-	this->get_position().move_position(pos.x, pos.y);
+	this->getPosition().move(pos.xPos(), pos.yPos());
 }
 
 
@@ -142,17 +145,17 @@ void Entity::updateVelocity(double xAcc, double yAcc, float deltaTime){
 
 void Entity::updatePosition(float deltaTime){
 
-	Position pos(this->get_position().get_xPos(), this->get_position().get_yPos());
+	Position pos(this->getPosition().xPos(), this->getPosition().yPos());
 	this->lastPosition = pos;
 
-	this->get_position().move_position(pos.x + this->velocity.x * deltaTime, pos.y + this->velocity.y * deltaTime);
+	this->getPosition().move(pos.xPos() + this->velocity.xPos() * deltaTime, pos.yPos() + this->velocity.yPos() * deltaTime);
 
 	return;
 }
 
 
 
-AABB& Entity::get_BoundingBox(void){
+AABB& Entity::getBoundingBox(void) {
 	return this->hitBox;
 }
 
@@ -178,7 +181,7 @@ void Entity::decreaseHealth(int healthIn){
 
 
 
-int Entity::get_health(void){
+int Entity::getHealth(void){
 	return this->health;
 }
 
@@ -200,7 +203,7 @@ void Entity::decreaseMaxHealth(int healthIn){
 
 
 
-int Entity::get_maxHealth(void){
+int Entity::getMaxHealth(void){
 	return this->maxHealth;
 }
 
@@ -248,8 +251,14 @@ bool Entity::isFlying(void){
 
 
 
-void Entity::setOnGround(bool state){
-	this->onGround = state;
+void Entity::setFlying(bool stateIn){
+	this->flying = stateIn;
+}
+
+
+
+void Entity::setOnGround(bool stateIn){
+	this->onGround = stateIn;
 }
 
 
