@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: EntityManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/29/2020
+// Last Modified	: 03/03/2020
 //============================================================================
 
 
@@ -15,19 +15,13 @@
 
 
 
-EntityManager::EntityManager()
-	: hasBeenInit(false),
-	  logger(nullptr) {}
-
-
-
 EntityManager::EntityManager(class GameLogger *log_ptr)
-	: hasBeenInit(true),
-	  logger(log_ptr) {
+	: logger(log_ptr),
+	  highestEntityID(0) {
 
-	this->logger->Message(Level::Info,
+	this->logger->message(Level::INFO,
 					   "Entity Manager has been initialized",
-					   Output::File_txt);
+					   Output::TXT_FILE);
 }
 
 
@@ -36,30 +30,9 @@ EntityManager::~EntityManager() {}
 
 
 
-void EntityManager::init(class GameLogger *log_ptr){
-	/*
-	 *
-	 */
-
-
-
-
-	if(!this->hasBeenInit){
-		this->logger = log_ptr;
-		this->hasBeenInit = true;
-		this->logger->Message(Level::Info,
-						   "Entity Manager has been initialized",
-						   Output::File_txt);
-	}
-
-	return;
-}
-
-
-
 void EntityManager::registerEntity(std::string tag, BuilderBase<Entity>* builder){
 	/*
-	 * @brief	Registers the given Entity's builder
+	 * Registers the given Entity's builder with the Entity Manager
 	 *
 	 * @param	tag			The entity's identification tag
 	 *
@@ -69,21 +42,22 @@ void EntityManager::registerEntity(std::string tag, BuilderBase<Entity>* builder
 
 
 
-	if(this->hasBeenInit){
+	if(this->entityRegistry.find(tag) == this->entityRegistry.end()){
+		//The entity tag was not found in the registry so add the entity's builder
+		this->logger->message(Level::INFO,
+				"Registering Entity '" + tag + "'",
+				Output::TXT_FILE);
 
-		if(this->entityRegistry.find(tag) == this->entityRegistry.end()){
-			//The entity tag was not found in the registry so add the entity's builder
-			this->entityRegistry.insert({tag, std::unique_ptr<BuilderBase<Entity>>(builder)});	//std::move()
-		}
+		this->entityRegistry.insert({tag, std::unique_ptr<BuilderBase<Entity>>(builder)});
 
-		else this->logger->Message(Level::Error,
-								"The Entity tag: '" + tag + "' is not unique! The Entity Builder was not registered",
-								Output::File_txt);
+		this->logger->message(Level::INFO,
+				"Entity '" + tag + "' has been registered",
+				Output::TXT_FILE);
 	}
 
-	else this->logger->Message(Level::Fatal,
-						    "Entity Manager has not been initialized!",
-						    Output::File_txt);
+	else this->logger->message(Level::ERROR,
+			"The Entity tag: '" + tag + "' is not unique! The Entity's builder was not registered",
+			Output::TXT_FILE);
 
 	//This is to prevent the caller from trying to access the passed in pointer
 	builder = nullptr;
@@ -93,14 +67,80 @@ void EntityManager::registerEntity(std::string tag, BuilderBase<Entity>* builder
 
 
 
-int EntityManager::spawn(std::string tag, Position pos){
+int EntityManager::spawn(std::string tag, const Position &pos){
+	/*
+	 * @param	tag		The entity's identification tag
+	 *
+	 * @param	pos		The location the entity will be spawned
+	 *
+	 * @return	The ID of the new entity or -1 if the entity could not be spawned
+	 */
+
+
+
+	const static int FAILED = -1;
+
+	if(this->entityRegistry.find(tag) != this->entityRegistry.end()){
+		//the entity tag was found in the registry so spawn the entity
+		this->entityMap.insert({++this->highestEntityID, std::unique_ptr<Entity>(this->entityRegistry[tag]->build())});
+		this->entityMap[this->highestEntityID]->teleport(pos);
+		return this->highestEntityID;
+	}
+
+	else {
+		this->logger->message(Level::WARNING,
+							  "The Entity: '" + tag + "' could not be spawned. tag is missing in registry",
+							  Output::TXT_FILE);
+		return FAILED;
+	}
+}
+
+
+
+bool EntityManager::despawn(int id){
 	/*
 	 *
 	 */
 
-	const static int FAILED = -1;
 
-	return FAILED;
+
+
+	if(this->entityMap.find(id) != this->entityMap.end()){
+		this->entityMap.erase(id);
+		return true;
+	}
+	else return false;
+}
+
+
+
+void EntityManager::drawAll(void){
+	//TODO create method EntityManager::drawAll
+	return;
+}
+
+
+
+class Entity* EntityManager::getEntity(int id){
+	/*
+	 * @nullable
+	 *
+	 * @param	id		The identification of the entity
+	 *
+	 * @return	The a pointer to the active Entity given by it's ID, otherwise if the ID can't be found a null pointer
+	 * 		 	Do Not delete the returned pointer
+	 */
+
+
+
+
+	return this->entityMap.find(id) != this->entityMap.end() ? this->entityMap[id].get() : nullptr;
+}
+
+
+
+int EntityManager::numberOfEntities(void){
+	return this->entityMap.size();
 }
 
 

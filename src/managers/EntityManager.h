@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: EntityManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/29/2020
+// Last Modified	: 03/03/2020
 //============================================================================
 
 
@@ -27,7 +27,6 @@ class EntityManager {
 
 public:
 
-	EntityManager();
 	EntityManager(class GameLogger *log_ptr);
 
 	~EntityManager();
@@ -36,22 +35,22 @@ public:
 
 	EntityManager(EntityManager &&other) = delete;
 
-	void init(class GameLogger *log_ptr);
-
 	void registerEntity(std::string tag, BuilderBase<class Entity>* builder);
 
-	//class Entity& get_entity(int index);
+	int spawn(std::string tag, const class Position &pos);
+	bool despawn(int id);
 
-	int spawn(std::string tag, class Position pos);
-	bool despawn(int index);
+	void drawAll(void);
+
+	class Entity* getEntity(int id);
+	int numberOfEntities(void);
 
 private:
 
-	bool hasBeenInit;
-
 	class GameLogger *logger;
 
-	std::vector<std::unique_ptr<class Entity>> entityArray;
+	std::map<int, std::unique_ptr<class Entity>> entityMap;
+	int highestEntityID;
 
 	std::map<std::string, std::unique_ptr<BuilderBase<class Entity>>> entityRegistry;
 };

@@ -24,7 +24,7 @@ Game::Game()
 		  Map(),
 		  Assets(),
 		  Timer(),
-		  Log(Level::Trace),
+		  Log(Level::TRACE),
 		  b_gameOver(false),
 		  b_hasBeenInit(false),
 		  f_cameraX(0),
@@ -42,7 +42,7 @@ Game::Game()
 
 
 	//Start SDL2
-	Log.Message(Level::Info, "Initializing SDL", Output::File_txt);
+	Log.message(Level::INFO, "Initializing SDL", Output::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	//Starting game state
@@ -62,7 +62,7 @@ Game::Game(const char * title, int Window_Height, int Window_Width, Uint32 flags
 		  Map(&Log, &Assets),
 		  Assets(),
 		  Timer(),
-		  Log(Level::Trace),
+		  Log(Level::TRACE),
 		  b_gameOver(false),
 		  b_hasBeenInit(true),
 		  f_cameraX(0),
@@ -94,11 +94,11 @@ Game::Game(const char * title, int Window_Height, int Window_Width, Uint32 flags
 	WindowWidth = Window_Width;
 
 	//Start SDL2
-	Log.Message(Level::Info, "Initializing SDL", Output::File_txt);
+	Log.message(Level::INFO, "Initializing SDL", Output::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	//Create a Window in the middle of the screen that is Window_Width by Window_Height in (px)
-	Log.Message(Level::Info, "Initializing window", Output::File_txt);
+	Log.message(Level::INFO, "Initializing window", Output::TXT_FILE);
 	window = SDL_CreateWindow(title,
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
@@ -141,17 +141,17 @@ Game::~Game(){
 
 
 
-	Log.Message(Level::Info, "Closing window", Output::File_txt);
+	Log.message(Level::INFO, "Closing window", Output::TXT_FILE);
 	SDL_DestroyWindow(window);
 	window = nullptr;
 
 
-	Log.Message(Level::Info, "Freeing renderer", Output::File_txt);
+	Log.message(Level::INFO, "Freeing renderer", Output::TXT_FILE);
 	SDL_DestroyRenderer(renderer);
 	renderer = nullptr;
 
 
-	Log.Message(Level::Info, "Freeing all assets", Output::File_txt);
+	Log.message(Level::INFO, "Freeing all assets", Output::TXT_FILE);
 	Assets.remove_allTextures();
 
 	//TODO free all sound effects Mix_Chunk
@@ -161,7 +161,7 @@ Game::~Game(){
 	//TODO free all true type font
 
 
-	Log.Message(Level::Info, "Terminating SDL", Output::File_txt);
+	Log.message(Level::INFO, "Terminating SDL", Output::TXT_FILE);
 	SDL_Quit();
 
 	return;
@@ -182,7 +182,7 @@ bool Game::init(const char * title, int Window_Height, int Window_Width, Uint32 
 	if (!b_hasBeenInit){
 
 		b_hasBeenInit = true;
-		Log.Message(Level::Info, "Initializing window", Output::File_txt);
+		Log.message(Level::INFO, "Initializing window", Output::TXT_FILE);
 
 		WindowHeight = Window_Height;
 		WindowWidth = Window_Width;
@@ -242,7 +242,7 @@ void Game::run(void){
 	}
 
 	else {
-		Log.Message(Level::Fatal, "Object Game has not been initialized", Output::File_txt);
+		Log.message(Level::FATAL, "Object Game has not been initialized", Output::TXT_FILE);
 		set_gameOver(true);
 	}
 

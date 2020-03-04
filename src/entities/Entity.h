@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Entity.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/29/2020
+// Last Modified	: 03/02/2020
 //============================================================================
 
 
@@ -23,8 +23,7 @@ class Entity {
 
 public:
 
-	Entity(std::string tagIn,
-		   Dimension dimensionIn);
+	Entity();
 
 	virtual ~Entity();
 
@@ -38,44 +37,50 @@ public:
 			  struct SDL_Texture *texture,
 			  const Position offset);
 
+	const Dimension& getSpriteSize(void) const;
+	const Dimension& getAnimation(void) const;
 	const std::string& getTag(void) const;
 
 	void teleport(double x, double y);
 	void teleport(const Position &pos);
-	void updateVelocity(const Position &acceleration, float deltaTime);
-	void updateVelocity(double xAcc, double yAcc, float deltaTime);
+	void updateVelocity(const Position &acceleration, float friction, float deltaTime);
+	void updateVelocity(double xAcc, double yAcc, float friction, float deltaTime);
 	void updatePosition(float deltaTime);
+
+	Position& getPosition(void);
+	const Position& getPreviousPosition(void) const;
+	const Position& getVelocity(void) const;
 
 	AABB& getBoundingBox(void);
 
-	bool isAlive(void);
+	bool isLiving(void) const;
+	bool isAlive(void) const;
 
 	void increaseHealth(int healthIn);
 	void decreaseHealth(int healthIn);
-	int getHealth(void);
+	int getHealth(void) const;
 
 	void increaseMaxHealth(int healthIn);
 	void decreaseMaxHealth(int healthIn);
-	int getMaxHealth(void);
+	int getMaxHealth(void) const;
 
-	bool isFriendly(void);
-	bool isNeutral(void);
-	bool isAggressive(void);
+	bool isFriendly(void)const;
+	bool isNeutral(void) const;
+	bool isAggressive(void) const;
+	bool isPlayer(void) const;
 
-	bool isSolid(void);
+	bool isSolid(void) const;
 
-	bool isMoving(void);
+	bool isMoving(void) const;
 
-	bool isFalling(void);
-	bool isFlying(void);
+	bool isFalling(void) const;
+	bool isFlying(void) const;
 	void setFlying(bool stateIn);
 	void setOnGround(bool stateIn);
 
 protected:
 
-	Position& getPosition(void);
-
-	std::string tag;
+	void setTag(std::string &tagIn);
 
 	Position tilePosition;
 	Position lastPosition;
@@ -83,6 +88,8 @@ protected:
 
 	Dimension spriteSize;
 	Dimension spriteLocation;
+
+	bool livingEntity;
 
 	int health;
 	int maxHealth;
@@ -95,6 +102,10 @@ protected:
 	AABB hitBox;
 
 	EnumBehavior behavior;
+
+private:
+
+	std::string tag;
 };
 
 

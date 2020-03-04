@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameLogger.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/24/2020
+// Last Modified	: 03/01/2020
 //============================================================================
 
 
@@ -14,6 +14,7 @@
 
 
 #include <iostream>
+#include <memory>
 
 
 
@@ -21,17 +22,17 @@
 enum struct Level : unsigned char{
 	//This enumeration encapsulates the logging level
 
-	None = 0,	//Nothing will be logged
+	NONE = 0,	//Nothing will be logged
 
-	Fatal,		//Issues that cause the application to abort
+	FATAL,		//Issues that cause the application to abort
 
-	Error,		//Issues that interfere with application operation
+	ERROR,		//Issues that interfere with application operation
 
-	Warning,	//Unusual application operation
+	WARNING,	//Unusual application operation
 
-	Info,		//Routine application operation
+	INFO,		//Routine application operation
 
-	Trace		//Information to perform diagnostics
+	TRACE		//Information to perform diagnostics
 };
 
 
@@ -39,62 +40,42 @@ enum struct Level : unsigned char{
 enum struct Output : unsigned char{
 	//This enumeration encapsulates the log output type
 
-	Console = 0,
-	File_txt
+	CONSOLE = 0,
+	TXT_FILE
 };
 
-//----------------------------------------------------------------------------
+//TODO make GameLogger a singleton
 
 class GameLogger {
 
 public:
 
-	GameLogger();
-
-	GameLogger(Level level);
-
-	GameLogger(Level level, std::string fileLocation);
+	GameLogger(Level levelIn);
+	GameLogger(Level levelIn, std::string fileLocation);
 
 	~GameLogger();
 
 	GameLogger(const GameLogger &other) = delete;
-
 	GameLogger(GameLogger &&other) = delete;
 
+	void message(Level levelIn, const std::string &message, Output out);
 
-	void Message(Level level, const std::string &message, Output out);
+	Level getLogLevel(void) const;
+	void setLogLevel(Level levelIn);
 
-
-	Level get_logLevel(void) const {return e_level;}
-
-	void set_logLevel(Level level) {e_level = level;}
-
-
-	std::string get_filePath(void) const {return filePath;}
-
-	void set_filePath(std::string path) {filePath = path;}
-
+	void setFilePath(const std::string &filePathIn);
 
 private:
 
-	Level e_level;
+	Level _level;
 
 	std::string filePath;
 
-	void WriteToFile(const std::string &message);
+	void writeToFile(const std::string &message);
 };
 
 
-
-
 #endif /* SRC_GAME_LOGGER_H_ */
-
-
-//============================================================================
-
-
-
-
 
 
 

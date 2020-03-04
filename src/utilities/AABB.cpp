@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: AABB.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/27/2020
+// Last Modified	: 03/02/2020
 //============================================================================
 
 
@@ -36,31 +36,31 @@ AABB::~AABB() {}
 
 
 
-double AABB::width(void){
+double AABB::width(void) const {
 	return std::abs(this->p2.xPos() - this->p1.xPos());
 }
 
 
 
-int AABB::widthN(void){
+int AABB::widthN(void) const {
 	return static_cast<int>(this->width());
 }
 
 
 
-double AABB::height(void){
+double AABB::height(void) const {
 	return std::abs(this->p2.yPos() - this->p1.yPos());
 }
 
 
 
-int AABB::heightN(void){
+int AABB::heightN(void) const {
 	return static_cast<int>(this->height());
 }
 
 
 
-Position AABB::getCenter(void){
+Position AABB::getCenter(void) const {
 	/*
 	 * @return	The relative coordinates of the AABB's center
 	 *
@@ -252,7 +252,7 @@ void AABB::nudge(EnumSide direction, double amount){
 
 
 
-bool AABB::isPoint(void){
+bool AABB::isPoint(void) const {
 	return this->p1 == this->p2 ? true : false;
 }
 

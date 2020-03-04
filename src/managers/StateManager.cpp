@@ -54,9 +54,9 @@ void StateManager::Process(void){
 
 	if(Empty()){
 
-		game->Log.Message(Level::Fatal,
+		game->Log.message(Level::FATAL,
 				"State stack is empty, application is in an unknown state!",
-				Output::File_txt);
+				Output::TXT_FILE);
 		/*
 		 * End the game because of the fatal error
 		 *
@@ -101,9 +101,9 @@ void StateManager::Check(void){
 
 	if(Empty()){
 
-		game->Log.Message(Level::Fatal,
+		game->Log.message(Level::FATAL,
 				"State stack is empty, application is in an unknown state!",
-				Output::File_txt);
+				Output::TXT_FILE);
 		/*
 		 * End the game because of the fatal error
 		 *

@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Entity.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/29/2020
+// Last Modified	: 03/02/2020
 //============================================================================
 
 
@@ -17,15 +17,16 @@
 
 
 
-Entity::Entity(std::string tagIn, Dimension dimensionIn)
-	: tag(tagIn),
+Entity::Entity()
+	: tag("null"),
 	  tilePosition(),
 	  lastPosition(),
 	  velocity(),
-	  spriteSize(dimensionIn),
+	  spriteSize(16, 16),
 	  spriteLocation(),
-	  health(1),
-	  maxHealth(1),
+	  livingEntity(false),
+	  health(0),
+	  maxHealth(0),
 	  solid(true),
 	  flying(false),
 	  onGround(true),
@@ -45,6 +46,7 @@ Entity::Entity(const Entity &other)
 	  velocity(other.velocity),
 	  spriteSize(other.spriteSize),
 	  spriteLocation(other.spriteLocation.width, other.spriteLocation.height),
+	  livingEntity(other.livingEntity),
 	  health(other.health),
 	  maxHealth(other.maxHealth),
 	  solid(other.solid),
@@ -62,6 +64,7 @@ Entity::Entity(Entity &&other)
 	  velocity(other.velocity),
 	  spriteSize(other.spriteSize),
 	  spriteLocation(other.spriteLocation.width, other.spriteLocation.height),
+	  livingEntity(other.livingEntity),
 	  health(other.health),
 	  maxHealth(other.maxHealth),
 	  solid(other.solid),
@@ -103,41 +106,87 @@ void Entity::draw(struct SDL_Renderer *rendererIn,
 
 
 
+const Dimension& Entity::getSpriteSize(void) const {
+	return this->spriteSize;
+}
+
+
+
+const Dimension& Entity::getAnimation(void) const {
+	return this->spriteLocation;
+}
+
+
+
 const std::string& Entity::getTag(void) const {
 	return this->tag;
 }
 
 
 
-Position& Entity::getPosition(){
-	return this->tilePosition;
-}
-
-
-
 void Entity::teleport(double x, double y){
-	this->getPosition().move(x, y);
+	/*
+	 * @param	x		the X coordinate of the destination
+	 *
+	 * @param	y		the Y coordinate of the destination
+	 *
+	 * Teleports the entity from its current location to the given one
+	 */
+
+
+
+
+	double xPos = this->getPosition().xPos();
+	double yPos = this->getPosition().yPos();
+	this->getPosition().move(x - xPos, y - yPos);
+	return;
 }
 
 
 
 void Entity::teleport(const Position &pos){
-	this->getPosition().move(pos.xPos(), pos.yPos());
+	/*
+	 * @param	pos		the coordinates of the destination
+	 *
+	 * Teleports the entity from its current location to the given one
+	 */
+
+
+
+
+	this->teleport(pos.xPos(), pos.yPos());
+	return;
 }
 
 
 
-void Entity::updateVelocity(const Position &acceleration, float deltaTime){
+void Entity::updateVelocity(const Position &acceleration, float friction, float deltaTime){
+	/*
+	 * @param	acceleration	The change in velocity of the entity
+	 *
+	 * @param	friction		The amount of dynamic friction of the entity, range is 0.0 to 1.0
+	 *
+	 * @param	deltaTime		The amount of time since the last tick
+	 */
+
+
+
+
 	this->velocity = this->velocity + acceleration * deltaTime;
+
+	//Add dynamic friction to the entity
+	if(friction > 1.0f) friction = 1.0f;
+	else if(friction < 0.0f) friction = 0.0f;
+	this->velocity = this->velocity - this->velocity * deltaTime * friction;
+
+	return;
 }
 
 
 
-void Entity::updateVelocity(double xAcc, double yAcc, float deltaTime){
+void Entity::updateVelocity(double xAcc, double yAcc, float friction, float deltaTime){
 
-	Position acceleration(xAcc, yAcc);
-	this->velocity = this->velocity + acceleration * deltaTime;
-
+	this->updateVelocity(Position(xAcc, yAcc), friction, deltaTime);
 	return;
 }
 
@@ -155,13 +204,37 @@ void Entity::updatePosition(float deltaTime){
 
 
 
+Position& Entity::getPosition() {
+	return this->tilePosition;
+}
+
+
+
+const Position& Entity::getPreviousPosition(void) const {
+	return this->lastPosition;
+}
+
+
+
+const Position& Entity::getVelocity(void) const {
+	return this->velocity;
+}
+
+
+
 AABB& Entity::getBoundingBox(void) {
 	return this->hitBox;
 }
 
 
 
-bool Entity::isAlive(void){
+bool Entity::isLiving(void) const {
+	return this->livingEntity;
+}
+
+
+
+bool Entity::isAlive(void) const {
 	return this->health > 0 ? true : false;
 }
 
@@ -170,6 +243,7 @@ bool Entity::isAlive(void){
 void Entity::increaseHealth(int healthIn){
 	int delta = this->health += std::abs(healthIn);
 	delta > this->maxHealth ? this->health = this->maxHealth : this->health = delta;
+	return;
 }
 
 
@@ -177,11 +251,12 @@ void Entity::increaseHealth(int healthIn){
 void Entity::decreaseHealth(int healthIn){
 	int delta = this->health -= std::abs(healthIn);
 	delta < 0 ? this->health = 0 : this->health = delta;
+	return;
 }
 
 
 
-int Entity::getHealth(void){
+int Entity::getHealth(void) const {
 	return this->health;
 }
 
@@ -190,6 +265,7 @@ int Entity::getHealth(void){
 void Entity::increaseMaxHealth(int healthIn){
 	int delta = std::abs(healthIn);
 	this->maxHealth += delta;
+	return;
 }
 
 
@@ -199,53 +275,60 @@ void Entity::decreaseMaxHealth(int healthIn){
 	delta < 0 ? this->maxHealth = 0 : this->maxHealth = delta;
 	//Update health so that it is not larger than the maximum health
 	if(this->health > this->maxHealth) this->health = this->maxHealth;
+	return;
 }
 
 
 
-int Entity::getMaxHealth(void){
+int Entity::getMaxHealth(void) const {
 	return this->maxHealth;
 }
 
 
 
-bool Entity::isFriendly(void){
+bool Entity::isFriendly(void) const {
 	return this->behavior == EnumBehavior::PASSIVE ? true : false;
 }
 
 
 
-bool Entity::isNeutral(void){
+bool Entity::isNeutral(void) const {
 	return this->behavior == EnumBehavior::NEUTRAL ? true : false;
 }
 
 
 
-bool Entity::isAggressive(void){
+bool Entity::isAggressive(void) const {
 	return this->behavior == EnumBehavior::AGGRESSIVE ? true : false;
 }
 
 
 
-bool Entity::isSolid(void){
+bool Entity::isPlayer(void) const {
+	return this->behavior == EnumBehavior::PLAYER ? true : false;
+}
+
+
+
+bool Entity::isSolid(void) const {
 	return solid;
 }
 
 
 
-bool Entity::isMoving(void){
+bool Entity::isMoving(void) const {
 	return this->velocity > 0;
 }
 
 
 
-bool Entity::isFalling(void){
+bool Entity::isFalling(void) const {
 	return !(this->onGround || this->flying);
 }
 
 
 
-bool Entity::isFlying(void){
+bool Entity::isFlying(void) const {
 	return this->flying;
 }
 
@@ -253,12 +336,24 @@ bool Entity::isFlying(void){
 
 void Entity::setFlying(bool stateIn){
 	this->flying = stateIn;
+	return;
 }
 
 
 
 void Entity::setOnGround(bool stateIn){
 	this->onGround = stateIn;
+	return;
+}
+
+
+
+void Entity::setTag(std::string &tagIn){
+	if(this->tag == "null"){
+		this->tag = tagIn;
+	}
+
+	return;
 }
 
 

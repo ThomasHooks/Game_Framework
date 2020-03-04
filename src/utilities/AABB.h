@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: AABB.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/27/2020
+// Last Modified	: 03/02/2020
 //============================================================================
 
 
@@ -25,12 +25,12 @@ public:
 
 	~AABB();
 
-	double width(void);
-	int widthN(void);
-	double height(void);
-	int heightN(void);
+	double width(void) const;
+	int widthN(void) const;
+	double height(void) const;
+	int heightN(void) const;
 
-	Position getCenter(void);
+	Position getCenter(void) const;
 
 	Position getTopLeftPoint(const Position& posIn) const;
 	Position getBottomRightPoint(const Position& posIn) const;
@@ -42,7 +42,7 @@ public:
 	void offset(double x, double y);
 	void nudge(EnumSide direction, double amount);
 
-	bool isPoint(void);
+	bool isPoint(void) const;
 
 private:
 

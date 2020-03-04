@@ -14,7 +14,7 @@
 #include <memory>
 #include <string>
 
-#include "../GameMap.h"
+#include "../world/GameMap.h"
 #include "../Game.h"
 
 
@@ -45,9 +45,9 @@ MapManager::MapManager(class GameLogger *log_ptr, class AssetManager *assets_ptr
 	  log(log_ptr),
 	  assets(assets_ptr){
 
-	log->Message(Level::Info,
+	log->message(Level::INFO,
 				 "Map Manager has been initialized",
-				 Output::File_txt);
+				 Output::TXT_FILE);
 
 	return;
 }
@@ -85,9 +85,9 @@ void MapManager::init(class GameLogger *log_ptr, class AssetManager *assets_ptr)
 
 		b_hasBeenInit = true;
 
-		log->Message(Level::Info,
+		log->message(Level::INFO,
 					 "Map Manager has been initialized",
-					 Output::File_txt);
+					 Output::TXT_FILE);
 	}
 
 	return;
@@ -132,9 +132,9 @@ void MapManager::pop_map(void){
 
 	if(v_stack.empty()){
 
-		log->Message(Level::Warning,
+		log->message(Level::WARNING,
 					 "Tried to free element, but map stack is empty!",
-					 Output::File_txt);
+					 Output::TXT_FILE);
 	}
 
 	else v_stack.pop_back();
