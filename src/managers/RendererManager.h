@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: RendererManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/04/2020
+// Last Modified	: 03/06/2020
 //============================================================================
 
 
@@ -14,16 +14,16 @@
 
 
 #include <string>
+#include <map>
+#include <memory>
 
 
 
-
+//TODO add SDL2 TTF support
 class RendererManager {
 
 public:
-	RendererManager(class GameLogger *logger_ptr,
-			class AssetManager *assest_ptr,
-			struct SDL_Renderer *renderer);
+	RendererManager(class GameLogger *logger_ptr);
 
 	~RendererManager();
 
@@ -31,24 +31,57 @@ public:
 
 	RendererManager(RendererManager &&other) = delete;
 
+	void init(struct SDL_Window *windowIn);
+
+	bool registerTexture(const std::string &tag,
+			const std::string &fileLocation);
+
+	bool deregisterTexture(const std::string &tag);
+	bool deregisterAllTextures();
+
+	bool setDrawColor(uint32_t red,
+			uint32_t green,
+			uint32_t blue,
+			uint32_t alpha);
+
+	bool clear();
+
+	bool present();
+
+	void drawPoint(const class Position &pos);
+
+	void drawLine(const class Position &startPos,
+			const class Position &endPos);
+
+	void drawRect(const class Position &pos,
+			const struct Dimension &dim,
+			bool fill);
+
 	void drawSprite(const std::string &tag,
 			const class Position &pos,
 			const class Position &cameraOffset,
-			const class Dimension &spriteSize,
-			const class Dimension &spriteLocation,
-			const bool flipSprite) const;
+			const struct Dimension &spriteSize,
+			const struct Dimension &spriteLocation,
+			const bool flipSprite);
 
 	void setScale(float scaleIn);
 
+protected:
+
+	struct SDL_Texture* getTexture(const std::string &tag) const;
+	//const struct Dimension& getTextureSize(const std::string &tag) const;
+
 private:
+
+	bool hasBeenInit;
 
 	float scale;
 
 	class GameLogger *logger;
 
-	class AssetManager *assests;
-
 	struct SDL_Renderer *renderer;
+
+	std::map<std::string, std::unique_ptr<class SDLTextureWrapper>> textureMap;
 };
 
 
