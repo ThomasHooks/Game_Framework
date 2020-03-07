@@ -20,19 +20,16 @@ public:
 
 	SDLTextureWrapper(struct SDL_Renderer *rendererIn,
 			struct SDL_Surface *surfaceIn,
-			const Dimension &sizeIn);
+			Dimension &sizeIn);
 
 	~SDLTextureWrapper();
 
-	SDLTextureWrapper(const SDLTextureWrapper &other) = delete;
-	SDLTextureWrapper(SDLTextureWrapper &&other) = delete;
-
 	struct SDL_Texture* getTexture() const;
-	const Dimension& getSize() const;
+	const Dimension& getTileSize() const;
 
 private:
 
-	Dimension size;
+	Dimension tileSize;
 	struct SDL_Texture* texture;
 };
 

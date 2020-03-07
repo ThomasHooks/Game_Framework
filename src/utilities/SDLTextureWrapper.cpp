@@ -15,8 +15,8 @@
 
 
 
-SDLTextureWrapper::SDLTextureWrapper(SDL_Renderer *rendererIn, SDL_Surface *surfaceIn, const Dimension &sizeIn)
-	: size(sizeIn.width, sizeIn.height) {
+SDLTextureWrapper::SDLTextureWrapper(SDL_Renderer *rendererIn, SDL_Surface *surfaceIn, Dimension &sizeIn)
+	: tileSize(sizeIn.width, sizeIn.height) {
 	texture = SDL_CreateTextureFromSurface(rendererIn, surfaceIn);
 }
 
@@ -25,8 +25,8 @@ SDLTextureWrapper::SDLTextureWrapper(SDL_Renderer *rendererIn, SDL_Surface *surf
 SDLTextureWrapper::~SDLTextureWrapper() {
 	SDL_DestroyTexture(this->texture);
 	this->texture = nullptr;
-	this->size.width = 0;
-	this->size.height = 0;
+	this->tileSize.width = 0;
+	this->tileSize.height = 0;
 }
 
 
@@ -37,8 +37,8 @@ SDL_Texture* SDLTextureWrapper::getTexture() const {
 
 
 
-const Dimension& SDLTextureWrapper::getSize() const {
-	return this->size;
+const Dimension& SDLTextureWrapper::getTileSize() const {
+	return this->tileSize;
 }
 
 

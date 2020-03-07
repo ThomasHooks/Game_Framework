@@ -17,12 +17,15 @@
 #include <map>
 #include <memory>
 
+#include "../utilities/EnumBlendMode.h"
+
 
 
 //TODO add SDL2 TTF support
 class RendererManager {
 
 public:
+
 	RendererManager(class GameLogger *logger_ptr);
 
 	~RendererManager();
@@ -34,15 +37,27 @@ public:
 	void init(struct SDL_Window *windowIn);
 
 	bool registerTexture(const std::string &tag,
-			const std::string &fileLocation);
+			const std::string &fileLocation,
+			struct Dimension &dim);
 
 	bool deregisterTexture(const std::string &tag);
-	bool deregisterAllTextures();
+	void deregisterAllTextures();
 
 	bool setDrawColor(uint32_t red,
 			uint32_t green,
 			uint32_t blue,
 			uint32_t alpha);
+
+	bool setTextureColor(const std::string &tag,
+			uint32_t red,
+			uint32_t green,
+			uint32_t blue);
+
+	bool setTextureAlpha(const std::string &tag,
+			uint32_t alpha);
+
+	bool setTextureBlendMode(const std::string &tag,
+			EnumBlendMode blendMode);
 
 	bool clear();
 
@@ -60,7 +75,6 @@ public:
 	void drawSprite(const std::string &tag,
 			const class Position &pos,
 			const class Position &cameraOffset,
-			const struct Dimension &spriteSize,
 			const struct Dimension &spriteLocation,
 			const bool flipSprite);
 
@@ -68,8 +82,10 @@ public:
 
 protected:
 
-	struct SDL_Texture* getTexture(const std::string &tag) const;
-	//const struct Dimension& getTextureSize(const std::string &tag) const;
+	struct SDL_Texture* getTexture(const std::string &tag);
+
+	int getTextureTileWidth(const std::string &tag);
+	int getTextureTileHeight(const std::string &tag);
 
 private:
 
