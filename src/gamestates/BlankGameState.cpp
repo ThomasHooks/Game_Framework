@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: BlankGameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/22/2020
+// Last Modified	: 03/08/2020
 //============================================================================
 
 
@@ -24,6 +24,8 @@
 #include "../entities/Game_Dynamic.h"
 #include "../Game.h"
 #include "../world/GameMap.h"
+#include "../utilities/Dimension.h"
+#include "../utilities/Position.h"
 
 
 
@@ -39,6 +41,11 @@ BlankGameState::BlankGameState(class Game *Game, int StateID) : GameState(Game, 
 
 	this->game->Map.push_map("tile_test.png","data/map/test.map");
 	this->game->Map.set_scale(2);
+
+	Dimension tileDim(16, 16);
+	this->game->Render.registerTexture("mario", "./data/gfx/Mario.png", tileDim);
+	this->game->Render.registerTexture("tile_test.png", "./data/gfx/tile_test.png", tileDim);
+	this->game->Render.setScale(2.0f);
 	//----All of this should be removed later----
 
 	return;
@@ -134,14 +141,10 @@ void BlankGameState::customDraw(float offsetX, float offsetY, int visibleTilesHo
 
 
 	//----All of this should be removed later----
-	this->game->Map.draw(offsetX, offsetY, visibleTilesHor, visibleTilesVer, this->game->get_renderer());
+	this->game->Map.draw(Position(offsetX, offsetY), Dimension(visibleTilesHor, visibleTilesVer), this->game->Render);
 
-	//vMap[0].draw(game->get_renderer(), game->Assets.get_texture("tile_test.png"), visibleTilesHor, visibleTilesVer, offsetX, offsetY, 2);
-
-	vEntity[0]->Draw(game->get_renderer(), game->Assets.get_texture("Mario.png"), offsetX, offsetY);
+	this->game->Render.drawSprite("mario", Position(vEntity[0]->fX, vEntity[0]->fY), Position(offsetX, offsetY), Dimension(0, 0), false);
 	//----All of this should be removed later----
-
-	return;
 }
 
 

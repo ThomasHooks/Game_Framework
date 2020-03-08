@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameMap.h
 // Author     		: Thomas Hooks
-// Last Modified	: 12/19/2019
+// Last Modified	: 03/08/2020
 //============================================================================
 
 
@@ -32,15 +32,13 @@ public:
 	~GameMap();
 
 
-	bool is_tileSolid (int x, int y);
-
-	void set_tileSolid (int x, int y, bool solid);
-
+	bool is_tileSolid(int x, int y);
+	void set_tileSolid(int x, int y, bool solid);
 
 	int get_tileIndex(int x, int y);
-
 	void set_tileIndex(int x, int y, int index);
 
+	class Position getTilePosition(int x, int y);
 
 	bool loadMap(std::string FileName);
 

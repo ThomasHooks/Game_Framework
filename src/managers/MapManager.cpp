@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: MapManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 12/19/2019
+// Last Modified	: 03/08/2020
 //============================================================================
 
 
@@ -16,52 +16,46 @@
 
 #include "../world/GameMap.h"
 #include "../Game.h"
+#include "../utilities/Dimension.h"
+#include "../utilities/Position.h"
+#include "RendererManager.h"
 
 
 
 
 MapManager::MapManager()
-	: b_hasBeenInit(false),
-	  n_visible_tiles_x(0),
-	  n_visible_tiles_y(0),
-	  n_scale(1),
-	  log(nullptr),
-	  assets(nullptr){
+	: hasBeenInit(false),
+	  visibleTilesX(0),
+	  visibleTilesY(0),
+	  scale(1),
+	  logger(nullptr) {
 
 	/* The method 'init' must be called when using this constructor
 	 * before using the map_manager object
 	 */
-
-	return;
 }
 
 
 
-MapManager::MapManager(class GameLogger *log_ptr, class AssetManager *assets_ptr)
-	: b_hasBeenInit(true),
-	  n_visible_tiles_x(0),
-	  n_visible_tiles_y(0),
-	  n_scale(1),
-	  log(log_ptr),
-	  assets(assets_ptr){
+MapManager::MapManager(class GameLogger *log_ptr)
+	: hasBeenInit(true),
+	  visibleTilesX(0),
+	  visibleTilesY(0),
+	  scale(1),
+	  logger(log_ptr) {
 
-	log->message(Level::INFO,
+	logger->message(Level::INFO,
 				 "Map Manager has been initialized",
 				 Output::TXT_FILE);
-
-	return;
 }
 
 
 
-MapManager::~MapManager() {
-	//Do nothing
-	return;
-}
+MapManager::~MapManager() {}
 
 
 
-void MapManager::init(class GameLogger *log_ptr, class AssetManager *assets_ptr){
+void MapManager::init(class GameLogger *log_ptr){
 	/*
 	 * brief		This method initializes the map manager
 	 *
@@ -76,25 +70,16 @@ void MapManager::init(class GameLogger *log_ptr, class AssetManager *assets_ptr)
 
 
 
-	if(!b_hasBeenInit){
-		//Only initialize once
+	if(!hasBeenInit){
 
-		log = log_ptr;
-
-		assets = assets_ptr;
-
-		b_hasBeenInit = true;
-
-		log->message(Level::INFO,
-					 "Map Manager has been initialized",
-					 Output::TXT_FILE);
+		logger = log_ptr;
+		hasBeenInit = true;
+		logger->message(Level::INFO, "Map Manager has been initialized", Output::TXT_FILE);
 	}
 
 	return;
 }
 
-
-//----------------------------------------------------------------------------
 
 
 void MapManager::push_map(std::string tileSheetKey, std::string mapFilePath){
@@ -104,20 +89,18 @@ void MapManager::push_map(std::string tileSheetKey, std::string mapFilePath){
 
 
 
-	if(!b_hasBeenInit) return;
+	if(!hasBeenInit) return;
 
 
-	v_stack.emplace_back(std::unique_ptr<GameMap>(new GameMap(tileSheetKey)));
+	mapStack.emplace_back(std::unique_ptr<GameMap>(new GameMap(tileSheetKey)));
 
 
-	v_stack.back()->loadMap(mapFilePath);
+	mapStack.back()->loadMap(mapFilePath);
 
 
 	return;
 }
 
-
-//----------------------------------------------------------------------------
 
 
 void MapManager::pop_map(void){
@@ -127,82 +110,66 @@ void MapManager::pop_map(void){
 
 
 
-	if(!b_hasBeenInit) return;
+	if(!hasBeenInit) return;
 
 
-	if(v_stack.empty()){
+	if(mapStack.empty()){
 
-		log->message(Level::WARNING,
+		logger->message(Level::WARNING,
 					 "Tried to free element, but map stack is empty!",
 					 Output::TXT_FILE);
 	}
 
-	else v_stack.pop_back();
+	else mapStack.pop_back();
 
 
 	return;
 }
 
 
-//----------------------------------------------------------------------------
 
-
-void MapManager::draw(float offsetHor,
-					   float offsetVer,
-					   int visibleTilesHor,
-					   int visibleTilesVer,
-					   struct SDL_Renderer *renderer_ptr) {
+void MapManager::draw(const Position &cameraPos, const Dimension &visibleTiles, RendererManager &renderer){
 	/*
-	 * brief	draws the map at the back of the stack
 	 *
-	 * parma	offsetHor			X coordinate of the top left tile
-	 *
-	 * parma	offsetVer			Y coordinate of the top left tile
-	 *
-	 * parma	visibleTilesHor		number of horizontal tiles on screen
-	 *
-	 * parma	visibleTilesVer		number of vertical tiles on screen
-	 *
-	 * parma	renderer_ptr		pointer to the game renderer
 	 */
 
 
 
-	if(!b_hasBeenInit) return;
 
-	//Draw the map that is currently at the top of the stack
-	v_stack.back()->draw(renderer_ptr,
-						 assets->get_texture(v_stack.back()->mapName),
-						 visibleTilesHor,
-						 visibleTilesVer,
-						 offsetHor,
-						 offsetVer,
-						 n_scale);
+	if(this->hasBeenInit){
 
-	return;
+		std::string tag = mapStack.back()->mapName;
+		//Over rendering is done to prevent artifacts along the edge of the screen
+		for(int y = -1; y < visibleTiles.height; y++){
+			for(int x = -1; x < visibleTiles.width; x++){
+				int xCord = x + cameraPos.xPosN();
+				int yCord = y + cameraPos.yPosN();
+				//This is to prevent the map from being indexed out of
+				//Note that this can cause some tiles to be rendered twice
+				if(xCord < 0) xCord = 0;
+				if(yCord < 0) yCord = 0;
+				Position tilePos = mapStack.back()->getTilePosition(xCord, yCord);
+				Dimension tileSprite(mapStack.back()->get_tileIndex(xCord, yCord), 0);
+
+				renderer.drawSprite(tag, tilePos, cameraPos, tileSprite, false);
+			}
+		}
+	}
 }
 
-
-//----------------------------------------------------------------------------
 
 
 void MapManager::set_scale(int scale){
 	/*
-	 * brief	sets the map's scale with the given amount
+	 * @parma	scale The map's new scale
 	 *
-	 * parma	scale	the map's new scale
+	 * Sets the map's scale with the given amount
 	 */
 
 
 
-	static int MIN_SCALE = 1;
-
-	if(scale < MIN_SCALE){
-		this->n_scale = MIN_SCALE;
-	}
-	else this->n_scale = scale;
-
-	return;
+	static int MINSCALE = 1;
+	scale < MINSCALE ? this->scale = MINSCALE : this->scale = scale;
 }
 
 

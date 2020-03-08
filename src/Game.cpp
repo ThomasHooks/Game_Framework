@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/22/2020
+// Last Modified	: 03/08/2020
 //============================================================================
 
 
@@ -20,18 +20,17 @@
 
 
 Game::Game()
-		: State(this),
+		: Log(Level::TRACE),
+		  Render(&Log),
+		  State(this),
 		  Map(),
-		  Assets(),
 		  Timer(),
-		  Log(Level::TRACE),
 		  b_gameOver(false),
 		  b_hasBeenInit(false),
 		  f_cameraX(0),
 		  f_cameraY(0),
 		  n_maxFPS(60),
 		  window(nullptr),
-		  renderer(nullptr),
 		  WindowHeight(0),
 		  WindowWidth(0) {
 	/*
@@ -41,28 +40,23 @@ Game::Game()
 
 
 
-	//Start SDL2
 	Log.message(Level::INFO, "Initializing SDL", Output::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
-	//Starting game state
 	const int startingStateID = 0;
-	//State.Push(new cGSBlack(this, startingStateID));
 	State.Push(new BlankGameState(this, startingStateID));
 
 	return;
 }
 
 
-//----------------------------------------------------------------------------
-
 
 Game::Game(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS)
-		: State(this),
-		  Map(&Log, &Assets),
-		  Assets(),
+		: Log(Level::TRACE),
+		  Render(&Log),
+		  State(this),
+		  Map(&Log),
 		  Timer(),
-		  Log(Level::TRACE),
 		  b_gameOver(false),
 		  b_hasBeenInit(true),
 		  f_cameraX(0),
@@ -105,32 +99,12 @@ Game::Game(const char * title, int Window_Height, int Window_Width, Uint32 flags
 			WindowWidth, WindowHeight,
 			flags);
 
-	renderer = SDL_CreateRenderer(window, -1,
-			SDL_RENDERER_ACCELERATED);
+	this->Render.init(this->window);
 
-
-	Assets.init(&Log, renderer);
-
-
-	//Starting game state
 	const int startingStateID = 0;
-	//State.Push(new cGSBlack(this, startingStateID));
 	State.Push(new BlankGameState(this, startingStateID));
-
-
-	//----All of this should be removed later----
-	//Load the test sprite
-	Assets.add_texture("Mario.png", "./data/gfx/Mario.png");
-
-	//Load the test tile sheet
-	Assets.add_texture("tile_test.png", "./data/gfx/tile_test.png");
-	//----All of this should be removed later----
-
-	return;
 }
 
-
-//----------------------------------------------------------------------------
 
 
 Game::~Game(){
@@ -145,15 +119,6 @@ Game::~Game(){
 	SDL_DestroyWindow(window);
 	window = nullptr;
 
-
-	Log.message(Level::INFO, "Freeing renderer", Output::TXT_FILE);
-	SDL_DestroyRenderer(renderer);
-	renderer = nullptr;
-
-
-	Log.message(Level::INFO, "Freeing all assets", Output::TXT_FILE);
-	Assets.remove_allTextures();
-
 	//TODO free all sound effects Mix_Chunk
 
 	//TODO free all music Mix_Music
@@ -167,8 +132,6 @@ Game::~Game(){
 	return;
 }
 
-
-//----------------------------------------------------------------------------
 
 
 bool Game::init(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS){
@@ -194,15 +157,9 @@ bool Game::init(const char * title, int Window_Height, int Window_Width, Uint32 
 				WindowWidth, WindowHeight,
 				flags);
 
+		this->Render.init(this->window);
 
-		renderer = SDL_CreateRenderer(window, -1,
-				SDL_RENDERER_ACCELERATED);
-
-
-		Assets.init(&Log, renderer);
-
-		Map.init(&Log, &Assets);
-
+		Map.init(&Log);
 
 		set_maxFPS(Max_FPS);
 
@@ -212,8 +169,6 @@ bool Game::init(const char * title, int Window_Height, int Window_Width, Uint32 
 	else return false;
 }
 
-
-//----------------------------------------------------------------------------
 
 
 void Game::run(void){

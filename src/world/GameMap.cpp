@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameMap.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 12/19/2019
+// Last Modified	: 03/08/2020
 //============================================================================
 
 
@@ -22,6 +22,8 @@
 
 #include "../Game.h"
 #include "Tile.h"
+#include "../utilities/Position.h"
+#include "../utilities/Dimension.h"
 
 
 
@@ -38,13 +40,9 @@ GameMap::GameMap(std::string name)
 
 
 
-
-
 GameMap::~GameMap() {
 	return;
 }
-
-
 
 
 
@@ -66,8 +64,6 @@ bool GameMap::is_tileSolid(int x, int y){
 	else return false;
 }
 
-
-//----------------------------------------------------------------------------
 
 
 void GameMap::set_tileSolid(int x, int y, bool solid){
@@ -95,8 +91,6 @@ void GameMap::set_tileSolid(int x, int y, bool solid){
 }
 
 
-//----------------------------------------------------------------------------
-
 
 int GameMap::get_tileIndex(int x, int y){
 	/*
@@ -114,8 +108,6 @@ int GameMap::get_tileIndex(int x, int y){
 }
 
 
-//----------------------------------------------------------------------------
-
 
 void GameMap::set_tileIndex(int x, int y, int index){
 	/*
@@ -130,8 +122,6 @@ void GameMap::set_tileIndex(int x, int y, int index){
 		v_tileMap[x][y].n_tileIndex = index;
 }
 
-
-//----------------------------------------------------------------------------
 
 
 void GameMap::draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
@@ -151,7 +141,18 @@ void GameMap::draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
 }
 
 
-//----------------------------------------------------------------------------
+
+Position GameMap::getTilePosition(int x, int y){
+	/*
+	 *
+	 */
+
+
+
+
+	return Position(v_tileMap[x][y].f_x, v_tileMap[x][y].f_y);
+}
+
 
 
 bool GameMap::loadMap(std::string FileName){

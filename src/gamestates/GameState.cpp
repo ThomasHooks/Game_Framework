@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/24/2020
+// Last Modified	: 03/08/2020
 //============================================================================
 
 
@@ -23,9 +23,11 @@ void GameState::Draw(){
 
 
 
-	//Set the window to black
-	SDL_SetRenderDrawColor(game->get_renderer(), 0, 0, 0, 255);
-	SDL_RenderClear(game->get_renderer());
+	//SDL_SetRenderDrawColor(game->get_renderer(), 0, 0, 0, 255);
+	//SDL_RenderClear(game->get_renderer());
+
+	this->game->Render.setDrawColor(0, 0, 0, 255);
+	this->game->Render.clear();
 
 
 	//Calculate the number of visible tiles on the screen
@@ -54,9 +56,8 @@ void GameState::Draw(){
 
 	this->customDraw(offsetHor, offsetVer, visibleTilesHor, visibleTilesVer);
 
-	SDL_RenderPresent(game->get_renderer());
-
-	return;
+	//SDL_RenderPresent(game->get_renderer());
+	this->game->Render.present();
 }
 
 

@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/22/2020
+// Last Modified	: 03/08/2020
 //============================================================================
 
 
@@ -13,7 +13,7 @@
 
 
 
-#include "managers/AssetManager.h"
+#include "managers/RendererManager.h"
 #include "managers/MapManager.h"
 #include "managers/StateManager.h"
 #include "utilities/GameLogger.h"
@@ -27,28 +27,29 @@ class Game{
 public:
 
 	Game();
-	Game(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS);
+	Game(const char * title,
+			int Window_Height,
+			int Window_Width,
+			Uint32 flags,
+			int Max_FPS);
 
 	~Game();
 
 	void run(void);
 
-	bool init(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS);
-
-	class StateManager State;
-
-	class MapManager Map;
-
-	//EntityManager Entities;			//TODO Entity_Manager
-
-	class AssetManager Assets;
-
-	class GameTimer Timer;
+	bool init(const char * title,
+			int Window_Height,
+			int Window_Width,
+			Uint32 flags,
+			int Max_FPS);
 
 	class GameLogger Log;
+	class RendererManager Render;
+	class StateManager State;
+	class MapManager Map;
+	//EntityManager Entities;			//TODO Entity_Manager
+	class GameTimer Timer;
 
-
-	//Getters and setters
 	bool get_gameOver() const {return b_gameOver;}
 	void set_gameOver(bool flag) {b_gameOver = flag;}
 
@@ -62,7 +63,6 @@ public:
 	void set_windowWidth(int width) {WindowWidth = width;}
 
 	SDL_Window* get_window(void) {return window;}
-	SDL_Renderer* get_renderer(void) {return renderer;}
 
 	float get_cameraX(void) const {return f_cameraX;}
 	void set_cameraX(float positionX) {f_cameraX = positionX;}
@@ -73,23 +73,20 @@ public:
 
 private:
 
-	//Flags
-	bool b_gameOver;			//If the game has ended
+	bool b_gameOver;
 	bool b_hasBeenInit;
 
 	//Coordinates of camera's top left corner
 	float f_cameraX;
 	float f_cameraY;
 
-	//Maximum frames per second
 	int n_maxFPS;
 
-	//Window data members
-	SDL_Window *window;			//Stores a pointer to the game window
-	SDL_Renderer *renderer;		//Stores a pointer to the game renderer
+	SDL_Window *window;
+	//SDL_Renderer *renderer;
 
-	int WindowHeight;			//Stores the window height
-	int WindowWidth;			//Stores the window width
+	int WindowHeight;
+	int WindowWidth;
 };
 
 

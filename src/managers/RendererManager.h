@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: RendererManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/06/2020
+// Last Modified	: 03/07/2020
 //============================================================================
 
 
@@ -68,7 +68,7 @@ public:
 	void drawLine(const class Position &startPos,
 			const class Position &endPos);
 
-	void drawRect(const class Position &pos,
+	void drawQuad(const class Position &pos,
 			const struct Dimension &dim,
 			bool fill);
 
