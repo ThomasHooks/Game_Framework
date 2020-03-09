@@ -12,6 +12,7 @@
 #include "../entities/Game_Dynamic.h"
 #include "../Game.h"
 #include "../utilities/Dimension.h"
+#include "../utilities/Position.h"
 #include "../world/GameMap.h"
 
 
@@ -23,15 +24,12 @@ void GameState::Draw(){
 
 
 
-	//SDL_SetRenderDrawColor(game->get_renderer(), 0, 0, 0, 255);
-	//SDL_RenderClear(game->get_renderer());
-
 	this->game->Render.setDrawColor(0, 0, 0, 255);
 	this->game->Render.clear();
 
 
 	//Calculate the number of visible tiles on the screen
-	Dimension tile(this->game->Map.get_tileWidth(), this->game->Map.get_tileHeight());
+	Dimension tile(this->game->Map.getTileWidth(), this->game->Map.getTileHeight());
 	int visibleTilesHor = (game->get_windowWidth())/tile.width + 1;
 	int visibleTilesVer = (game->get_windowHeight())/tile.height;
 
@@ -41,7 +39,7 @@ void GameState::Draw(){
 
 
 	//Keep camera inside game boundaries
-	Dimension map(this->game->Map.get_width(), this->game->Map.get_height());
+	Dimension map(this->game->Map.getWidth(), this->game->Map.getHeight());
 
 	if(offsetHor < 0) offsetHor = 0;
 

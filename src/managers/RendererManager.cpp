@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: RendererManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/07/2020
+// Last Modified	: 03/08/2020
 //============================================================================
 
 
@@ -436,8 +436,6 @@ void RendererManager::drawSprite(const std::string &tag,
 	 *
 	 * @param	cameraOffset The coordinates of the camera
 	 *
-	 * @param	spriteSize The dimensions of the sprite on the sprite sheet
-	 *
 	 * @param	spriteLocation The location of the sprite in the sprite sheet
 	 *
 	 * Draws a sprite given by tag to the renderer
@@ -460,6 +458,7 @@ void RendererManager::drawSprite(const std::string &tag,
 		double height = spriteSize.height * this->scale;
 		double xPos = pos.xPos() - cameraOffset.xPos() * width;
 		double yPos = pos.yPosN() - cameraOffset.yPos() * height;
+
 		SDL_Rect entityRect = {static_cast<int>(xPos + 0.5),
 				static_cast<int>(yPos + 0.5),
 				static_cast<int>(width + 0.5),
@@ -467,7 +466,7 @@ void RendererManager::drawSprite(const std::string &tag,
 
 		SDL_RendererFlip flip = flipSprite ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
-		SDL_RenderCopyEx(this->renderer, this->getTexture(tag), &spriteRect, &entityRect, 0, NULL, flip);
+		SDL_RenderCopyEx(this->renderer, this->getTexture(tag), &spriteRect, &entityRect, 0.0, NULL, flip);
 	}
 
 	else logger->message(Level::ERROR, "Cannot render sprite, Renderer has not been initialized!", Output::TXT_FILE);
@@ -565,6 +564,26 @@ int RendererManager::getTextureTileHeight(const std::string &tag){
 	}
 
 	else return textureMap[tag]->getTileSize().height;
+}
+
+
+
+Dimension RendererManager::getTextureSize(const std::string &tag){
+	/*
+	 * @param	tag The ID of the texture
+	 *
+	 * @return	The dimensions of the texture
+	 *
+	 * Gets a copy of  tile dimensions of the texture specified by the tag
+	 * If it doesn't find the texture it will return a size of (0, 0)
+	 */
+
+
+
+
+	if(!this->hasBeenInit) return Dimension();
+
+	else return Dimension(this->getTextureTileWidth(tag), this->getTextureTileHeight(tag));
 }
 
 

@@ -29,20 +29,17 @@
 
 
 GameMap::GameMap(std::string name)
-	: n_mapWidth(5),
-	  n_mapHeight(5),
-	  n_tileWidth(32),
-	  n_tileHeight(32),
-	  mapName(name){
-
-	return;
-}
-
+	: mapWidth(5),
+	  mapHeight(5),
+	  tileWidth(32),
+	  tileHeight(32),
+	  mapSize(mapWidth, mapHeight),
+	  tileSize(32, 32),
+	  mapName(name) {}
 
 
-GameMap::~GameMap() {
-	return;
-}
+
+GameMap::~GameMap() {}
 
 
 
@@ -59,8 +56,8 @@ bool GameMap::is_tileSolid(int x, int y){
 
 
 
-	if (x >= 0 && x < n_mapWidth && y >= 0 && y < n_mapHeight && !v_tileMap.empty())
-		return v_tileMap[x][y].b_solid;
+	if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight && !tileMap.empty())
+		return tileMap[x][y].isSolid();
 	else return false;
 }
 
@@ -82,9 +79,9 @@ void GameMap::set_tileSolid(int x, int y, bool solid){
 
 
 
-	if (x >= 0 && x < n_mapWidth && y >= 0 && y < n_mapHeight && !v_tileMap.empty())
+	if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight && !tileMap.empty())
 		//Check if the tile is a valid tile if it is set the tile
-		v_tileMap[x][y].b_solid = solid;
+		tileMap[x][y].setSolidState(solid);
 
 
 	return;
@@ -100,9 +97,9 @@ int GameMap::get_tileIndex(int x, int y){
 
 
 
-	if (x >= 0 && x < n_mapWidth && y >= 0 && y < n_mapHeight && !v_tileMap.empty())
+	if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight && !tileMap.empty())
 		//Check if the tile is a valid tile if it is set the tile
-		return v_tileMap[x][y].n_tileIndex;
+		return tileMap[x][y].n_tileIndex;
 
 	else return 0;
 }
@@ -117,27 +114,9 @@ void GameMap::set_tileIndex(int x, int y, int index){
 
 
 
-	if (x >= 0 && x < n_mapWidth && y >= 0 && y < n_mapHeight && !v_tileMap.empty())
+	if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight && !tileMap.empty())
 		//Check if the tile is a valid tile if it is set the tile
-		v_tileMap[x][y].n_tileIndex = index;
-}
-
-
-
-void GameMap::draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
-		int nVisibleTilesX, int nVisibleTilesY, float fOffSetX,
-		float fOffSetY, int scale){
-	//
-
-	//Loop through the map and draw only the visible tiles
-	for(int y = 0; y < nVisibleTilesY; y++){
-		for(int x = 0; x < nVisibleTilesX; x++){
-			v_tileMap[x + (int)fOffSetX][y + (int)fOffSetY].draw(renderer,
-					tTileSheet, n_tileWidth, n_tileHeight, scale,
-					fOffSetX, fOffSetY);
-		}
-	}
-	return;
+		tileMap[x][y].n_tileIndex = index;
 }
 
 
@@ -150,7 +129,7 @@ Position GameMap::getTilePosition(int x, int y){
 
 
 
-	return Position(v_tileMap[x][y].f_x, v_tileMap[x][y].f_y);
+	return Position(tileMap[x][y].f_x, tileMap[x][y].f_y);
 }
 
 
@@ -182,12 +161,16 @@ bool GameMap::loadMap(std::string FileName){
 	else{
 		//Map file was successfully loaded
 		//Read map size
-		map>>n_mapWidth;
-		map>>n_mapHeight;
+		map>>mapWidth;
+		map>>mapHeight;
+		mapSize.width = mapWidth;
+		mapSize.height = mapHeight;
 
 		//Read tile size
-		map>>n_tileWidth;
-		map>>n_tileHeight;
+		map>>tileWidth;
+		map>>tileHeight;
+		tileSize.width = tileWidth;
+		tileSize.height = tileHeight;
 
 		if(map.fail()){
 			//Check if there was a problem reading the map file
@@ -197,15 +180,13 @@ bool GameMap::loadMap(std::string FileName){
 		}
 		else{
 			//Resize the tile map with the data provided in the map file
-			v_tileMap.clear();
-			v_tileMap.resize(n_mapWidth,
-					std::vector<Tile>(n_tileHeight,
-							Tile{false, 0, 0, 0}));
+			tileMap.clear();
+			tileMap.resize(mapWidth, std::vector<Tile>(tileHeight, Tile{false, 0, 0, 0}));
 		}
 
 		//Populate map with tiles
-		for(int y = 0; y < n_mapHeight && bMapLoaded; y++){
-			for(int x = 0; x < n_mapWidth && bMapLoaded; x++){
+		for(int y = 0; y < mapHeight && bMapLoaded; y++){
+			for(int x = 0; x < mapWidth && bMapLoaded; x++){
 				//This specifies if the tile is solid
 				bool bTileSolid = false;
 				//map>>bTileSolid;
@@ -228,16 +209,28 @@ bool GameMap::loadMap(std::string FileName){
 					if(nTileIndex > 1) bTileSolid = true;
 					//----All of this should be removed later----
 
-					v_tileMap[x][y].b_solid = bTileSolid;
-					v_tileMap[x][y].n_tileIndex = nTileIndex;
-					v_tileMap[x][y].f_x = (float)(x * n_tileWidth);
-					v_tileMap[x][y].f_y = (float)(y * n_tileHeight);
+					tileMap[x][y].setSolidState(bTileSolid);
+					tileMap[x][y].n_tileIndex = nTileIndex;
+					tileMap[x][y].f_x = (float)(x * tileWidth);
+					tileMap[x][y].f_y = (float)(y * tileHeight);
 				}
 			}
 		}
 	}
 
 	return bMapLoaded;
+}
+
+
+
+const Dimension& GameMap::getSize() const {
+	return this->mapSize;
+}
+
+
+
+const Dimension& GameMap::getTileSize() const {
+	return this->tileSize;
 }
 
 

@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: RendererManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/07/2020
+// Last Modified	: 03/08/2020
 //============================================================================
 
 
@@ -86,6 +86,7 @@ protected:
 
 	int getTextureTileWidth(const std::string &tag);
 	int getTextureTileHeight(const std::string &tag);
+	struct Dimension getTextureSize(const std::string &tag);
 
 private:
 

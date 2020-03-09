@@ -13,13 +13,13 @@
 
 
 
-#include <iostream>
 #include <vector>
 #include <string>
 
 #include <SDL.h>
 
 #include "Tile.h"
+#include "../utilities/Dimension.h"
 
 
 
@@ -42,49 +42,34 @@ public:
 
 	bool loadMap(std::string FileName);
 
-	void draw(SDL_Renderer *renderer, SDL_Texture *tTileSheet,
-			int nVisibleTilesX, int nVisibleTilesY,
-			float fOffSetX, float fOffSetY, int scale);
+	int get_mapWidth(void) const {return mapWidth;}
+	void set_mapWidth(const int width) {mapWidth = width;}
 
+	int get_mapHeight(void) const {return mapHeight;}
+	void set_mapHeight(const int height) {mapHeight = height;}
+	const Dimension& getSize() const;
 
-	int get_mapWidth(void) const {return n_mapWidth;}
+	int get_tileWidth(void) const {return tileWidth;}
+	void set_tileWidth(const int width) {tileWidth = width;}
+	const Dimension& getTileSize() const;
 
-	void set_mapWidth(const int width) {n_mapWidth = width;}
-
-
-	int get_mapHeight(void) const {return n_mapHeight;}
-
-	void set_mapHeight(const int height) {n_mapHeight = height;}
-
-
-	int get_tileWidth(void) const {return n_tileWidth;}
-
-	void set_tileWidth(const int width) {n_tileWidth = width;}
-
-
-	int get_tileHeight(void) const {return n_tileHeight;}
-
-	void set_tileHeight(const int height) {n_tileHeight = height;}
-
+	int get_tileHeight(void) const {return tileHeight;}
+	void set_tileHeight(const int height) {tileHeight = height;}
 
 	std::string get_mapName(void) const {return mapName;}
-
 	void set_mapName(const std::string &name) {mapName = name;}
 
-
-	//Size of the map
-	int n_mapWidth, n_mapHeight;
-
-	//Size of the tile in pixel
-	int n_tileWidth, n_tileHeight;
-
-	//Name of map
-	std::string mapName;
+	int mapWidth, mapHeight;
+	int tileWidth, tileHeight;
 
 private:
 
-	//2D vector that contains the tile map
-	std::vector<std::vector<Tile>> v_tileMap;
+	Dimension mapSize;
+	Dimension tileSize;
+
+	std::string mapName;
+
+	std::vector<std::vector<Tile>> tileMap;
 };
 
 

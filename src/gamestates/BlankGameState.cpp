@@ -39,8 +39,7 @@ BlankGameState::BlankGameState(class Game *Game, int StateID) : GameState(Game, 
 
 	this->vEntity.emplace_back(std::unique_ptr<class Game_Dynamic>(new cPlayerCharacter(64.0f, 224.0f, 32, 32, 0)));
 
-	this->game->Map.push_map("tile_test.png","data/map/test.map");
-	this->game->Map.set_scale(2);
+	this->game->Map.pushMap("tile_test.png","data/map/test.map");
 
 	Dimension tileDim(16, 16);
 	this->game->Render.registerTexture("mario", "./data/gfx/Mario.png", tileDim);
@@ -115,14 +114,14 @@ void BlankGameState::Process(){
 
 	//Keep player x position inside the map
 	if(vEntity[0]->fX < 0.0f) vEntity[0]->fX = 0.0f;
-	else if((vEntity[0]->fX + vEntity[0]->nWidth*2) > (vMap[0].n_mapWidth * vMap[0].n_tileWidth)){
-		vEntity[0]->fX = vMap[0].n_mapWidth * vMap[0].n_tileWidth - vEntity[0]->nWidth*2;
+	else if((vEntity[0]->fX + vEntity[0]->nWidth*2) > (vMap[0].mapWidth * vMap[0].tileWidth)){
+		vEntity[0]->fX = vMap[0].mapWidth * vMap[0].tileWidth - vEntity[0]->nWidth*2;
 	}
 
 	//Keep player Y position inside the map
 	if(vEntity[0]->fY < 0.0f) vEntity[0]->fY = 0.0f;
-	else if((vEntity[0]->fY + vEntity[0]->nHeight) > vMap[0].n_mapHeight * vMap[0].n_tileHeight)
-		vEntity[0]->fY = vMap[0].n_mapHeight * vMap[0].n_tileHeight - vEntity[0]->nHeight;
+	else if((vEntity[0]->fY + vEntity[0]->nHeight) > vMap[0].mapHeight * vMap[0].tileHeight)
+		vEntity[0]->fY = vMap[0].mapHeight * vMap[0].tileHeight - vEntity[0]->nHeight;
 
 	vEntity[0]->Update(game->Timer.get_deltaTime());
 
@@ -189,8 +188,8 @@ void BlankGameState::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 	int MinY = -1;
 
 	//This puts the entity into the maps tile unit coordinate
-	int tX = vEntity[EntityIndex]->fX / vMap[MapIndex].n_tileWidth;
-	int tY = vEntity[EntityIndex]->fY / vMap[MapIndex].n_tileHeight;
+	int tX = vEntity[EntityIndex]->fX / vMap[MapIndex].tileWidth;
+	int tY = vEntity[EntityIndex]->fY / vMap[MapIndex].tileHeight;
 
 	//Check if the entity collides with any of the tiles around it
 	for(int y = MinY; y < MaxY; y++){
@@ -198,20 +197,20 @@ void BlankGameState::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 			//Check if coordinate is valid
 			//Check x coordinate
 			if((x + tX) < 0) x = 0;
-			else if((x + tX) > (vMap[MapIndex].n_mapWidth)) MaxX--;
+			else if((x + tX) > (vMap[MapIndex].mapWidth)) MaxX--;
 			//Check y coordinate
 			if((y + tY) < 0) y = 0;
-			else if((y + tY) > (vMap[MapIndex].n_mapHeight)) MaxY--;
+			else if((y + tY) > (vMap[MapIndex].mapHeight)) MaxY--;
 
 			//Check for collision if the tile is solid
 			if(vMap[MapIndex].is_tileSolid(x + tX, y + tY)){
 				//Set the Tiles bounding Box
-				float RectB_X1 = (x + tX) * vMap[MapIndex].n_tileWidth;
-				float RectB_X2 = (x + tX) * vMap[MapIndex].n_tileWidth + vMap[MapIndex].n_tileWidth;
-				float RectB_Y1 = (y + tY) * vMap[MapIndex].n_tileHeight;
-				float RectB_Y2 = (y + tY) * vMap[MapIndex].n_tileHeight + vMap[MapIndex].n_tileHeight;
-				float RectB_XCenter = (x + tX) * vMap[MapIndex].n_tileWidth + vMap[MapIndex].n_tileWidth/2;
-				float RectB_YCenter = (y + tY) * vMap[MapIndex].n_tileHeight + vMap[MapIndex].n_tileHeight/2;
+				float RectB_X1 = (x + tX) * vMap[MapIndex].tileWidth;
+				float RectB_X2 = (x + tX) * vMap[MapIndex].tileWidth + vMap[MapIndex].tileWidth;
+				float RectB_Y1 = (y + tY) * vMap[MapIndex].tileHeight;
+				float RectB_Y2 = (y + tY) * vMap[MapIndex].tileHeight + vMap[MapIndex].tileHeight;
+				float RectB_XCenter = (x + tX) * vMap[MapIndex].tileWidth + vMap[MapIndex].tileWidth/2;
+				float RectB_YCenter = (y + tY) * vMap[MapIndex].tileHeight + vMap[MapIndex].tileHeight/2;
 
 				//Check if the entity collides with the tile
 				if(RectA_X1 < RectB_X2 && RectA_X2 > RectB_X1 &&
