@@ -203,7 +203,7 @@ void BlankGameState::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 			else if((y + tY) > (vMap[MapIndex].mapHeight)) MaxY--;
 
 			//Check for collision if the tile is solid
-			if(vMap[MapIndex].is_tileSolid(x + tX, y + tY)){
+			if(vMap[MapIndex].isTileSolid(x + tX, y + tY)){
 				//Set the Tiles bounding Box
 				float RectB_X1 = (x + tX) * vMap[MapIndex].tileWidth;
 				float RectB_X2 = (x + tX) * vMap[MapIndex].tileWidth + vMap[MapIndex].tileWidth;
@@ -223,7 +223,7 @@ void BlankGameState::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 						if(RectA_YCenter < RectB_YCenter){
 							//Entity is above the tile
 							//Check if there is a solid tile above the ledge
-							if(!vMap[MapIndex].is_tileSolid(x + tX, y + tY - 1)){
+							if(!vMap[MapIndex].isTileSolid(x + tX, y + tY - 1)){
 								//There isn't a solid tile
 								vEntity[EntityIndex]->fY = RectB_Y1 - vEntity[EntityIndex]->nHeight;
 								vEntity[EntityIndex]->fdY = 0.0f;
@@ -233,7 +233,7 @@ void BlankGameState::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 						else{
 							//Entity is below the tile
 							//Check if there is a solid tile below the ledge
-							if(!vMap[MapIndex].is_tileSolid(x + tX, y + tY + 1)){
+							if(!vMap[MapIndex].isTileSolid(x + tX, y + tY + 1)){
 								//There isn't a solid tile
 								vEntity[EntityIndex]->fY = RectB_Y2;
 								vEntity[EntityIndex]->fdY = 0.0f;
@@ -248,7 +248,7 @@ void BlankGameState::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 						if(RectA_XCenter <= RectB_XCenter){
 							//Entity is left of the tile
 							//Check if there is a solid tile to the left of the ledge
-							if(!vMap[MapIndex].is_tileSolid(x + tX - 1, y + tY)){
+							if(!vMap[MapIndex].isTileSolid(x + tX - 1, y + tY)){
 								//There isn't a solid tile
 								vEntity[EntityIndex]->fX = RectB_X1 - vEntity[EntityIndex]->nWidth +8; // made a change +8
 								vEntity[EntityIndex]->fdX = 0.0f;
@@ -258,7 +258,7 @@ void BlankGameState::EntityMapCollisionRect(int EntityIndex, int MapIndex){
 						else{
 							//Entity is right of the tile
 							//Check if there is a solid tile to the right of the ledge
-							if(!vMap[MapIndex].is_tileSolid(x + tX + 1, y + tY)){
+							if(!vMap[MapIndex].isTileSolid(x + tX + 1, y + tY)){
 								//There isn't a solid tile
 								vEntity[EntityIndex]->fX = RectB_X2;
 								vEntity[EntityIndex]->fdX = 0.0f;

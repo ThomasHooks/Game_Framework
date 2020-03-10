@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameMap.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/08/2020
+// Last Modified	: 03/09/2020
 //============================================================================
 
 
@@ -16,8 +16,6 @@
 #include <vector>
 #include <string>
 
-#include <SDL.h>
-
 #include "Tile.h"
 #include "../utilities/Dimension.h"
 
@@ -27,47 +25,46 @@
 class GameMap {
 
 public:
+
 	GameMap(std::string name);
 
 	~GameMap();
 
+	bool isTileSolid(int x, int y);
+	void setTileSolid(int x, int y, bool solid);
 
-	bool is_tileSolid(int x, int y);
-	void set_tileSolid(int x, int y, bool solid);
-
-	int get_tileIndex(int x, int y);
-	void set_tileIndex(int x, int y, int index);
+	int getTileSprite(int x, int y);
+	void setTileSprite(int x, int y, int index);
 
 	class Position getTilePosition(int x, int y);
 
-	bool loadMap(std::string FileName);
-
-	int get_mapWidth(void) const {return mapWidth;}
-	void set_mapWidth(const int width) {mapWidth = width;}
-
-	int get_mapHeight(void) const {return mapHeight;}
-	void set_mapHeight(const int height) {mapHeight = height;}
+	int getWidth() const;
+	int getHeight() const;
 	const Dimension& getSize() const;
 
-	int get_tileWidth(void) const {return tileWidth;}
-	void set_tileWidth(const int width) {tileWidth = width;}
+	int getTileWidth() const;
+	int getTileHeight() const;
 	const Dimension& getTileSize() const;
 
-	int get_tileHeight(void) const {return tileHeight;}
-	void set_tileHeight(const int height) {tileHeight = height;}
+	const std::string& getTag() const;
 
-	std::string get_mapName(void) const {return mapName;}
-	void set_mapName(const std::string &name) {mapName = name;}
+	bool loadMap(std::string FileName);
 
 	int mapWidth, mapHeight;
 	int tileWidth, tileHeight;
+
+protected:
+
+	void setWidth(const int width);
+	void setHeight(const int height);
+	void setSize(const Dimension &sizeIn);
 
 private:
 
 	Dimension mapSize;
 	Dimension tileSize;
 
-	std::string mapName;
+	std::string mapTag;
 
 	std::vector<std::vector<Tile>> tileMap;
 };

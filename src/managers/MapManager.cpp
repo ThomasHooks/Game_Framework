@@ -25,12 +25,7 @@
 
 MapManager::MapManager()
 	: hasBeenInit(false),
-	  logger(nullptr) {
-
-	/* The method 'init' must be called when using this constructor
-	 * before using the map_manager object
-	 */
-}
+	  logger(nullptr) {}
 
 
 
@@ -124,7 +119,7 @@ void MapManager::draw(const Position &cameraPos, const Dimension &visibleTiles, 
 
 	if(this->hasBeenInit){
 
-		std::string tag = mapStack.back()->get_mapName();
+		std::string tag = mapStack.back()->getTag();
 		//Over rendering is done to prevent artifacts along the edge of the screen
 		for(int y = -1; y < visibleTiles.height; y++){
 			for(int x = -1; x < visibleTiles.width; x++){
@@ -137,7 +132,7 @@ void MapManager::draw(const Position &cameraPos, const Dimension &visibleTiles, 
 				if(yCord < 0) yCord = 0;
 
 				Position tilePos = mapStack.back()->getTilePosition(xCord, yCord);
-				Dimension tileSprite(mapStack.back()->get_tileIndex(xCord, yCord), 0);
+				Dimension tileSprite(mapStack.back()->getTileSprite(xCord, yCord), 0);
 
 				renderer.drawSprite(tag, tilePos, cameraPos, tileSprite, false);
 			}
@@ -159,7 +154,7 @@ int MapManager::getTileSolid(int x, int y) const {
 
 
 
-	return mapStack.back()->is_tileSolid(x, y);
+	return mapStack.back()->isTileSolid(x, y);
 }
 
 
@@ -178,7 +173,7 @@ void MapManager::setTileSolid(int x, int y, bool solid){
 
 
 
-	mapStack.back()->set_tileSolid(x, y, solid);
+	mapStack.back()->setTileSolid(x, y, solid);
 }
 
 
@@ -195,19 +190,19 @@ int MapManager::getTileSprite(int x, int y) const {
 
 
 
-	return mapStack.back()->get_tileIndex(x, y);
+	return mapStack.back()->getTileSprite(x, y);
 }
 
 
 
 int MapManager::getWidth() const {
-	return mapStack.back()->get_mapWidth();
+	return mapStack.back()->getWidth();
 }
 
 
 
 int MapManager::getHeight() const {
-	return mapStack.back()->get_mapHeight();
+	return mapStack.back()->getHeight();
 }
 
 
@@ -219,13 +214,13 @@ const Dimension& MapManager::getSize() const {
 
 
 int MapManager::getTileWidth() const {
-	return mapStack.back()->get_tileWidth();
+	return mapStack.back()->getTileWidth();
 }
 
 
 
 int MapManager::getTileHeight() const {
-	return mapStack.back()->get_tileHeight();
+	return mapStack.back()->getTileHeight();
 }
 
 
@@ -237,7 +232,7 @@ const Dimension& MapManager::getTileSize() const {
 
 
 std::string MapManager::getTag() const {
-	return mapStack[mapStack.size()]->get_mapName();
+	return mapStack[mapStack.size()]->getTag();
 }
 
 

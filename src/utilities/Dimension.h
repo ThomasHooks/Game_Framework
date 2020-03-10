@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Dimension.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/22/2020
+// Last Modified	: 03/09/2020
 //============================================================================
 
 
@@ -12,7 +12,7 @@
 
 
 
-//This structure encapsulates the dimension of a 2D entity by storing its width and height
+//This structure encapsulates the dimension of a 2D entity
 //TODO add operator over loads for Dimension
 struct Dimension {
 
@@ -22,6 +22,25 @@ struct Dimension {
 	Dimension(int width, int height);
 
 	~Dimension();
+
+	bool operator==(const Dimension& other) const;
+	bool operator>(const Dimension& other) const;
+	bool operator>=(const Dimension& other) const;
+	bool operator<(const Dimension& other) const;
+	bool operator<=(const Dimension& other) const;
+
+	bool operator>(int scalar) const;
+	bool operator>=(int scalar) const;
+	bool operator<(int scalar) const;
+	bool operator<=(int scalar) const;
+
+	Dimension operator+(const Dimension& other) const;
+	Dimension operator-(const Dimension& other) const;
+
+	Dimension operator+(int scalar) const;
+	Dimension operator-(int scalar) const;
+	Dimension operator*(int scalar) const;
+	Dimension operator/(int scalar) const;
 };
 
 

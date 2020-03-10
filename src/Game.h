@@ -13,6 +13,8 @@
 
 
 
+#include <SDL.h>
+
 #include "managers/RendererManager.h"
 #include "managers/MapManager.h"
 #include "managers/StateManager.h"

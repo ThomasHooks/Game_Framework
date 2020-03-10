@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameLogger.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/01/2020
+// Last Modified	: 03/09/2020
 //============================================================================
 
 
@@ -19,7 +19,7 @@
 
 
 
-enum struct Level : unsigned char{
+enum struct Level : unsigned char {
 	//This enumeration encapsulates the logging level
 
 	NONE = 0,	//Nothing will be logged
@@ -37,14 +37,14 @@ enum struct Level : unsigned char{
 
 
 
-enum struct Output : unsigned char{
+enum struct Output : unsigned char {
 	//This enumeration encapsulates the log output type
 
 	CONSOLE = 0,
 	TXT_FILE
 };
 
-//TODO make GameLogger a singleton
+
 
 class GameLogger {
 
@@ -58,9 +58,9 @@ public:
 	GameLogger(const GameLogger &other) = delete;
 	GameLogger(GameLogger &&other) = delete;
 
-	void message(Level levelIn, const std::string &message, Output out);
+	void message(Level levelIn, const std::string &message, Output outputIn);
 
-	Level getLogLevel(void) const;
+	Level getLogLevel() const;
 	void setLogLevel(Level levelIn);
 
 	void setFilePath(const std::string &filePathIn);

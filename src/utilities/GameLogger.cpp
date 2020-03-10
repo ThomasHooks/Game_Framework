@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameLogger.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/01/2020
+// Last Modified	: 03/09/2020
 //============================================================================
 
 
@@ -18,22 +18,24 @@
 
 
 GameLogger::GameLogger(Level levelIn)
-	: _level(levelIn), filePath("./log.txt"){
-	//Set default log file location to the applications relative directory
+	: _level(levelIn),
+	  filePath("./log.txt") {
+
 	message(Level::INFO, "Logging started", Output::TXT_FILE);
 }
 
 
 
 GameLogger::GameLogger(Level levelIn, std::string fileLocation)
-	: _level(levelIn), filePath(fileLocation){
+	: _level(levelIn),
+	  filePath(fileLocation) {
+
 	message(Level::INFO, "Logging started", Output::TXT_FILE);
 }
 
 
 
 GameLogger::~GameLogger() {
-	//Nothing to free from the heap
 
 	message(Level::INFO, "Logging stopped", Output::TXT_FILE);
 	writeToFile("\n\n");
@@ -41,103 +43,38 @@ GameLogger::~GameLogger() {
 
 
 
-void GameLogger::message(Level levelIn, const std::string &message, Output out){
+void GameLogger::message(Level levelIn, const std::string &message, Output outputIn){
 	/*
-	 *	This method will log a message if its level is
-	 *	at or below the logging level
+	 * @param	levelIn What level the message will be displayed
 	 *
-	 * @param	level		What level the message will be displayed
+	 * @param	message The text to be displayed
 	 *
-	 * @param	message		The text to be displayed
+	 * @param	outputIn The medium the message will be displayed on
 	 *
-	 * @param	out			The medium the message will be displayed on
+	 * This method will log a message if its level is at or below the logging level
 	 */
 
 
 
 
-	auto end = std::chrono::system_clock::now();
-	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-	std::string timeStamp = ctime(&end_time);
+	if(levelIn != Level::NONE && levelIn <= this->_level) {
 
-	switch (levelIn){
+		auto end = std::chrono::system_clock::now();
+		std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+		std::string timeStamp = ctime(&end_time);
+		std::string logLevel[6] = {"", "[***FATAL***] ", "[**ERROR**] ", "[*WARNING*] ", "[Info] ", "[Trace] "};
 
-	case Level::NONE:
-		//None is not used to display messages
-		break;
+		switch(outputIn) {
 
+		case Output::CONSOLE:
+			std::cout << logLevel[static_cast<int>(levelIn)] << message <<  ": " << timeStamp;
+			break;
 
-
-	case Level::FATAL:
-		if (out == Output::CONSOLE && _level >= Level::FATAL){
-			//Output to console
-			std::cout << "[***FATAL***] " << message <<  ": " << timeStamp;
+		case Output::TXT_FILE:
+			writeToFile(logLevel[static_cast<int>(levelIn)] + message +  ": " + timeStamp);
+			break;
 		}
-
-		else if(out == Output::TXT_FILE && _level >= Level::FATAL){
-			//Output to .txt file
-			writeToFile("[***FATAL***] " + message +  ": " + timeStamp);
-		}
-		break;
-
-
-
-	case Level::ERROR:
-		if (out == Output::CONSOLE && _level >= Level::ERROR){
-			//Output to console
-			std::cout << "[**ERROR**] " << message <<  ": " << timeStamp;
-		}
-
-		else if(out == Output::TXT_FILE && _level >= Level::ERROR){
-			//Output to .txt file
-			writeToFile("[**ERROR**] " + message +  ": " + timeStamp);
-		}
-		break;
-
-
-
-	case Level::WARNING:
-		if (out == Output::CONSOLE && _level >= Level::WARNING){
-			//Output to console
-			std::cout << "[*WARNING*] " << message << ": " << timeStamp;
-		}
-
-		else if(out == Output::TXT_FILE && _level >= Level::WARNING){
-			//Output to .txt file
-			writeToFile("[*WARNING*] " + message +  ": " + timeStamp);
-		}
-		break;
-
-
-
-	case Level::INFO:
-		if (out == Output::CONSOLE && _level >= Level::INFO){
-			//Output to console
-			std::cout << "[Info] " << message << ": " << timeStamp;
-		}
-
-		else if(out == Output::TXT_FILE && _level >= Level::INFO){
-			//Output to .txt file
-			writeToFile("[Info] " + message +  ": " + timeStamp);
-		}
-		break;
-
-
-
-	case Level::TRACE:
-		if (out == Output::CONSOLE && _level >= Level::TRACE){
-			//Output to console
-			std::cout << "[Trace] " << message <<  ": " << timeStamp;
-		}
-
-		else if(out == Output::TXT_FILE && _level >= Level::TRACE){
-			//Output to .txt file
-			writeToFile("[Trace] " + message +  ": " + timeStamp);
-		}
-		break;
 	}
-
-	return;
 }
 
 
@@ -195,8 +132,6 @@ void GameLogger::writeToFile(const std::string &message){
 		std::cout << "[**ERROR**] " << "Cannot write to log file: '" <<
 				this->filePath << "' " << timeStamp;
 	}
-
-	return;
 }
 
 

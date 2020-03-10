@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameMap.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/08/2020
+// Last Modified	: 03/09/2020
 //============================================================================
 
 
@@ -15,12 +15,6 @@
 #include <vector>
 #include <string>
 
-#include <SDL.h>
-#include "SDL_image.h"
-#include "SDL_ttf.h"
-#include "SDL_mixer.h"
-
-#include "../Game.h"
 #include "Tile.h"
 #include "../utilities/Position.h"
 #include "../utilities/Dimension.h"
@@ -35,7 +29,7 @@ GameMap::GameMap(std::string name)
 	  tileHeight(32),
 	  mapSize(mapWidth, mapHeight),
 	  tileSize(32, 32),
-	  mapName(name) {}
+	  mapTag(name) {}
 
 
 
@@ -43,14 +37,15 @@ GameMap::~GameMap() {}
 
 
 
-bool GameMap::is_tileSolid(int x, int y){
+bool GameMap::isTileSolid(int x, int y){
 	/*
-	 * brief	Checks if a tile is solid
+	 * @param	x Specifies the tile's X coordinate in the map
 	 *
-	 * param	x	Specifies the tile's X coordinate in the map
+	 * @param	y Specifies the tile's Y coordinate in the map
 	 *
-	 * param	y	Specifies the tile's Y coordinate in the map
+	 * @return True if the given tile is solid
 	 *
+	 * Checks if a tile is solid
 	 */
 
 
@@ -63,18 +58,16 @@ bool GameMap::is_tileSolid(int x, int y){
 
 
 
-void GameMap::set_tileSolid(int x, int y, bool solid){
+void GameMap::setTileSolid(int x, int y, bool solid){
 	/*
-	 * brief	This method will set the give tile's solid state
+	 * @param	x Specifies the tile's X coordinate in the map
 	 *
+	 * @param	y Specifies the tile's Y coordinate in the map
 	 *
-	 * param	x		Specifies the tile's X coordinate in the map
+	 * @param	solid Specifies if the tile is solid or not
 	 *
-	 * param	y		Specifies the tile's Y coordinate in the map
-	 *
-	 * param	solid	Specifies if the tile is solid or not
-	 *
-	 * */
+	 * Sets the give tile's solid state
+	 */
 
 
 
@@ -89,9 +82,13 @@ void GameMap::set_tileSolid(int x, int y, bool solid){
 
 
 
-int GameMap::get_tileIndex(int x, int y){
+int GameMap::getTileSprite(int x, int y){
 	/*
+	 * @param	x The tile's X coordinate in the map
 	 *
+	 * @param	y The tile's Y coordinate in the map
+	 *
+	 * @return The location of the tile's sprite
 	 */
 
 
@@ -106,9 +103,15 @@ int GameMap::get_tileIndex(int x, int y){
 
 
 
-void GameMap::set_tileIndex(int x, int y, int index){
+void GameMap::setTileSprite(int x, int y, int index){
 	/*
+	 * @param	x The tile's X coordinate in the map
 	 *
+	 * @param	y The tile's Y coordinate in the map
+	 *
+	 * @param	index The location of the tile's sprite in the sprite sheet
+	 *
+	 * Changes the given tile's sprite
 	 */
 
 
@@ -122,27 +125,61 @@ void GameMap::set_tileIndex(int x, int y, int index){
 
 
 Position GameMap::getTilePosition(int x, int y){
-	/*
-	 *
-	 */
-
-
-
-
 	return Position(tileMap[x][y].f_x, tileMap[x][y].f_y);
+}
+
+
+
+int GameMap::getWidth() const {
+	return mapWidth;
+}
+
+
+
+int GameMap::getHeight() const {
+	return mapHeight;
+}
+
+
+
+const Dimension& GameMap::getSize() const {
+	return this->mapSize;
+}
+
+
+
+int GameMap::getTileWidth() const {
+	return tileWidth;
+}
+
+
+
+int GameMap::getTileHeight() const {
+	return tileHeight;
+}
+
+
+
+const Dimension& GameMap::getTileSize() const {
+	return this->tileSize;
+}
+
+
+
+const std::string& GameMap::getTag() const {
+	return mapTag;
 }
 
 
 
 bool GameMap::loadMap(std::string FileName){
 	/*
-	 * brief	This method load the map file given by the user and will return
-	 * 		    true if successful, false otherwise
+	 * @param	FileName Path to the tile map file
 	 *
+	 * @return True if successful and False if it fails to load
 	 *
-	 * param	FileName	Path to the tile map file
-	 *
-	 * */
+	 * load the map file given by the user
+	 */
 
 
 
@@ -223,14 +260,21 @@ bool GameMap::loadMap(std::string FileName){
 
 
 
-const Dimension& GameMap::getSize() const {
-	return this->mapSize;
+void GameMap::setWidth(const int width){
+	width > 0 ? this->mapWidth = width : this->mapWidth = 1;
 }
 
 
 
-const Dimension& GameMap::getTileSize() const {
-	return this->tileSize;
+void GameMap::setHeight(const int height){
+	height > 0 ? this->mapHeight = height : this->mapHeight = 1;
+}
+
+
+
+void GameMap::setSize(const Dimension &sizeIn){
+	sizeIn.width > 0 ? this->mapSize.width = sizeIn.width : this->mapSize.width = 1;
+	sizeIn.height > 0 ? this->mapSize.height = sizeIn.height : this->mapSize.height = 1;
 }
 
 
