@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/08/2020
+// Last Modified	: 03/10/2020
 //============================================================================
 
 
@@ -92,7 +92,7 @@ Game::Game(const char * title, int Window_Height, int Window_Width, Uint32 flags
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	//Create a Window in the middle of the screen that is Window_Width by Window_Height in (px)
-	Log.message(Level::INFO, "Initializing window", Output::TXT_FILE);
+	Log.message(Level::INFO, "Initializing Window", Output::TXT_FILE);
 	window = SDL_CreateWindow(title,
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
@@ -145,7 +145,7 @@ bool Game::init(const char * title, int Window_Height, int Window_Width, Uint32 
 	if (!b_hasBeenInit){
 
 		b_hasBeenInit = true;
-		Log.message(Level::INFO, "Initializing window", Output::TXT_FILE);
+		Log.message(Level::INFO, "Initializing Window", Output::TXT_FILE);
 
 		WindowHeight = Window_Height;
 		WindowWidth = Window_Width;

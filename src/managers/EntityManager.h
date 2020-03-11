@@ -40,7 +40,9 @@ public:
 	int spawn(std::string tag, const class Position &pos);
 	bool despawn(int id);
 
-	void drawAll(void);
+	void drawAll(const class Position &cameraPos,
+			const struct Dimension &windowSize,
+			class RendererManager &renderer);
 
 	class Entity* getEntity(int id);
 	int numberOfEntities(void);

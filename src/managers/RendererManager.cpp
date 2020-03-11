@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: RendererManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/08/2020
+// Last Modified	: 03/10/2020
 //============================================================================
 
 
@@ -79,36 +79,47 @@ bool RendererManager::registerTexture(const std::string &tag, const std::string 
 
 
 
-	if(!this->hasBeenInit) return false;
+	if(!this->hasBeenInit) {
+		logger->message(Level::ERROR, "Cannot register textures, Renderer has not been initialized!", Output::TXT_FILE);
+		return false;
+	}
 
 	logger->message(Level::INFO, "Registering texture '" + tag + "' at "+ fileLocation, Output::TXT_FILE);
-	if(textureMap.find(tag) == textureMap.end()) {
-		//Tag is unique so it can be registered
 
-		SDL_Surface *tmpSurface = IMG_Load(fileLocation.c_str());
-		if(tmpSurface == NULL) {
-			//TODO Add a default sprite for that tag
+	if(textureMap.find(tag) != textureMap.end()) {
+		logger->message(Level::WARNING, "Unable to register texture, tag: '" + tag +"' is not unique", Output::TXT_FILE);
+		return false;
+	}
 
-			SDL_FreeSurface(tmpSurface);
-			tmpSurface = nullptr;
+	//Tag is unique so it can be registered
+	SDL_Surface *tmpSurface = IMG_Load(fileLocation.c_str());
+	if(tmpSurface == NULL) {
 
-			std::string sdlMessage = IMG_GetError();
-			logger->message(Level::ERROR, "Cannot find the file: '" + fileLocation + "'. SDL: " + sdlMessage,	Output::TXT_FILE);
-			return false;
-		}
+		//Could not find the sprite sheet
+		std::string sdlMessage = IMG_GetError();
+		logger->message(Level::WARNING, "Cannot find the file '" + fileLocation + "'. SDL: " + sdlMessage, Output::TXT_FILE);
 
-		textureMap.insert({tag, std::unique_ptr<SDLTextureWrapper>(new SDLTextureWrapper(this->renderer, tmpSurface, tileSize))});
+		//Register this tag with the missing texture
+		tmpSurface = IMG_Load("./data/gfx/null.png");
+		Dimension nullSize(16, 16);
+		textureMap.insert({tag,
+			std::unique_ptr<SDLTextureWrapper>(new SDLTextureWrapper(this->renderer, tmpSurface, nullSize))});
+
+		SDL_FreeSurface(tmpSurface);
+		tmpSurface = nullptr;
+		return false;
+	}
+	else {
+		//Sprite sheet was found
+		textureMap.insert({tag,
+			std::unique_ptr<SDLTextureWrapper>(new SDLTextureWrapper(this->renderer, tmpSurface, tileSize))});
 
 		SDL_FreeSurface(tmpSurface);
 		tmpSurface = nullptr;
 
 		logger->message(Level::INFO, "File '" + fileLocation + "' has been registered", Output::TXT_FILE);
 		return true;
-
 	}
-
-	logger->message(Level::WARNING, "Unable to register texture, tag: '" + tag +"' is not unique", Output::TXT_FILE);
-	return false;
 }
 
 
@@ -125,19 +136,24 @@ bool RendererManager::deregisterTexture(const std::string &tag){
 
 
 
-	if(!hasBeenInit) return false;
+	if(hasBeenInit) {
 
-	if(textureMap.find(tag) == textureMap.end()){
-		logger->message(Level::WARNING, "Could not find tag: '" + tag + "' unable to deregister texture", Output::TXT_FILE);
+		if(textureMap.find(tag) == textureMap.end()) {
+			logger->message(Level::WARNING, "Could not find tag: '" + tag + "' unable to deregister texture", Output::TXT_FILE);
+			return false;
+		}
+
+		logger->message(Level::INFO, "Deregistering texture '" + tag +"'", Output::TXT_FILE);
+
+		textureMap.erase(tag);
+
+		logger->message(Level::INFO, "Texture '" + tag +"' has been deregistered", Output::TXT_FILE);
+		return true;
+	}
+	else {
+		logger->message(Level::ERROR, "Cannot deregister textures, Renderer has not been initialized!", Output::TXT_FILE);
 		return false;
 	}
-
-	logger->message(Level::INFO, "Deregistering texture '" + tag +"'", Output::TXT_FILE);
-
-	textureMap.erase(tag);
-
-	logger->message(Level::INFO, "Texture '" + tag +"' has been deregistered", Output::TXT_FILE);
-	return true;
 }
 
 
@@ -150,19 +166,21 @@ void RendererManager::deregisterAllTextures(){
 
 
 
-	if(!this->hasBeenInit) return;
+	if(this->hasBeenInit) {
 
-	logger->message(Level::INFO, "Deregistering all textures", Output::TXT_FILE);
-	auto itr = textureMap.begin();
-	while(itr != textureMap.end()){
+		logger->message(Level::INFO, "Deregistering all textures", Output::TXT_FILE);
+		auto itr = textureMap.begin();
+		while(itr != textureMap.end()){
 
-		std::string tag = itr->first;
-		logger->message(Level::INFO, "Deregistering texture '" + tag + "'", Output::TXT_FILE);
+			std::string tag = itr->first;
+			logger->message(Level::INFO, "Deregistering texture '" + tag + "'", Output::TXT_FILE);
 
-		 itr = textureMap.erase(itr);
+			itr = textureMap.erase(itr);
 
-		 logger->message(Level::INFO, "Texture '" + tag + "' has been deregistered", Output::TXT_FILE);
+			logger->message(Level::INFO, "Texture '" + tag + "' has been deregistered", Output::TXT_FILE);
+		}
 	}
+	else logger->message(Level::ERROR, "Cannot deregister textures, Renderer has not been initialized!", Output::TXT_FILE);
 }
 
 
@@ -394,7 +412,7 @@ void RendererManager::drawLine(const class Position &startPos, const class Posit
 
 
 
-void RendererManager::drawQuad(const class Position &pos, const class Dimension &dim, bool fill){
+void RendererManager::drawRect(const class Position &pos, const class Dimension &dim, bool fill){
 	/*
 	 * @param	pos The coordinates of the rectangle
 	 *
@@ -425,9 +443,10 @@ void RendererManager::drawQuad(const class Position &pos, const class Dimension 
 
 
 void RendererManager::drawSprite(const std::string &tag,
-		const Position &pos,
-		const Position &cameraOffset,
-		const Dimension &spriteLocation,
+		const class Position &pos,
+		const class Position &cameraOffset,
+		const struct Dimension &spriteLocation,
+		const double angle,
 		const bool flipSprite){
 	/*
 	 * @param	tag The tag ID of the entity/tile
@@ -437,6 +456,10 @@ void RendererManager::drawSprite(const std::string &tag,
 	 * @param	cameraOffset The coordinates of the camera
 	 *
 	 * @param	spriteLocation The location of the sprite in the sprite sheet
+	 *
+	 * @param	angle The location of the sprite in the sprite sheet
+	 *
+	 * @param	flipSprite If the sprite should be flipped
 	 *
 	 * Draws a sprite given by tag to the renderer
 	 */
@@ -466,10 +489,37 @@ void RendererManager::drawSprite(const std::string &tag,
 
 		SDL_RendererFlip flip = flipSprite ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
-		SDL_RenderCopyEx(this->renderer, this->getTexture(tag), &spriteRect, &entityRect, 0.0, NULL, flip);
+		SDL_RenderCopyEx(this->renderer, this->getTexture(tag), &spriteRect, &entityRect, angle, NULL, flip);
 	}
 
 	else logger->message(Level::ERROR, "Cannot render sprite, Renderer has not been initialized!", Output::TXT_FILE);
+}
+
+
+
+void RendererManager::drawSprite(const std::string &tag,
+		const Position &pos,
+		const Position &cameraOffset,
+		const Dimension &spriteLocation,
+		const bool flipSprite){
+	/*
+	 * @param	tag The tag ID of the entity/tile
+	 *
+	 * @param	pos The coordinates of the entity/tile
+	 *
+	 * @param	cameraOffset The coordinates of the camera
+	 *
+	 * @param	spriteLocation The location of the sprite in the sprite sheet
+	 *
+	 * @param	flipSprite If the sprite should be flipped
+	 *
+	 * Draws a sprite given by tag to the renderer
+	 */
+
+
+
+
+	this->drawSprite(tag, pos, cameraOffset, spriteLocation, 0.0, flipSprite);
 }
 
 

@@ -11,6 +11,7 @@
 #include "../entities/Entity.h"
 #include "Builder.h"
 #include "../utilities/GameLogger.h"
+#include "RendererManager.h"
 
 
 
@@ -114,9 +115,19 @@ bool EntityManager::despawn(int id){
 
 
 
-void EntityManager::drawAll(void){
-	//TODO create method EntityManager::drawAll
-	return;
+void EntityManager::drawAll(const class Position &cameraPos, const struct Dimension &windowSize, class RendererManager &renderer){
+	/*
+	 *
+	 */
+
+
+
+
+	auto itr = this->entityMap.begin();
+	while(itr != this->entityMap.end()){
+		//Check if the entity is visible on the screen
+		//if the entity is visible draw it
+	}
 }
 
 

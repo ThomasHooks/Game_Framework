@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: RendererManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/08/2020
+// Last Modified	: 03/10/2020
 //============================================================================
 
 
@@ -68,7 +68,7 @@ public:
 	void drawLine(const class Position &startPos,
 			const class Position &endPos);
 
-	void drawQuad(const class Position &pos,
+	void drawRect(const class Position &pos,
 			const struct Dimension &dim,
 			bool fill);
 
@@ -76,6 +76,13 @@ public:
 			const class Position &pos,
 			const class Position &cameraOffset,
 			const struct Dimension &spriteLocation,
+			const bool flipSprite);
+
+	void drawSprite(const std::string &tag,
+			const class Position &pos,
+			const class Position &cameraOffset,
+			const struct Dimension &spriteLocation,
+			const double angle,
 			const bool flipSprite);
 
 	void setScale(float scaleIn);
