@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Collisions.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/23/2020
+// Last Modified	: 03/12/2020
 //============================================================================
 
 
@@ -10,211 +10,203 @@
 #include "Collisions.h"
 
 #include <math.h>
+#include <algorithm>
 
 
 
-//----------------------------------------------------------------------------
+
 //						Rectangle Vs Point
-
-bool CollisionPointRect(float rect_x, float rect_y, int rect_w, int rect_h,
-		float pnt_x, float pnt_y){
+bool Collision::RectVsPt(double xRect, double yRect, double wRect, double hRect, double xPt, double yPt){
 	/*
-	 * *brief*	This function will return true if the the rectangles overlap
+	 * @param	xRect, yRect Top left corner of the rectangle
 	 *
-	 * param	rect_x, rect_y		top left corner of the rectangle
-	 * param	rect_w				width of the rectangle
-	 * param	rect_h				height of the rectangle
+	 * @param	wRect Width of the rectangle
 	 *
-	 * param	pnt_x, pnt_y		center of the point
+	 * @param	hRect Height of the rectangle
 	 *
-	 * 			This function checks if a point is inside of a rectangle.
-	 *			If the point is inside the rectangle it will return true,
-	 *			if not it will return false
-	 **/
+	 * @param	xPt, yPt Center of the point
+	 *
+	 * @return	True if the point is inside of the rectangle
+	 *
+	 * checks if a point is inside of a rectangle
+	 */
 
 
 
+	//right edge, left edge, top edge, bottom edge
+	if(xRect + wRect >= xPt && xRect <= xPt && yRect + hRect >= yPt && yRect <= yPt) return true;
 
-	if(rect_x + (float)rect_w >= pnt_x &&			//right edge
-			rect_x <= pnt_x &&						//left edge
-			rect_y + (float)rect_h >= pnt_y &&		//top edge
-			rect_y <= pnt_y){						//bottom edge
-
-		return true;
-	}
-
-	return false;
+	else return false;
 }
 
 
 
-bool CollisionPointRect(const Position2D &rect_p, const Dimension2D &rect_d,
-		const Position2D &pnt){
+bool Collision::RectVsPt(const Position &posRect, const Dimension &dimRect, const Position &posPt){
 	/*
-	 * *brief*	This function will return true if the the point is inside of
-	 * 			the rectangle
+	 * @param	posRect The coordinates of the rectangle
 	 *
-	 * param	rect_p	a struct that contains the rectangle's position
-	 * param	rect_d	a struct that contains the rectangle's dimension
+	 * @param	dimRect The dimension of the rectangle
 	 *
-	 * param	pnt		a struct that contains the position of the point
+	 * @param	posPt The coordinates of the point
 	 *
-	 * 			This function checks if a point is inside of a rectangle.
-	 *			If the point is inside the rectangle it will return true,
-	 *			if not it will return false
-	 **/
+	 * @return	True if the point is inside of the rectangle
+	 *
+	 * Checks if a point is inside of a rectangle
+	 */
 
 
 
 
-	if(rect_p.f_x + (float)rect_d.n_width >= pnt.f_x &&			//right edge
-			rect_p.f_x <= pnt.f_x &&							//left edge
-			rect_p.f_y + (float)rect_d.n_height >= pnt.f_y &&	//top edge
-			rect_p.f_y <= pnt.f_y){							//bottom edge
-
-		return true;
-	}
-
-	return false;
+	return RectVsPt(posRect.xPos(), posRect.yPos(), dimRect.width, dimRect.height, posPt.xPos(), posPt.yPos());
 }
 
 
-//----------------------------------------------------------------------------
+
 //					   Rectangle Vs Rectangle
-
-bool CollisionRectRect(float x1, float y1, int w1, int h1,
-		float x2, float y2, int w2, int h2){
+bool Collision::RectVsRect(double x1, double y1, double w1, double h1, double x2, double y2, double w2, double h2){
 	/*
-	 * *brief*	This function will return true if the the rectangles overlap
+	 * @param	x1,y1	top left corner of rectangle 1
 	 *
-	 * param	x1,y1	top left corner of rectangle 1
-	 * param	w1		width of rectangle 1
-	 * param	h1		height of rectangle 1
+	 * @param	w1		width of rectangle 1
 	 *
-	 * param	x2,y2	top left corner of rectangle 2
-	 * param	w2		width of rectangle 2
-	 * param	h2		height of rectangle 2
+	 * @param	h1		height of rectangle 1
 	 *
-	 * 			This function checks if to rectangle are overlapping or colliding.
-	 *			If they are it will return true, if not it will return false
-	 **/
+	 * @param	x2,y2	top left corner of rectangle 2
+	 *
+	 * @param	w2		width of rectangle 2
+	 *
+	 * @param	h2		height of rectangle 2
+	 *
+	 * @return	True if the rectangles are overlapping/colliding
+	 *
+	 * Checks if two rectangle are overlapping/colliding
+	 */
 
 
 
 
-	if(x1 + (float)w1 >= x2 && 			//rect1's right edge is pat rect2's left
-			x1 <= x2 + (float)w2 &&		//rect1's left edge is past rect2's right
-			y1 + (float)h1 >= y2 &&		//rect1's top edge is past rect2's bottom
-			y1 <= y2 + (float)h2){		//rect1's bottom edge is past rect2's top
+	//right edge, left edge, top edge, bottom edge
+	if(x1 + w1 >= x2 && x1 <= x2 + w2 && y1 + h1 >= y2 && y1 <= y2 + h2) return true;
 
-		return true;
-	}
-
-	return false;
+	else return false;
 }
 
 
 
-bool CollisionRectRect(const Position2D &rect1_p, const Dimension2D &rect1_d,
-		const Position2D &rect2_p, const Dimension2D &rect2_d){
+bool Collision::RectVsRect(const Position &pos1, const Dimension &dim1, const Position &pos2, const Dimension &dim2){
 	/*
-	 * *brief*	This function will return true if the the rectangles overlap
+	 * @param	pos1 Coordinates of the first rectangle
 	 *
-	 * param	rect1_p		a struct that contains the first rectangle's position
-	 * param	rect1_d		a struct that contains the first rectangle's dimension
+	 * @param	dim1 Size of the first rectangle
 	 *
-	 * param	rect2_p		a struct that contains the second rectangle's position
-	 * param	rect2_d		a struct that contains the second rectangle's dimension
+	 * @param	pos2 Coordinates of the second rectangle
 	 *
-	 * 			This function checks if to rectangle are overlapping or colliding.
-	 *			If they are it will return true, if not it will return false
-	 **/
+	 * @param	dim2 Size of the second rectangle
+	 *
+	 * @return	True if the rectangles are overlapping/colliding
+	 *
+	 * Checks if 2 rectangles are overlapping/colliding
+	 */
 
 
 
 
-	if(rect1_p.f_x + (float)rect1_d.n_width >= rect2_p.f_x &&			//right edge
-			rect1_p.f_x <= rect2_p.f_x + (float)rect2_d.n_width &&		//left edge
-			rect1_p.f_y + (float)rect1_d.n_height >= rect2_p.f_y &&		//top edge
-			rect1_p.f_y <= rect2_p.f_y + (float)rect2_d.n_height){		//bottom edge
-
-		return true;
-	}
-
-	return false;
+	return RectVsRect(pos1.xPos(), pos1.yPos(), dim1.width, dim1.height, pos2.xPos(), pos2.yPos(), dim2.width, dim2.height);
 }
 
 
-//----------------------------------------------------------------------------
+
+bool Collision::RectVsRect(const AABB &rect1, const AABB &rect2){
+	/*
+	 * @param	rect1 The axis aligned bounding box of the first rectangle
+	 *
+	 * @param	rect2 The axis aligned bounding box of the second rectangle
+	 *
+	 * @return	True if the rectangles are overlapping/colliding
+	 *
+	 * Checks if 2 rectangles are overlapping/colliding
+	 */
+
+
+
+
+	return RectVsRect(rect1.getPos().xPos(), rect1.getPos().yPos(), rect1.width(), rect1.height(),
+			rect2.getPos().xPos(), rect2.getPos().yPos(), rect2.width(), rect2.height());
+}
+
+
+
 //					Which Edge of Rectangle Vs Rectangle
-
-EnumSide EdgeRectRect(const Position2D &rect1_p, const Dimension2D &rect1_d,
-		const Position2D &rect2_p, const Dimension2D &rect2_d){
+EnumSide Collision::RectEdge(double x1, double y1, double w1, double h1, double x2, double y2, double w2, double h2){
 	/*
-	 * *brief*	This function will return which side the rectangles collied,
-	 * 			if the the rectangles overlap
+	 * @param	x1,y1	top left corner of rectangle 1
 	 *
-	 * param	rect1_p		a struct that contains the first rectangle's position
-	 * param	rect1_d		a struct that contains the first rectangle's dimension
+	 * @param	w1		width of rectangle 1
 	 *
-	 * param	rect2_p		a struct that contains the second rectangle's position
-	 * param	rect2_d		a struct that contains the second rectangle's dimension
+	 * @param	h1		height of rectangle 1
 	 *
-	 * retrn	Side	None = 0, Top = 1, Right = 2, Bottom = 3, Left = 4
+	 * @param	x2,y2	top left corner of rectangle 2
 	 *
-	 * 			This function checks if two rectangle are overlapping or
-	 * 			colliding. If they are it will return which side of
-	 * 			rectangle 1 is colliding with rectangle 2. If they are not
-	 * 			overlapping it will return "None" or 0.
-	 **/
+	 * @param	w2		width of rectangle 2
+	 *
+	 * @param	h2		height of rectangle 2
+	 *
+	 * @return	Which side of two rectangles is colliding
+	 *
+	 * Checks which side of rectangle 1 is colliding with rectangle 2
+	 */
 
 
 
 
-	//Check if the rectangles overlap
-	if(CollisionRectRect(rect1_p, rect1_d, rect2_p, rect2_d)){
-		//If they do overlap:
+	if(RectVsRect(x1, y1, w1, h1, x2, y2, w2, h2)) {
 		//first calculate each rectangle's center
-		const float rect1_center_x = rect1_p.f_x + (float)rect1_d.n_width/2;
-		const float rect1_center_y = rect1_p.f_y + (float)rect1_d.n_height/2;
+		Position rect1Center(x1 + w1/2.0, y1 + h1/2.0);
+		Position rect2Center(x2 + w2/2.0, y2 + h2/2.0);
 
-		const float rect2_center_x = rect2_p.f_x + (float)rect2_d.n_width/2;
-		const float rect2_center_y = rect2_p.f_y + (float)rect2_d.n_height/2;
 
 		//Next calculate the distance between each rectangle's center
 		//And make the distance relative to rectangle 1's center
-		const float f_x_distance = sqrt((rect1_center_x * rect1_center_x) +
-				(rect2_center_x * rect2_center_x)) - rect1_center_x;
+		Position distance(std::sqrt(std::pow(rect1Center.xPos(), 2.0) + std::pow(rect2Center.xPos(), 2.0)) - rect1Center.xPos(),
+				std::sqrt(std::pow(rect1Center.yPos(), 2.0) + std::pow(rect2Center.yPos(), 2.0)) - rect1Center.yPos());
 
-		const float f_y_distance = sqrt((rect1_center_y * rect1_center_y) +
-				(rect2_center_y * rect2_center_y)) - rect1_center_y;
-
-		//Rectangle 1's center
-		const float center = 0.0f;
 
 		//Now check which components of rectangle 2 is closer to rectangle 1's center
-		if(abs(f_x_distance) < abs(f_y_distance)){
+		if(std::abs(distance.xPos()) < std::abs(distance.yPos())) {
 			//Because the x component of rectangle 2 is closer to rectangle 1's center
 			//Check if rectangle 2 is to the right or left of rectangle 1's center
-			if(f_x_distance < center) return EnumSide::LEFT;
-
-			else return EnumSide::RIGHT;
+			return distance.xPosN() < 0 ? EnumSide::LEFT : EnumSide::RIGHT;
 		}
-
-		else{
-			//Because the y component of rectangle 2 is closer to rectangle 1's center
+		//Because the y component of rectangle 2 is closer to rectangle 1's center
+		else {
 			//Check if rectangle 2 is above or below rectangle 1's center
-			//*Note* values become negative when going above rectangle 1's center
-			if(f_y_distance < center) return EnumSide::UP;
-
-			else return EnumSide::DOWN;
+			//Note values will become negative when going above rectangle 1's center
+			return distance.yPosN() < 0 ? EnumSide::UP : EnumSide::DOWN;
 		}
 	}
-
-	//Because neither rectangles overlap
-	return EnumSide::NONE;
+	//Because neither overlap
+	else return EnumSide::NONE;
 }
 
+
+
+EnumSide Collision::RectEdge(const AABB &rect1, const AABB &rect2){
+	/*
+	 * @param	rect1 The axis aligned bounding box of the first rectangle
+	 *
+	 * @param	rect2 The axis aligned bounding box of the second rectangle
+	 *
+	 * @return	Which side of two rectangles is colliding
+	 *
+	 * Checks which side of rectangle 1 is colliding with rectangle 2
+	 */
+
+
+
+
+	return RectEdge(rect1.getPos().xPos(), rect1.getPos().yPos(), rect1.width(), rect1.height(),
+			rect2.getPos().xPos(), rect2.getPos().yPos(), rect2.width(), rect2.height());
+}
 
 
 

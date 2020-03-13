@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: AABB.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/02/2020
+// Last Modified	: 03/11/2020
 //============================================================================
 
 
@@ -20,34 +20,33 @@ class AABB {
 public:
 
 	AABB();
-	AABB(double x1, double y1, double x2, double y2);
-	AABB(const Position &topLeft, const Position &bottomRight);
+	AABB(double x1, double y1, double width, double height);
 
 	~AABB();
 
-	double width(void) const;
-	int widthN(void) const;
+	double width() const;
+	int widthN() const;
 	double height(void) const;
-	int heightN(void) const;
+	int heightN() const;
 
-	Position getCenter(void) const;
+	Position getCenter() const;
 
-	Position getTopLeftPoint(const Position& posIn) const;
-	Position getBottomRightPoint(const Position& posIn) const;
+	Position getPos() const;
 
 	void grow(double amount);
 	void shrink(double amount);
 	void modify(EnumSide direction, double amount);
 
 	void offset(double x, double y);
+	void offset(const Position &posIn);
 	void nudge(EnumSide direction, double amount);
 
-	bool isPoint(void) const;
+	bool isPoint() const;
 
 private:
 
-	Position p1;	//Top-left corner
-	Position p2;	//Bottom-right corner
+	Position pos1;
+	Position pos2;
 };
 
 

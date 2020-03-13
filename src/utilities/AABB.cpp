@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: AABB.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/02/2020
+// Last Modified	: 03/11/2020
 //============================================================================
 
 
@@ -15,20 +15,14 @@
 
 
 AABB::AABB()
-	: p1(),
-	  p2() {}
+	: pos1(),
+	  pos2() {}
 
 
 
-AABB::AABB(double x1, double y1, double x2, double y2)
-	: p1(std::min(x1, x2), std::min(y1, y2)),
-	  p2(std::max(x1, x2), std::max(y1, y2)) {}
-
-
-
-AABB::AABB(const Position &topLeft, const Position &bottomRight)
-	: p1(topLeft.xPos(), topLeft.yPos()),
-	  p2(bottomRight.xPos(), bottomRight.yPos()) {}
+AABB::AABB(double x, double y, double width, double height)
+	: pos1(x, y),
+	  pos2(x + width, y + height) {}
 
 
 
@@ -36,80 +30,67 @@ AABB::~AABB() {}
 
 
 
-double AABB::width(void) const {
-	return std::abs(this->p2.xPos() - this->p1.xPos());
+double AABB::width() const {
+	return std::abs(this->pos2.xPos() - this->pos1.xPos());
 }
 
 
 
-int AABB::widthN(void) const {
-	return static_cast<int>(this->width());
+int AABB::widthN() const {
+	return static_cast<int>(this->width() + 0.5);
 }
 
 
 
-double AABB::height(void) const {
-	return std::abs(this->p2.yPos() - this->p1.yPos());
+double AABB::height() const {
+	return std::abs(this->pos2.yPos() - this->pos1.yPos());
 }
 
 
 
-int AABB::heightN(void) const {
-	return static_cast<int>(this->height());
+int AABB::heightN() const {
+	return static_cast<int>(this->height() + 0.5);
 }
 
 
 
-Position AABB::getCenter(void) const {
+Position AABB::getCenter() const {
 	/*
-	 * @return	The relative coordinates of the AABB's center
+	 * @return The coordinates of the AABB's center
 	 *
-	 * The returned Position is not the Global coordinates of the AABB's center
+	 * Gets the center position of the Axis Aligned Bounding Box
 	 */
 
 
 
 
-	return Position((std::max(this->p2, this->p1) - std::min(this->p2, this->p1))/2);
+	double width = this->width();
+	double height = this->height();
+	return Position(this->pos1.xPos() + width/2.0, this->pos1.yPos()/2.0);
 }
 
 
 
-Position AABB::getTopLeftPoint(const Position& posIn) const {
+Position AABB::getPos() const {
 	/*
-	 * @param	posIn	The Global position of the Entity/Tile
+	 * @return The coordinates of the AABB's top-left corner
 	 *
-	 * @return	The top-left position of the AABB in the Global coordinates
+	 * Gets the top-left corner of the Axis Aligned Bounding Box
 	 */
 
 
 
 
-	return Position(this->p1 + posIn);
-}
-
-
-
-Position AABB::getBottomRightPoint(const Position& posIn) const {
-	/*
-	 * @param	posIn	The Global position of the Entity/Tile
-	 *
-	 * @return	The bottom-right position of the AABB in the Global coordinates
-	 */
-
-
-
-
-	return Position(this->p2 + posIn);
+	return Position(this->pos1.xPos(), this->pos1.yPos());
 }
 
 
 
 void AABB::grow(double amount){
 	/*
-	 * @brief	Grows the Axis Aligned Bounding Box by the given amount
+	 * @param	amount The amount to increase the AABB by
 	 *
-	 * @param	amount	the amount to increase the AABB by
+	 * Grows the Axis Aligned Bounding Box by the given amount
 	 */
 
 
@@ -117,22 +98,20 @@ void AABB::grow(double amount){
 
 	double delta = std::abs(amount);
 
-	this->p1.move_xPos(-delta);
-	this->p1.move_xPos(delta);
+	this->pos1.move_xPos(-delta);
+	this->pos2.move_xPos(delta);
 
-	this->p1.move_yPos(-delta);
-	this->p1.move_yPos(delta);
-
-	return;
+	this->pos1.move_yPos(-delta);
+	this->pos2.move_yPos(delta);
 }
 
 
 
 void AABB::shrink(double amount){
 	/*
-	 * @brief	Shrinks the Axis Aligned Bounding Box by the given amount
+	 * @param	amount The amount to decrease the AABB by
 	 *
-	 * @param	amount	the amount to decrease the AABB by
+	 * Shrinks the Axis Aligned Bounding Box by the given amount
 	 */
 
 
@@ -142,24 +121,22 @@ void AABB::shrink(double amount){
 	Position center = this->getCenter();
 
 	//This is done so that the corners of the AABB do not flip
-	this->width() < delta ? this->p1.move_xPos(center.xPos()) : this->p1.move_xPos(delta);
-	this->width() < delta ? this->p2.move_xPos(center.xPos()) : this->p2.move_xPos(-delta);
+	this->width() < delta ? this->pos1.move_xPos(center.xPos()) : this->pos1.move_xPos(delta);
+	this->width() < delta ? this->pos2.move_xPos(center.xPos()) : this->pos2.move_xPos(-delta);
 
-	this->height() < delta ? this->p1.move_yPos(center.yPos()) : this->p1.move_yPos(delta);
-	this->height() < delta ? this->p2.move_yPos(center.yPos()) : this->p2.move_yPos(-delta);
-
-	return;
+	this->height() < delta ? this->pos1.move_yPos(center.yPos()) : this->pos1.move_yPos(delta);
+	this->height() < delta ? this->pos2.move_yPos(center.yPos()) : this->pos2.move_yPos(-delta);
 }
 
 
 
 void AABB::modify(EnumSide direction, double amount){
 	/*
-	 * @brief	Changes the Axis Aligned Bounding Box in the given direction by the given amount
+	 * @param	direction Which direction to modify the AABB in
 	 *
-	 * @param	direction	Which direction to modify the AABB in
+	 * @param	amount The amount to modify the AABB by
 	 *
-	 * @param	amount		The amount to modify the AABB by
+	 * Changes the Axis Aligned Bounding Box in the given direction by the given amount
 	 */
 
 
@@ -169,19 +146,19 @@ void AABB::modify(EnumSide direction, double amount){
 	switch(direction){
 
 	case EnumSide::UP:
-		this->p1.move_yPos(-delta);
+		this->pos1.move_yPos(-delta);
 		break;
 
 	case EnumSide::RIGHT:
-		this->p2.move_xPos(delta);
+		this->pos2.move_xPos(delta);
 		break;
 
 	case EnumSide::DOWN:
-		this->p2.move_yPos(delta);
+		this->pos2.move_yPos(delta);
 		break;
 
 	case EnumSide::LEFT:
-		this->p1.move_xPos(-delta);
+		this->pos1.move_xPos(-delta);
 		break;
 	}
 }
@@ -190,34 +167,47 @@ void AABB::modify(EnumSide direction, double amount){
 
 void AABB::offset(double x, double y){
 	/*
-	 * @brief	Moves the Axis Aligned Bounding Box by the given amount
+	 * @param	x The X coordinate to move the AABB by
 	 *
-	 * @param	x	The X coordinate to move the AABB by
+	 * @param	y The Y coordinate to move the AABB by
 	 *
-	 * @param	y	The Y coordinate to move the AABB by
+	 * Moves the Axis Aligned Bounding Box by the given amount
 	 */
 
 
 
 
-	this->p1.move_xPos(x);
-	this->p1.move_yPos(y);
+	this->pos1.move_xPos(x);
+	this->pos1.move_yPos(y);
 
-	this->p2.move_xPos(x);
-	this->p2.move_yPos(y);
+	this->pos2.move_xPos(x);
+	this->pos2.move_yPos(y);
+}
 
-	return;
+
+
+void AABB::offset(const Position &posIn){
+	/*
+	 * @param	posIn The coordinates to move the AABB by
+	 *
+	 * Moves the Axis Aligned Bounding Box by the given amount
+	 */
+
+
+
+
+	this->offset(posIn.xPos(), posIn.yPos());
 }
 
 
 
 void AABB::nudge(EnumSide direction, double amount){
 	/*
-	 * @brief	Moves the Axis Aligned Bounding Box in the given direction by the given amount
+	 * @param	direction Which direction the AABB is to be moved in
 	 *
-	 * @param	direction	Which direction the AABB is to be moved in
+	 * @param	amount The distance the AABB is to be moved by
 	 *
-	 * @param	amount		The distance the AABB is to be moved by
+	 * Moves the Axis Aligned Bounding Box in the given direction by the given amount
 	 */
 
 
@@ -227,33 +217,31 @@ void AABB::nudge(EnumSide direction, double amount){
 	switch(direction){
 
 	case EnumSide::UP:
-		this->p1.move_yPos(-delta);
-		this->p2.move_yPos(-delta);
+		this->pos1.move_yPos(-delta);
+		this->pos2.move_yPos(-delta);
 		break;
 
 	case EnumSide::RIGHT:
-		this->p1.move_xPos(delta);
-		this->p2.move_xPos(delta);
+		this->pos1.move_xPos(delta);
+		this->pos2.move_xPos(delta);
 		break;
 
 	case EnumSide::DOWN:
-		this->p1.move_yPos(delta);
-		this->p2.move_yPos(delta);
+		this->pos1.move_yPos(delta);
+		this->pos2.move_yPos(delta);
 		break;
 
 	case EnumSide::LEFT:
-		this->p1.move_xPos(-delta);
-		this->p2.move_xPos(-delta);
+		this->pos1.move_xPos(-delta);
+		this->pos2.move_xPos(-delta);
 		break;
 	}
-
-	return;
 }
 
 
 
-bool AABB::isPoint(void) const {
-	return this->p1 == this->p2 ? true : false;
+bool AABB::isPoint() const {
+	return this->pos1 == this->pos2 ? true : false;
 }
 
 

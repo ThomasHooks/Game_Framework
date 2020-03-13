@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Collisions.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/23/2020
+// Last Modified	: 03/12/2020
 //============================================================================
 
 
@@ -12,90 +12,51 @@
 
 
 #include "EnumSide.h"
+#include "Dimension.h"
+#include "Position.h"
+#include "AABB.h"
 
 
-struct Dimension2D {
-	/*
-	 *	This structure encapsulates the dimension of a 2D entity
-	 * 	by storing its width and height
-	 */
+namespace Collision {
 
-	int n_width, n_height;		//dimension
+bool RectVsPt(double xRect,
+		double yRect,
+		double wRect,
+		double hRect,
+		double xPt,
+		double yPt);
 
+bool RectVsPt(const Position &posRect,
+		const Dimension &dimRect,
+		const Position &posPt);
 
-	//Constructors
-	Dimension2D();
-	Dimension2D(int width, int height);
-};
+bool RectVsRect(double x1,
+		double y1,
+		double w1,
+		double h1,
+		double x2,
+		double y2,
+		double w2,
+		double h2);
 
+bool RectVsRect(const Position &pos1,
+		const Dimension &dim1,
+		const Position &pos2,
+		const Dimension &dim2);
 
-//----------------------------------------------------------------------------
+bool RectVsRect(const AABB &rect1, const AABB &rect2);
 
+EnumSide RectEdge(double x1,
+		double y1,
+		double w1,
+		double h1,
+		double x2,
+		double y2,
+		double w2,
+		double h2);
 
-struct Position2D {
-	/*
-	 *	This structure encapsulates the position of a 2D entity
-	 * 	by storing its position, velocity, and acceleration
-	 */
-
-	float f_x, f_y;				//position
-
-	float f_dx, f_dy;			//velocity
-
-	float f_2dx, f_2dy;			//acceleration
-
-
-	//Constructors
-	Position2D();
-	Position2D(float x, float y);
-	Position2D(float x, float y,
-			float dx, float dy);
-	Position2D(float x, float y,
-			float dx, float dy, float d2x, float d2y);
-
-};
-
-
-bool CollisionPointRect(float rect_x,
-						float rect_y,
-						int rect_w,
-						int rect_h,
-						float pnt_x,
-						float pnt_y);
-
-bool CollisionPointRect(const Position2D &rect_p,
-						const Dimension2D &rect_d,
-						const Position2D &pnt);
-
-
-bool CollisionRectRect(float x1,
-					   float y1,
-					   int w1,
-					   int h1,
-					   float x2,
-					   float y2,
-					   int w2,
-					   int h2);
-
-bool CollisionRectRect(const Position2D &rect1_p,
-					   const Dimension2D &rect1_d,
-					   const Position2D &rect2_p,
-					   const Dimension2D &rect2_d);
-
-
-EnumSide EdgeRectRect(float x1,
-				  float y1,
-				  int w1,
-				  int h1,
-				  float x2,
-				  float y2,
-				  int w2,
-				  int h2);
-
-EnumSide EdgeRectRect(const Position2D &rect1_p,
-				  const Dimension2D &rect1_d,
-				  const Position2D &rect2_p,
-				  const Dimension2D &rect2_d);
+EnumSide RectEdge(const AABB &rect1, const AABB &rect2);
+}
 
 
 #endif /* COLLISIONS_H_  */

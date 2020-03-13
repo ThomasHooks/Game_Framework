@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: EntityManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/03/2020
+// Last Modified	: 03/11/2020
 //============================================================================
 
 
@@ -11,6 +11,9 @@
 #include "../entities/Entity.h"
 #include "Builder.h"
 #include "../utilities/GameLogger.h"
+#include "../utilities/Dimension.h"
+#include "../utilities/Position.h"
+#include "../utilities/Collisions.h"
 #include "RendererManager.h"
 
 
@@ -115,9 +118,13 @@ bool EntityManager::despawn(int id){
 
 
 
-void EntityManager::drawAll(const class Position &cameraPos, const struct Dimension &windowSize, class RendererManager &renderer){
+void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSize, RendererManager &renderer){
 	/*
+	 * @param	cameraPos
 	 *
+	 * @param	windowSize
+	 *
+	 * @param	renderer
 	 */
 
 
@@ -125,8 +132,16 @@ void EntityManager::drawAll(const class Position &cameraPos, const struct Dimens
 
 	auto itr = this->entityMap.begin();
 	while(itr != this->entityMap.end()){
-		//Check if the entity is visible on the screen
-		//if the entity is visible draw it
+
+		if(Collision::RectVsPt(cameraPos, windowSize, itr->second->getPosition())) {
+			//Only draw the entity if it is inside of the screen
+			//TODO currently entities will 'pop in' along the left-top edges of the screen
+			renderer.drawSprite(itr->second->getTag(),
+					itr->second->getPosition(),
+					cameraPos,
+					itr->second->getAnimation(),
+					false);
+		}
 	}
 }
 
