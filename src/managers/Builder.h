@@ -44,7 +44,7 @@ public:
 
 
 template <class DerivedType>
-class EntityBuilder : public AbstractBuilder<DerivedType, class Entity> {
+class EntityBuilder : public AbstractBuilder<DerivedType, class IEntity> {
 
 public:
 

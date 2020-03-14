@@ -1,14 +1,14 @@
 //============================================================================
 // Name       		: EntityManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/11/2020
+// Last Modified	: 03/14/2020
 //============================================================================
 
 
 
 
 #include "EntityManager.h"
-#include "../entities/Entity.h"
+#include "../entities/IEntity.hpp"
 #include "Builder.h"
 #include "../utilities/GameLogger.h"
 #include "../utilities/Dimension.h"
@@ -19,8 +19,8 @@
 
 
 
-EntityManager::EntityManager(class GameLogger *log_ptr)
-	: logger(log_ptr),
+EntityManager::EntityManager(class GameLogger *loggerptr)
+	: logger(loggerptr),
 	  highestEntityID(0) {
 
 	this->logger->message(Level::INFO,
@@ -34,17 +34,7 @@ EntityManager::~EntityManager() {}
 
 
 
-void EntityManager::registerEntity(std::string tag, BuilderBase<Entity>* builder){
-	/*
-	 * Registers the given Entity's builder with the Entity Manager
-	 *
-	 * @param	tag			The entity's identification tag
-	 *
-	 * @param	builder		A pointer to the entity's builder
-	 */
-
-
-
+void EntityManager::registerEntity(std::string tag, BuilderBase<IEntity>* builder){
 
 	if(this->entityRegistry.find(tag) == this->entityRegistry.end()){
 		//The entity tag was not found in the registry so add the entity's builder
@@ -52,7 +42,7 @@ void EntityManager::registerEntity(std::string tag, BuilderBase<Entity>* builder
 				"Registering Entity '" + tag + "'",
 				Output::TXT_FILE);
 
-		this->entityRegistry.insert({tag, std::unique_ptr<BuilderBase<Entity>>(builder)});
+		this->entityRegistry.insert({tag, std::unique_ptr<BuilderBase<IEntity>>(builder)});
 
 		this->logger->message(Level::INFO,
 				"Entity '" + tag + "' has been registered",
@@ -72,21 +62,12 @@ void EntityManager::registerEntity(std::string tag, BuilderBase<Entity>* builder
 
 
 int EntityManager::spawn(std::string tag, const Position &pos){
-	/*
-	 * @param	tag		The entity's identification tag
-	 *
-	 * @param	pos		The location the entity will be spawned
-	 *
-	 * @return	The ID of the new entity or -1 if the entity could not be spawned
-	 */
-
-
 
 	const static int FAILED = -1;
 
 	if(this->entityRegistry.find(tag) != this->entityRegistry.end()){
 		//the entity tag was found in the registry so spawn the entity
-		this->entityMap.insert({++this->highestEntityID, std::unique_ptr<Entity>(this->entityRegistry[tag]->build())});
+		this->entityMap.insert({++this->highestEntityID, std::unique_ptr<IEntity>(this->entityRegistry[tag]->build())});
 		this->entityMap[this->highestEntityID]->teleport(pos);
 		return this->highestEntityID;
 	}
@@ -102,12 +83,6 @@ int EntityManager::spawn(std::string tag, const Position &pos){
 
 
 bool EntityManager::despawn(int id){
-	/*
-	 *
-	 */
-
-
-
 
 	if(this->entityMap.find(id) != this->entityMap.end()){
 		this->entityMap.erase(id);
@@ -119,27 +94,18 @@ bool EntityManager::despawn(int id){
 
 
 void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSize, RendererManager &renderer){
-	/*
-	 * @param	cameraPos
-	 *
-	 * @param	windowSize
-	 *
-	 * @param	renderer
-	 */
-
-
-
 
 	auto itr = this->entityMap.begin();
 	while(itr != this->entityMap.end()){
 
-		if(Collision::RectVsPt(cameraPos, windowSize, itr->second->getPosition())) {
+		if(Collision::RectVsPt(cameraPos, windowSize, itr->second->getPos())) {
 			//Only draw the entity if it is inside of the screen
-			//TODO currently entities will 'pop in' along the left-top edges of the screen
-			renderer.drawSprite(itr->second->getTag(),
-					itr->second->getPosition(),
+			//TODO fix, currently entities will 'pop in' along the top-left edges of the screen
+			IEntity *entity = itr->second.get();
+			renderer.drawSprite(entity->getRegistryTag(),
+					entity->getPos(),
 					cameraPos,
-					itr->second->getAnimation(),
+					entity->getSprite(),
 					false);
 		}
 	}
@@ -147,19 +113,7 @@ void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSi
 
 
 
-class Entity* EntityManager::getEntity(int id){
-	/*
-	 * @nullable
-	 *
-	 * @param	id		The identification of the entity
-	 *
-	 * @return	The a pointer to the active Entity given by it's ID, otherwise if the ID can't be found a null pointer
-	 * 		 	Do Not delete the returned pointer
-	 */
-
-
-
-
+IEntity* EntityManager::getEntity(int id){
 	return this->entityMap.find(id) != this->entityMap.end() ? this->entityMap[id].get() : nullptr;
 }
 

@@ -31,7 +31,7 @@ Entity::Entity()
 	  flying(false),
 	  onGround(true),
 	  hitBox(0.0, 0.0, 0.0, 0.0),
-	  behavior(EnumBehavior::PASSIVE) {}
+	  behavior(EnumEntityType::PASSIVE) {}
 
 
 
@@ -287,25 +287,25 @@ int Entity::getMaxHealth(void) const {
 
 
 bool Entity::isFriendly(void) const {
-	return this->behavior == EnumBehavior::PASSIVE ? true : false;
+	return this->behavior == EnumEntityType::PASSIVE ? true : false;
 }
 
 
 
 bool Entity::isNeutral(void) const {
-	return this->behavior == EnumBehavior::NEUTRAL ? true : false;
+	return this->behavior == EnumEntityType::NEUTRAL ? true : false;
 }
 
 
 
 bool Entity::isAggressive(void) const {
-	return this->behavior == EnumBehavior::AGGRESSIVE ? true : false;
+	return this->behavior == EnumEntityType::AGGRESSIVE ? true : false;
 }
 
 
 
 bool Entity::isPlayer(void) const {
-	return this->behavior == EnumBehavior::PLAYER ? true : false;
+	return this->behavior == EnumEntityType::PLAYER ? true : false;
 }
 
 

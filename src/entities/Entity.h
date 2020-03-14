@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Entity.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/02/2020
+// Last Modified	: 03/14/2020
 //============================================================================
 
 
@@ -15,11 +15,11 @@
 
 #include "../utilities/Position.h"
 #include "../utilities/Dimension.h"
-#include "EnumBehavior.h"
 #include "../utilities/AABB.h"
+#include "EnumEntityType.h"
 
 
-class Entity {
+class [[deprecated("Use src/entities/IEntity instead")]]Entity {
 
 public:
 
@@ -101,7 +101,7 @@ protected:
 
 	AABB hitBox;
 
-	EnumBehavior behavior;
+	EnumEntityType behavior;
 
 private:
 

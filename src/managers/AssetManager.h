@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: AssetManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: 11/2/2019
+// Last Modified	: 03/13/2020
 //============================================================================
 
 
@@ -17,10 +17,10 @@
 
 //TODO add SDL music assets
 //TODO add SDL sound assets
-//TODO add SDL ttf assets
 
 
-class AssetManager {
+
+class [[deprecated("Use src/managers/RendererManager instead")]] AssetManager {
 
 public:
 
