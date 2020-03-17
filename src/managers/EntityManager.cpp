@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: EntityManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/14/2020
+// Last Modified	: 03/15/2020
 //============================================================================
 
 
@@ -67,7 +67,7 @@ int EntityManager::spawn(std::string tag, const Position &pos){
 
 	if(this->entityRegistry.find(tag) != this->entityRegistry.end()){
 		//the entity tag was found in the registry so spawn the entity
-		this->entityMap.insert({++this->highestEntityID, std::unique_ptr<IEntity>(this->entityRegistry[tag]->build())});
+		this->entityMap.insert({this->highestEntityID++, std::unique_ptr<IEntity>(this->entityRegistry[tag]->build())});
 		this->entityMap[this->highestEntityID]->teleport(pos);
 		return this->highestEntityID;
 	}

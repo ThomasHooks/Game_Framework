@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IEntity.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/14/2020
+// Last Modified	: 03/16/2020
 //============================================================================
 
 
@@ -14,12 +14,13 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <map>
 
 #include "../utilities/EnumSide.h"
 #include "../utilities/Position.h"
 #include "../utilities/Dimension.h"
+#include "capabilities/IEntityCapability.h"
 #include "EnumEntityType.h"
-#include "states/IEntityState.h"
 
 
 
@@ -36,8 +37,14 @@ public:
 
 
 
-	//This method is called just after an Entity is spawned
-	virtual void onSpwan() = 0;
+	/*
+	 * @param	posIn Coordinates the Entity is to be spawned
+	 *
+	 * @param	facingIn The direction the Entity is to be facing
+	 *
+	 * This method is called just as an Entity is spawned
+	 */
+	virtual void onSpwan(const Position &posIn, EnumSide facingIn) = 0;
 
 
 
@@ -152,6 +159,15 @@ public:
 
 
 	/*
+	 * @param	FacingIn The new direction that the Entity is facing
+	 *
+	 * Changes the direction that the Entity is facing
+	 */
+	void setDirectionFacing(EnumSide facingIn);
+
+
+
+	/*
 	 * @param	stateTag The state's tag
 	 *
 	 * @return	True if the Entity has the state
@@ -173,11 +189,26 @@ public:
 	 */
 	template<class T>
 	T* getState(const std::string &stateTag){
+		return this->states.find(stateTag) != this->states.end() ? this->states[stateTag].get() : nullptr;
+	}
 
-		for(auto itr = this->states.begin(); itr != this->states.end(); ++itr){
-			if(itr->get()->getTag() == stateTag) return std::static_pointer_cast<T>(itr->get());
-		}
-		return nullptr;
+
+
+	/*
+	 * @param	tag The states ID tag
+	 *
+	 * @param	mArgs The states arguments
+	 *
+	 * @return	A pointer to the Entity the state is being added to
+	 *
+	 * Adds a new state to the given Entity
+	 */
+	template<class T, typename... TArgs>
+	IEntity& addState(std::string tag, TArgs... mArgs){
+
+		this->states.insert({tag, std::make_unique<T>((mArgs)...)});
+
+		return *this;
 	}
 
 
@@ -191,6 +222,15 @@ protected:
 
 	//Used to update an Entity's sprite
 	void setSprite(const Dimension &spriteIn);
+
+
+
+	/*
+	 * @param	typeIn The Entity's type
+	 *
+	 * Used to set the Entity's type
+	 */
+	void setEntityType(EnumEntityType typeIn);
 
 
 
@@ -216,22 +256,6 @@ protected:
 
 
 
-	/*
-	 * @param	mArgs The states arguments
-	 *
-	 * @return	A pointer to the Entity the state is being added to
-	 *
-	 * Adds a new state to the given Entity
-	 */
-	template<class T, typename... TArgs>
-	IEntity* addState(TArgs... mArgs){
-
-		this->states.emplace_back(std::make_unique<T>((mArgs)...));
-
-		return this;
-	}
-
-
 private:
 
 	std::string tag;
@@ -250,7 +274,7 @@ private:
 
 	EnumSide facing;
 
-	std::vector<std::unique_ptr<IEntityState>> states;
+	std::map<std::string, std::unique_ptr<IEntityCapability>> states;
 };
 
 
