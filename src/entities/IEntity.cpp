@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IEntity.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/16/2020
+// Last Modified	: 03/19/2020
 //============================================================================
 
 
@@ -14,11 +14,13 @@
 
 IEntity::IEntity()
 	: tag("null"),
+	  entityID(0),
 	  active(true),
 	  solid(true),
 	  pos(),
 	  lastPos(),
 	  vel(),
+	  hitBox(),
 	  sprite(),
 	  type(EnumEntityType::PASSIVE),
 	  facing(EnumSide::RIGHT) {}
@@ -29,9 +31,33 @@ IEntity::~IEntity() {}
 
 
 
+/*
+ * @param	posIn Coordinates the Entity is to be spawned
+ *
+ * @param	facingIn The direction the Entity is to be facing
+ *
+ * This method is called just as an Entity is spawned
+ */
+void IEntity::spwan(const Position &posIn, EnumSide facingIn, unsigned int entityIDIn){
+	this->teleport(posIn);
+	this->hitBox.offset(posIn);
+	this->setDirectionFacing(facingIn);
+	this->entityID = entityIDIn;
+	this->onSpwan();
+}
+
+
+
 //Gets the Entity's registration tag
 const std::string& IEntity::getRegistryTag() const {
 	return this->tag;
+}
+
+
+
+//Gets the Entity's identification
+unsigned int IEntity::getID() const{
+	return this->entityID;
 }
 
 
@@ -113,6 +139,13 @@ const Position& IEntity::getPos() const {
 
 
 
+//Gets the Entity's axis aligned bounding box
+const AABB& IEntity::getBoundingBox() const {
+	return this->hitBox;
+}
+
+
+
 /*
  * @param	pos The new position of the Entity
  *
@@ -122,6 +155,7 @@ void IEntity::teleport(const Position &posIn){
 	double xPos = posIn.xPos() - this->getPos().xPos();
 	double yPos = posIn.yPos() - this->getPos().yPos();
 	this->pos.move(xPos, yPos);
+	this->hitBox.offset(xPos, yPos);
 }
 
 
@@ -151,7 +185,7 @@ void IEntity::setDirectionFacing(EnumSide facingIn){
  *
  * Checks if the Entity has the given state
  */
-bool IEntity::hasState(const std::string &stateTag){
+bool IEntity::hasCapability(const std::string &stateTag){
 	return this->states.count(stateTag) > 0 ? true : false;
 }
 
@@ -179,6 +213,21 @@ void IEntity::setSprite(const Dimension &spriteIn){
  */
 void IEntity::setEntityType(EnumEntityType typeIn){
 	this->type = typeIn;
+}
+
+
+
+/*
+ * @param	x1, y1 The coordinates of the top-left point
+ *
+ * @param	x2, y2 The coordinates of the bottom-right point
+ *
+ * Used to set the Entity's axis aligned bounding box
+ */
+void IEntity::setAABB(double x1, double y1, double x2, double y2){
+	this->hitBox.offset(std::abs(x1), std::abs(y1));
+	this->hitBox.modify(EnumSide::RIGHT, std::abs(x2));
+	this->hitBox.modify(EnumSide::DOWN, std::abs(y2));
 }
 
 
@@ -212,8 +261,8 @@ void IEntity::updateVel(const Position &accel, float frict, float deltaTime){
 void IEntity::updatePos(float deltaTime){
 
 	this->lastPos.move(this->pos - this->lastPos);
-
 	this->pos.move(this->pos + this->vel * deltaTime);
+	this->hitBox.offset(this->vel * deltaTime);
 }
 
 

@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/10/2020
+// Last Modified	: 03/20/2020
 //============================================================================
 
 
@@ -19,11 +19,15 @@
 
 
 
+/*
+ * Default constructor, game will need to be initialized by calling init
+ */
 Game::Game()
 		: Log(Level::TRACE),
 		  Render(&Log),
 		  State(this),
 		  Map(),
+		  Entities(&Log),
 		  Timer(),
 		  b_gameOver(false),
 		  b_hasBeenInit(false),
@@ -33,56 +37,47 @@ Game::Game()
 		  window(nullptr),
 		  WindowHeight(0),
 		  WindowWidth(0) {
-	/*
-	 * brief	Default constructor, game will need to be initialized by calling init
-	 */
-
-
-
 
 	Log.message(Level::INFO, "Initializing SDL", Output::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	const int startingStateID = 0;
 	State.Push(new BlankGameState(this, startingStateID));
-
-	return;
 }
 
 
 
+/*
+ * @param	title  				The title of the window
+ *
+ * @param	Window_Height		The height of the window measured in pixels
+ *
+ * @param 	Window_Width		The width of the window measured in pixels
+ *
+ * @param 	flag				The flags for the window, mask of any of the following:
+ *               				::SDL_WINDOW_FULLSCREEN,    ::SDL_WINDOW_OPENGL,
+ *               				::SDL_WINDOW_HIDDEN,        ::SDL_WINDOW_BORDERLESS,
+ *               				::SDL_WINDOW_RESIZABLE,     ::SDL_WINDOW_MAXIMIZED,
+ *               				::SDL_WINDOW_MINIMIZED,     ::SDL_WINDOW_INPUT_GRABBED,
+ *               				::SDL_WINDOW_ALLOW_HIGHDPI, ::SDL_WINDOW_VULKAN.
+ *
+ *               			See "https://wiki.libsdl.org/SDL_WindowFlags" for more window flags
+ *
+ *
+ * Constructor for the game engine class that create a window defined by the caller, and sets SDL flags
+ */
 Game::Game(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS)
 		: Log(Level::TRACE),
 		  Render(&Log),
 		  State(this),
 		  Map(&Log),
+		  Entities(&Log),
 		  Timer(),
 		  b_gameOver(false),
 		  b_hasBeenInit(true),
 		  f_cameraX(0),
 		  f_cameraY(0),
 		  n_maxFPS(Max_FPS) {
-	/*
-	 * brief	Constructor for the game engine class that create a window defined by the caller, and sets SDL flags
-	 *
-	 * param	title  				The title of the window
-	 *
-	 * param	Window_Height		The height of the window measured in pixels
-	 *
-	 * param 	Window_Width		The width of the window measured in pixels
-	 *
-	 * param 	flag				The flags for the window, mask of any of the following:
-	 *               				::SDL_WINDOW_FULLSCREEN,    ::SDL_WINDOW_OPENGL,
- 	 *               				::SDL_WINDOW_HIDDEN,        ::SDL_WINDOW_BORDERLESS,
- 	 *               				::SDL_WINDOW_RESIZABLE,     ::SDL_WINDOW_MAXIMIZED,
- 	 *               				::SDL_WINDOW_MINIMIZED,     ::SDL_WINDOW_INPUT_GRABBED,
- 	 *               				::SDL_WINDOW_ALLOW_HIGHDPI, ::SDL_WINDOW_VULKAN.
- 	 *
- 	 *               			See "https://wiki.libsdl.org/SDL_WindowFlags" for more window flags
-	 */
-
-
-
 
 	WindowHeight = Window_Height;
 	WindowWidth = Window_Width;
@@ -108,39 +103,21 @@ Game::Game(const char * title, int Window_Height, int Window_Width, Uint32 flags
 
 
 Game::~Game(){
-	/*
-	 *
-	 */
-
-
-
 
 	Log.message(Level::INFO, "Closing window", Output::TXT_FILE);
 	SDL_DestroyWindow(window);
 	window = nullptr;
 
-	//TODO free all sound effects Mix_Chunk
-
-	//TODO free all music Mix_Music
-
-	//TODO free all true type font
-
-
 	Log.message(Level::INFO, "Terminating SDL", Output::TXT_FILE);
 	SDL_Quit();
-
-	return;
 }
 
 
 
+/*
+ *
+ */
 bool Game::init(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS){
-	/*
-	 *
-	 */
-
-
-
 
 	if (!b_hasBeenInit){
 
@@ -171,13 +148,10 @@ bool Game::init(const char * title, int Window_Height, int Window_Width, Uint32 
 
 
 
-void Game::run(void){
-	/*
-	 *
-	 */
-
-
-
+/*
+ *
+ */
+void Game::run(){
 
 	if (b_hasBeenInit){
 		while(!get_gameOver()){

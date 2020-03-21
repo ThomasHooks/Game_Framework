@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IEntity.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/16/2020
+// Last Modified	: 03/19/2020
 //============================================================================
 
 
@@ -21,6 +21,7 @@
 #include "../utilities/Dimension.h"
 #include "capabilities/IEntityCapability.h"
 #include "EnumEntityType.h"
+#include "../utilities/AABB.h"
 
 
 
@@ -44,7 +45,20 @@ public:
 	 *
 	 * This method is called just as an Entity is spawned
 	 */
-	virtual void onSpwan(const Position &posIn, EnumSide facingIn) = 0;
+	void spwan(const Position &posIn,
+			EnumSide facingIn,
+			unsigned int entityIDIn);
+
+
+
+	/*
+	 * @param	posIn Coordinates the Entity is to be spawned
+	 *
+	 * @param	facingIn The direction the Entity is to be facing
+	 *
+	 * This method is called just as an Entity is spawned
+	 */
+	virtual void onSpwan() = 0;
 
 
 
@@ -58,7 +72,7 @@ public:
 	 *
 	 * This method is called each tick
 	 */
-	virtual void tick(float deltaTime) = 0;
+	virtual void tick(const class GameMap &world, float deltaTime) = 0;
 
 
 
@@ -80,12 +94,17 @@ public:
 	 *
 	 * This method is called when the Entity collides with a Tile
 	 */
-	virtual void onTileColision(class ITile &tile, EnumSide side) = 0;
+	virtual void onTileColision(class Tile &tileIn, EnumSide side) = 0;
 
 
 
 	//Gets the Entity's registration tag
 	const std::string& getRegistryTag() const;
+
+
+
+	//Gets the Entity's identification
+	unsigned int getID() const;
 
 
 
@@ -110,22 +129,22 @@ public:
 
 
 	//Checks if the Entity is passive
-	bool isPassive(void)const;
+	bool isPassive()const;
 
 
 
 	//Checks if the Entity is neutral
-	bool isNeutral(void) const;
+	bool isNeutral() const;
 
 
 
 	//Checks if the Entity is aggressive
-	bool isAggressive(void) const;
+	bool isAggressive() const;
 
 
 
 	//Checks if the Entity is a player
-	bool isPlayer(void) const;
+	bool isPlayer() const;
 
 
 
@@ -144,6 +163,11 @@ public:
 
 
 
+	//Gets the Entity's axis aligned bounding box
+	const AABB& getBoundingBox() const;
+
+
+
 	/*
 	 * @param	pos The new position of the Entity
 	 *
@@ -154,7 +178,7 @@ public:
 
 
 	//Checks if the Entity is moving
-	bool isMoving(void) const;
+	bool isMoving() const;
 
 
 
@@ -174,7 +198,7 @@ public:
 	 *
 	 * Checks if the Entity has the given state
 	 */
-	bool hasState(const std::string &stateTag);
+	bool hasCapability(const std::string &stateTag);
 
 
 
@@ -188,7 +212,7 @@ public:
 	 * Gets the given Entity's state
 	 */
 	template<class T>
-	T* getState(const std::string &stateTag){
+	T* getCapability(const std::string &stateTag){
 		return this->states.find(stateTag) != this->states.end() ? this->states[stateTag].get() : nullptr;
 	}
 
@@ -204,7 +228,7 @@ public:
 	 * Adds a new state to the given Entity
 	 */
 	template<class T, typename... TArgs>
-	IEntity& addState(std::string tag, TArgs... mArgs){
+	IEntity& addCapability(std::string tag, TArgs... mArgs){
 
 		this->states.insert({tag, std::make_unique<T>((mArgs)...)});
 
@@ -235,6 +259,17 @@ protected:
 
 
 	/*
+	 * @param	x1, y1 The coordinates of the top-left point
+	 *
+	 * @param	x2, y2 The coordinates of the bottom-right point
+	 *
+	 * Used to set the Entity's axis aligned bounding box
+	 */
+	void setAABB(double x1, double y1, double x2, double y2);
+
+
+
+	/*
 	 * @param	accel The acceleration of the Entity
 	 *
 	 * @param	frict The friction of the Entity
@@ -260,6 +295,8 @@ private:
 
 	std::string tag;
 
+	unsigned int entityID;
+
 	bool active;
 
 	bool solid;
@@ -267,6 +304,8 @@ private:
 	Position pos;
 	Position lastPos;
 	Position vel;
+
+	AABB hitBox;
 
 	Dimension sprite;
 

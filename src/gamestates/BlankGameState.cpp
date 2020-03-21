@@ -26,6 +26,7 @@
 #include "../world/GameMap.h"
 #include "../utilities/Dimension.h"
 #include "../utilities/Position.h"
+#include "../entities/PlayerEntity.h"
 
 
 
@@ -45,6 +46,9 @@ BlankGameState::BlankGameState(class Game *Game, int StateID) : GameState(Game, 
 	this->game->Render.registerTexture("mario", "./data/gfx/Mario.png", tileDim);
 	this->game->Render.registerTexture("tile_test.png", "./data/gfx/tile_test.png", tileDim);
 	this->game->Render.setScale(2.0f);
+
+	this->game->Entities.registerEntity("mario", new EntityBuilder<PlayerEntity>());
+	this->game->Entities.spawn("mario", Position(64.0, 224.0), EnumSide::RIGHT);
 	//----All of this should be removed later----
 
 	return;
@@ -143,6 +147,10 @@ void BlankGameState::customDraw(float offsetX, float offsetY, int visibleTilesHo
 	this->game->Map.draw(Position(offsetX, offsetY), Dimension(visibleTilesHor, visibleTilesVer), this->game->Render);
 
 	this->game->Render.drawSprite("mario", Position(vEntity[0]->fX, vEntity[0]->fY), Position(offsetX, offsetY), Dimension(0, 0), false);
+
+	Position camera(offsetX, offsetY);
+	Dimension window(this->game->get_windowWidth(), this->game->get_windowHeight());
+	this->game->Entities.drawAll(camera, window, this->game->Render);
 	//----All of this should be removed later----
 }
 

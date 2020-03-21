@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: EntityManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/14/2020
+// Last Modified	: 03/19/2020
 //============================================================================
 
 
@@ -14,11 +14,13 @@
 
 
 #include <vector>
+#include <list>
 #include <map>
 #include <memory>
 #include <string>
 
 #include "Builder.h"
+#include "../utilities/EnumSide.h"
 
 
 
@@ -55,26 +57,32 @@ public:
 
 
 	/*
-	 * @param	tag		The entity's identification tag
+	 * @nullable
 	 *
-	 * @param	pos		The location the entity will be spawned
+	 * @param	tag The entity's identification tag
 	 *
-	 * @return	The ID of the new entity or -1 if the entity could not be spawned
+	 * @param	pos The location the entity will be spawned
 	 *
-	 * Spawns an Entity at the given coordinates
+	 * @param	facing The direction that the Entity is facing
+	 *
+	 * @return	A pointer to the Entity that has been spawned
+	 *
+	 * Spawns an Entity at the given coordinates.
+	 * Do Not delete the pointer that is returned
 	 */
-	int spawn(std::string tag, const class Position &pos);
+	class IEntity* spawn(std::string tag,
+			const class Position &pos,
+			EnumSide facing);
 
 
 
 	/*
-	 * @param	id The identification of the Entity to despawn
+	 * Despawns all Entities that have been marked as inactive
 	 *
-	 * @return	True if the Entity was despawned
-	 *
-	 * Despawns the given Entity
+	 * This will check all Entities even those that are not on screen
+	 * it is recommended that this method is not called each tick
 	 */
-	bool despawn(int id);
+	void despawn();
 
 
 
@@ -94,19 +102,65 @@ public:
 
 
 	/*
-	 * @nullable
+	 * @param	cameraPos Coordinates of the camera
 	 *
-	 * @param	id The identification of the entity
+	 * @param	windowSize Size of the Window
 	 *
-	 * @return	The a pointer to the active Entity given by it's ID
+	 * @param	deltaTime The time since the last tick
 	 *
-	 * Gets an Entity by its ID
+	 * @param	worldIn The current map
+	 *
+	 * Updates all Entities that are on screen
 	 */
-	class IEntity* getEntity(int id);
+	void tickAll(const class Position &cameraPos,
+			const struct Dimension &windowSize,
+			const class GameMap &worldIn,
+			float deltaTime);
 
 
 
-	int numberOfEntities(void);
+	/*
+	 * @param	vectorIn The vector that the array of Entities is to be added to
+	 *
+	 * @param	area The area this is searched for Entities
+	 *
+	 * Adds a list of Entities in the given area to the vector that is passed in
+	 */
+	void getEntities(std::vector<class IEntity*> &vectorIn,
+			const class AABB &area);
+
+
+
+protected:
+
+	//Gets the next Entity ID and increments to the next ID
+	unsigned int getNextEntityID();
+
+
+
+	/*
+	 * @param	entities A list of all entities to check collisions against
+	 *
+	 * @param	entity The primary Entity to check for collisions
+	 *
+	 * Checks if the given Entity is colliding with any entity in the array
+	 * and if it is colliding the Entity's position will be changed
+	 */
+	void checkEntityCollisions(std::vector<class IEntity*> &entities,
+			class IEntity &entity);
+
+
+
+	/*
+	 * @param	worldIn The tile map to check the collisions against
+	 *
+	 * @param	entity The Entity to check for collisions
+	 *
+	 * Checks if the given Entity is colliding with any Tiles in the map
+	 * and if it is colliding the Entity's position will be changed
+	 */
+	void checkTileCollisions(const class GameMap &worldIn,
+			class IEntity &entity);
 
 
 
@@ -114,8 +168,9 @@ private:
 
 	class GameLogger *logger;
 
-	std::map<int, std::unique_ptr<class IEntity>> entityMap;
-	int highestEntityID;
+	unsigned int entityID;
+
+	std::list<std::unique_ptr<class IEntity>> entityList;
 
 	std::map<std::string,
 		std::unique_ptr<BuilderBase<class IEntity>>> entityRegistry;

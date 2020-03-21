@@ -37,7 +37,7 @@ GameMap::~GameMap() {}
 
 
 
-bool GameMap::isTileSolid(int x, int y){
+bool GameMap::isTileSolid(int x, int y) const {
 	/*
 	 * @param	x Specifies the tile's X coordinate in the map
 	 *

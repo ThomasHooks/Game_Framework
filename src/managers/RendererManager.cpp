@@ -33,6 +33,7 @@ RendererManager::RendererManager(class GameLogger *logger_ptr)
 
 RendererManager::~RendererManager() {
 
+	logger->message(Level::INFO, "Stopping Renderer Manager", Output::TXT_FILE);
 	logger->message(Level::INFO, "Freeing SDL renderer", Output::TXT_FILE);
 	SDL_DestroyRenderer(renderer);
 	renderer = nullptr;

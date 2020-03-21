@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: PlayerEntity.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/16/2020
+// Last Modified	: 03/19/2020
 //============================================================================
 
 
@@ -33,7 +33,7 @@ public:
 	 *
 	 * This method is called just as an Entity is spawned
 	 */
-	void onSpwan(const Position &posIn, EnumSide facingIn) override;
+	void onSpwan() override;
 
 
 
@@ -47,7 +47,7 @@ public:
 	 *
 	 * This method is called each tick
 	 */
-	void tick(float deltaTime) override;
+	void tick(const class GameMap &world, float deltaTime) override;
 
 
 
@@ -69,7 +69,7 @@ public:
 	 *
 	 * This method is called when the Entity collides with a Tile
 	 */
-	void onTileColision(class ITile &tile, EnumSide side) override;
+	void onTileColision(class Tile &tile, EnumSide side) override;
 };
 
 

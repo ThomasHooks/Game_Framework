@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: PlayerEntity.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/16/2020
+// Last Modified	: 03/19/2020
 //============================================================================
 
 
@@ -9,15 +9,16 @@
 
 #include "PlayerEntity.h"
 #include "capabilities/HealthCapability.h"
+#include "../world/Tile.h"
 
 
 
 
 PlayerEntity::PlayerEntity() : IEntity() {
 
-	this->setRegistryTag("player");
+	this->setRegistryTag("mario");
 	this->setEntityType(EnumEntityType::PLAYER);
-	this->addState<HealthCapability>("health", 5, 5);
+	this->addCapability<HealthCapability>("health", 5, 5);
 }
 
 
@@ -33,17 +34,12 @@ PlayerEntity::~PlayerEntity() {}
  *
  * This method is called just as an Entity is spawned
  */
-void PlayerEntity::onSpwan(const Position &posIn, EnumSide facingIn){
-	this->teleport(posIn);
-	this->setDirectionFacing(facingIn);
-}
+void PlayerEntity::onSpwan(){}
 
 
 
 //This method is called right before an Entity is despawned
-void PlayerEntity::onDespwan(){
-
-}
+void PlayerEntity::onDespwan(){}
 
 
 
@@ -52,9 +48,7 @@ void PlayerEntity::onDespwan(){
  *
  * This method is called each tick
  */
-void PlayerEntity::tick(float deltaTime){
-
-}
+void PlayerEntity::tick(const class GameMap &world, float deltaTime){}
 
 
 
@@ -65,9 +59,7 @@ void PlayerEntity::tick(float deltaTime){
  *
  * This method is called when the Entity collides with another Entity
  */
-void PlayerEntity::onEntityColision(IEntity &other, EnumSide side){
-
-}
+void PlayerEntity::onEntityColision(IEntity &other, EnumSide side){}
 
 
 
@@ -78,9 +70,7 @@ void PlayerEntity::onEntityColision(IEntity &other, EnumSide side){
  *
  * This method is called when the Entity collides with a Tile
  */
-void PlayerEntity::onTileColision(class ITile &tile, EnumSide side){
-
-}
+void PlayerEntity::onTileColision(Tile &tileIn, EnumSide side){}
 
 
 

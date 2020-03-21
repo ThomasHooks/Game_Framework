@@ -30,7 +30,7 @@ public:
 
 	~GameMap();
 
-	bool isTileSolid(int x, int y);
+	bool isTileSolid(int x, int y) const;
 	void setTileSolid(int x, int y, bool solid);
 
 	int getTileSprite(int x, int y);
