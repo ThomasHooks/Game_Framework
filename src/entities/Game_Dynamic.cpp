@@ -176,12 +176,13 @@ void cPlayerCharacter::Update(float DeltaTime){
 
 	//----This should be removed----
 	UpdatePosition(DeltaTime);
-	const float fGravity = 128.0f;
+//	const float fGravity = 128.0f;
 	fdX = 0.0f;
-
-	fd2Y += fGravity * DeltaTime;
-	if(fd2Y >= fGravity) fd2Y = fGravity;
-	if(fdY >= fGravity) fd2Y = fGravity;
+	fdY = 0.0f;
+//
+//	fd2Y += fGravity * DeltaTime;
+//	if(fd2Y >= fGravity) fd2Y = fGravity;
+//	if(fdY >= fGravity) fd2Y = fGravity;
 	//----This should be removed----
 
 	return;

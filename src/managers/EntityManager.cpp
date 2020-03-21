@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: EntityManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/19/2020
+// Last Modified	: 03/20/2020
 //============================================================================
 
 
@@ -117,7 +117,7 @@ void EntityManager::despawn(){
 void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSize, RendererManager &renderer){
 
 	std::vector<IEntity*> entitiesOnScreen;
-	this->getEntities(entitiesOnScreen, AABB(cameraPos.xPos() * 32.0, cameraPos.yPos() * 32.0, cameraPos.xPos() + windowSize.width, cameraPos.yPos() + windowSize.height));
+	this->getEntities(entitiesOnScreen, AABB(cameraPos.xPos(), cameraPos.yPos(), cameraPos.xPos() + windowSize.width, cameraPos.yPos() + windowSize.height));
 	for(auto &itr : entitiesOnScreen) {
 		//TODO fix 'pop-in', currently entities will 'pop in' along the top-left edges of the screen
 		renderer.drawSprite(itr->getRegistryTag(), itr->getPos(), cameraPos, itr->getSprite(), false);
@@ -141,7 +141,7 @@ void EntityManager::tickAll(const Position &cameraPos, const Dimension &windowSi
 
 	logger->message(Level::INFO, "Ticking all Entities on screen", Output::TXT_FILE);
 	std::vector<IEntity*> entitiesOnScreen;
-	this->getEntities(entitiesOnScreen, AABB(cameraPos.xPos(), cameraPos.yPos(), windowSize.width, windowSize.height));
+	this->getEntities(entitiesOnScreen, AABB(cameraPos.xPos(), cameraPos.yPos(), cameraPos.xPos() + windowSize.width, cameraPos.yPos() + windowSize.height));
 
 	for(auto &itr : entitiesOnScreen) {
 		if(itr->isActive()) {

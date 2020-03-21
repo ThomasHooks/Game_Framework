@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/08/2020
+// Last Modified	: 03/21/2020
 //============================================================================
 
 
@@ -28,31 +28,24 @@ void GameState::Draw(){
 	this->game->Render.clear();
 
 
-	//Calculate the number of visible tiles on the screen
-	Dimension tile(this->game->Map.getTileWidth(), this->game->Map.getTileHeight());
-	int visibleTilesHor = (game->get_windowWidth())/tile.width + 1;
-	int visibleTilesVer = (game->get_windowHeight())/tile.height;
-
-	//Calculate the top-left visible tile
-	float offsetHor = this->game->get_cameraX()/tile.width - (float)visibleTilesHor/2.0f;
-	float offsetVer = this->game->get_cameraY()/tile.height - (float)visibleTilesVer/2.0f;
+	Dimension windowSize(game->get_windowWidth(), game->get_windowHeight());
+	Dimension map(game->Map.getWidth() * game->Map.getTileWidth(), game->Map.getHeight() * game->Map.getTileHeight());
 
 
 	//Keep camera inside game boundaries
-	Dimension map(this->game->Map.getWidth(), this->game->Map.getHeight());
+	double cameraX = game->get_cameraX() - windowSize.width/2.0;
+	double cameraY = game->get_cameraY() - windowSize.height/2.0;
 
-	if(offsetHor < 0) offsetHor = 0;
+	if(cameraX < 0) cameraX = 0.0;
+	else if(cameraX > map.width - windowSize.width) cameraX = map.width - windowSize.width;
 
-	if(offsetVer < 0) offsetVer = 0;
+	if(cameraY < 0) cameraY = 0.0;
+	else if(cameraY > map.height - windowSize.height) cameraY = map.height - windowSize.height;
 
-	if(offsetHor > map.width - visibleTilesHor)
-		offsetHor = map.width - visibleTilesHor;
-
-	if(offsetVer > map.height - visibleTilesVer)
-		offsetVer = map.height - visibleTilesVer;
+	Position camera(cameraX, cameraY);
 
 
-	this->customDraw(offsetHor, offsetVer, visibleTilesHor, visibleTilesVer);
+	this->customDraw(camera, windowSize);
 
 	//SDL_RenderPresent(game->get_renderer());
 	this->game->Render.present();

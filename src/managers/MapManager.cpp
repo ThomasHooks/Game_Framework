@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: MapManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/08/2020
+// Last Modified	: 03/21/2020
 //============================================================================
 
 
@@ -103,29 +103,38 @@ void MapManager::popMap(){
 
 
 
-void MapManager::draw(const Position &cameraPos, const Dimension &visibleTiles, RendererManager &renderer){
-	/*
-	 * @param	cameraPos The position of the camera
-	 *
-	 * @param	visibleTiles Number of visible tiles on screen
-	 *
-	 * @param	renderer Reference to the Renderer Manager
-	 *
-	 * Draws the active map to the screen
-	 */
-
-
-
+void MapManager::draw(const Position &cameraPos, const Dimension &windowSize, RendererManager &renderer){
 
 	if(this->hasBeenInit){
 
+		Dimension tile(this->getTileWidth(), this->getTileHeight());
+		Dimension numberOfVisibleTiles((windowSize.width)/tile.width + 1, (windowSize.height)/tile.height);
+
+		//Calculate the top-left visible tile
+		double offsetHor = cameraPos.xPos()/tile.width;
+		double offsetVer = cameraPos.yPos()/tile.height;
+
+		//Keep the camera inside game boundaries
+		Dimension map(this->getWidth(), this->getHeight());
+
+		if(offsetHor < 0) offsetHor = 0;
+
+		if(offsetVer < 0) offsetVer = 0;
+
+		if(offsetHor > map.width - numberOfVisibleTiles.width)
+			offsetHor = map.width - numberOfVisibleTiles.width;
+
+		if(offsetVer > map.height - numberOfVisibleTiles.height)
+			offsetVer = map.height - numberOfVisibleTiles.height;
+
+		Position tileOffset(offsetHor, offsetVer);
 		std::string tag = mapStack.back()->getTag();
 		//Over rendering is done to prevent artifacts along the edge of the screen
-		for(int y = -1; y < visibleTiles.height; y++){
-			for(int x = -1; x < visibleTiles.width; x++){
+		for(int y = -1; y < numberOfVisibleTiles.height; y++){
+			for(int x = -1; x < numberOfVisibleTiles.width; x++){
 
-				int xCord = x + cameraPos.xPosN();
-				int yCord = y + cameraPos.yPosN();
+				int xCord = x + tileOffset.xPosN();
+				int yCord = y + tileOffset.yPosN();
 				//This is to prevent the map from being indexed out of
 				//Note that this can cause some tiles to be rendered twice
 				if(xCord < 0) xCord = 0;

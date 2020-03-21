@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: RendererManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/10/2020
+// Last Modified	: 03/20/2020
 //============================================================================
 
 
@@ -480,8 +480,8 @@ void RendererManager::drawSprite(const std::string &tag,
 		//calculate the entity's/tile's size and location in the world
 		double width = spriteSize.width * this->scale;
 		double height = spriteSize.height * this->scale;
-		double xPos = pos.xPos() - cameraOffset.xPos() * width;
-		double yPos = pos.yPosN() - cameraOffset.yPos() * height;
+		double xPos = pos.xPos() - cameraOffset.xPos();
+		double yPos = pos.yPosN() - cameraOffset.yPos();
 
 		SDL_Rect entityRect = {static_cast<int>(xPos + 0.5),
 				static_cast<int>(yPos + 0.5),

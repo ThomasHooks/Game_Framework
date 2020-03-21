@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: BlankGameState.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/24/2020
+// Last Modified	: 03/20/2020
 //============================================================================
 
 
@@ -44,11 +44,12 @@ public:
 
 protected:
 
-	void customDraw(float offsetX, float offsetY, int visibleTilesHor, int visibleTilesVer) override;
+	void customDraw(const class Position &cameraPos,
+			const class Dimension &windowSize) override;
 
 	//----All of this should be removed later----
 	std::vector<std::unique_ptr<class Game_Dynamic>> vEntity;
-	std::vector<class GameMap> vMap;
+	//std::vector<class GameMap> vMap;
 	//----All of this should be removed later----
 };
 

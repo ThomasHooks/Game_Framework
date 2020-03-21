@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/20/2020
+// Last Modified	: 03/21/2020
 //============================================================================
 
 
@@ -26,7 +26,7 @@ Game::Game()
 		: Log(Level::TRACE),
 		  Render(&Log),
 		  State(this),
-		  Map(),
+		  Map(&Log),
 		  Entities(&Log),
 		  Timer(),
 		  b_gameOver(false),
@@ -135,8 +135,6 @@ bool Game::init(const char * title, int Window_Height, int Window_Width, Uint32 
 				flags);
 
 		this->Render.init(this->window);
-
-		Map.init(&Log);
 
 		set_maxFPS(Max_FPS);
 

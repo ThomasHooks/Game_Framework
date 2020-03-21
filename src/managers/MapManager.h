@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: MapManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/08/2020
+// Last Modified	: 03/21/2020
 //============================================================================
 
 
@@ -39,8 +39,8 @@ public:
 	void pushMap(std::string tileSheetTag, std::string mapFilePath);
 	void popMap();
 
-	void draw(const class Position &cameraPos,
-			const struct Dimension &visibleTiles,
+	void draw(const Position &cameraPos,
+			const Dimension &windowSize,
 			class RendererManager &renderer);
 
 	int getTileSolid(int x, int y) const;

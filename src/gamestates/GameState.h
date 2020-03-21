@@ -33,7 +33,8 @@ public:
 
 protected:
 
-	virtual void customDraw(float offsetX, float offsetY, int visibleTilesHor, int visibleTilesVer) = 0;
+	//virtual void customDraw(float offsetX, float offsetY, int visibleTilesHor, int visibleTilesVer) = 0;
+	virtual void customDraw(const class Position &camera, const class Dimension &windowSize) = 0;
 
 	class Game *game;
 
