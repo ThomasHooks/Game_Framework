@@ -15,7 +15,7 @@
 #include "../utilities/Position.h"
 #include "../utilities/Collisions.h"
 #include "RendererManager.h"
-#include "../world/GameMap.h"
+#include "../world/TileMap.h"
 
 
 
@@ -137,7 +137,7 @@ void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSi
  *
  * Updates all Entities that are currently on screen
  */
-void EntityManager::tickAll(const Position &cameraPos, const Dimension &windowSize, const GameMap &worldIn, float deltaTime){
+void EntityManager::tickAll(const Position &cameraPos, const Dimension &windowSize, const TileMap &worldIn, float deltaTime){
 
 	logger->message(Level::INFO, "Ticking all Entities on screen", Output::TXT_FILE);
 	std::vector<IEntity*> entitiesOnScreen;
@@ -213,33 +213,33 @@ void EntityManager::checkEntityCollisions(std::vector<IEntity*> &entities, IEnti
  * and if it is colliding the Entity's position will be changed
  */
 //TODO
-void EntityManager::checkTileCollisions(const GameMap &worldIn, IEntity &entity){
+void EntityManager::checkTileCollisions(const TileMap &worldIn, IEntity &entity){
 
-	//Set top-left tile
-	Dimension topLeftTile(-1, -1);
-
-	//Set bottom-right tile
-	Dimension bottomRightTile(1 + static_cast<int>(entity.getBoundingBox().width()/worldIn.getTileWidth() + 0.9),
-			1 + static_cast<int>(entity.getBoundingBox().height()/worldIn.getTileHeight() + 0.9));
-
-	//This puts the entity into the maps tile unit coordinate
-	Dimension entityTile(static_cast<int>(entity.getBoundingBox().getPos().xPos()/worldIn.getTileWidth() + 0.9),
-			static_cast<int>(entity.getBoundingBox().getPos().yPos()/worldIn.getTileHeight() + 0.9));
-
-	for(int y = topLeftTile.height; y <= bottomRightTile.height; y++){
-		//Skip if the y coordinate is outside of the map
-		if(y + entityTile.height < 0) continue;
-		else if(y + entityTile.height > worldIn.mapHeight/worldIn.tileHeight) continue;
-
-		for(int x = topLeftTile.width; x <= bottomRightTile.width; x++){
-			//Skip if the x coordinate is outside of the map
-			if(x + entityTile.width < 0) continue;
-			else if(x + entityTile.width > worldIn.mapWidth/worldIn.tileWidth) continue;
-
-			if(!worldIn.isTileSolid(x + entityTile.width, y + entityTile.height)) continue;
-
-		}
-	}
+//	//Set top-left tile
+//	Dimension topLeftTile(-1, -1);
+//
+//	//Set bottom-right tile
+//	Dimension bottomRightTile(1 + static_cast<int>(entity.getBoundingBox().width()/worldIn.getTileWidth() + 0.9),
+//			1 + static_cast<int>(entity.getBoundingBox().height()/worldIn.getTileHeight() + 0.9));
+//
+//	//This puts the entity into the maps tile unit coordinate
+//	Dimension entityTile(static_cast<int>(entity.getBoundingBox().getPos().xPos()/worldIn.getTileWidth() + 0.9),
+//			static_cast<int>(entity.getBoundingBox().getPos().yPos()/worldIn.getTileHeight() + 0.9));
+//
+//	for(int y = topLeftTile.height; y <= bottomRightTile.height; y++){
+//		//Skip if the y coordinate is outside of the map
+//		if(y + entityTile.height < 0) continue;
+//		else if(y + entityTile.height > worldIn.mapHeight/worldIn.tileHeight) continue;
+//
+//		for(int x = topLeftTile.width; x <= bottomRightTile.width; x++){
+//			//Skip if the x coordinate is outside of the map
+//			if(x + entityTile.width < 0) continue;
+//			else if(x + entityTile.width > worldIn.mapWidth/worldIn.tileWidth) continue;
+//
+//			if(!worldIn.isTileSolid(x + entityTile.width, y + entityTile.height)) continue;
+//
+//		}
+//	}
 }
 
 

@@ -17,7 +17,7 @@ class WorldContext {
 
 public:
 
-	WorldContext(class GameMap *worldIn,
+	WorldContext(class TileMap *worldIn,
 			class EntityManager *entites_ptr,
 			class PlayerEntity *playerIn,
 			float deltaTimeIn);
@@ -28,7 +28,7 @@ public:
 
 
 
-	class GameMap& getWorld();
+	class TileMap& getWorld();
 
 
 
@@ -46,7 +46,7 @@ public:
 
 protected:
 
-	class GameMap *world;
+	class TileMap *world;
 
 	class EntityManager *entities;
 

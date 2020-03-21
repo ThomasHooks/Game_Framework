@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: ITile.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/20/2020
+// Last Modified	: 03/21/2020
 //============================================================================
 
 
@@ -26,7 +26,7 @@ ITile::~ITile() {}
 
 
 
-//Gets this Tile's current position
+//Gets this Tile's current position in Global-Space
 const Position& ITile::getPos() const {
 	return this->pos;
 }
@@ -59,8 +59,8 @@ bool ITile::canCollide() const {
  *
  * Sets this Tile collision state
  */
-void ITile::setCollide(bool state) {
-	this->solid = state;
+void ITile::setCollide(bool stateIn) {
+	this->solid = stateIn;
 }
 
 
@@ -68,6 +68,17 @@ void ITile::setCollide(bool state) {
 //Checks if this Tile can be rendered
 bool ITile::isOpaque() const {
 	return this->opaque;
+}
+
+
+
+/*
+ * @param	stateIn If the Tile can be seen
+ *
+ * Sets if this Tile can be seen
+ */
+void ITile::setOpaque(bool stateIn){
+	this->opaque = stateIn;
 }
 
 

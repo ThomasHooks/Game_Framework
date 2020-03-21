@@ -9,7 +9,7 @@
 
 #include "PlayerEntity.h"
 #include "capabilities/HealthCapability.h"
-#include "../world/Tile.h"
+#include "../world/TileMap.h"
 
 
 
@@ -48,7 +48,7 @@ void PlayerEntity::onDespwan(){}
  *
  * This method is called each tick
  */
-void PlayerEntity::tick(const class GameMap &world, float deltaTime){}
+void PlayerEntity::tick(const TileMap &world, float deltaTime){}
 
 
 
@@ -70,7 +70,7 @@ void PlayerEntity::onEntityColision(IEntity &other, EnumSide side){}
  *
  * This method is called when the Entity collides with a Tile
  */
-void PlayerEntity::onTileColision(Tile &tileIn, EnumSide side){}
+void PlayerEntity::onTileColision(ITile &tileIn, EnumSide side){}
 
 
 

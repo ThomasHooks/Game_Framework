@@ -114,7 +114,7 @@ public:
 	 */
 	void tickAll(const class Position &cameraPos,
 			const struct Dimension &windowSize,
-			const class GameMap &worldIn,
+			const class TileMap &worldIn,
 			float deltaTime);
 
 
@@ -159,7 +159,7 @@ protected:
 	 * Checks if the given Entity is colliding with any Tiles in the map
 	 * and if it is colliding the Entity's position will be changed
 	 */
-	void checkTileCollisions(const class GameMap &worldIn,
+	void checkTileCollisions(const class TileMap &worldIn,
 			class IEntity &entity);
 
 

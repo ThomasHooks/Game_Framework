@@ -28,7 +28,9 @@ TileMap::TileMap(class GameLogger *loggerIn, const std::string &tagIn, const std
 
 
 
-TileMap::~TileMap() {}
+TileMap::~TileMap() {
+	logger->message(Level::INFO, "World '"+ this->tag + "' has been removed", Output::TXT_FILE);
+}
 
 
 
@@ -114,7 +116,10 @@ ITile* TileMap::getTile(const Position& posIn) {
  * @return	The Tile at that location or null if the Tile does not exist
  */
 ITile* TileMap::getTile(int x, int y) {
-	return (std::abs(x) > this->width() || std::abs(y) > this->height()) ? nullptr : &this->tileMap[x][y];
+
+	if(x < 0 || x > this->width() || y < 0 || y > this->height()) return nullptr;
+	auto itr = this->tileMap.find({x, y});
+	return itr == this->tileMap.end() ? nullptr : &itr->second;
 }
 
 
@@ -139,7 +144,7 @@ ITile* TileMap::getTile(double x, double y) {
  */
 void TileMap::buildTileMap(const std::string &filePath){
 
-	logger->message(Level::INFO, "Building map '" + this->tag + "' at '" + filePath + "'", Output::TXT_FILE);
+	logger->message(Level::INFO, "Building World '" + this->tag + "' at '" + filePath + "'", Output::TXT_FILE);
 
 	std::ifstream mapFile(filePath);
 	if(!mapFile.is_open()){
@@ -166,27 +171,33 @@ void TileMap::buildTileMap(const std::string &filePath){
 	if(mapFile.fail()) logger->message(Level::ERROR, "Unable to read map '" + this->tag + "' at TILESIZE", Output::TXT_FILE);
 
 	//Read the tile and add it to the tile map
-	for(int y = 0; y < sizeMap.height; y++){
-		this->tileMap.push_back(std::vector<ITile>());
-		for(int x = 0; x < sizeMap.width; x++){
+	for(int y = 0; y < sizeMap.height; y++) {
+		for(int x = 0; x < sizeMap.width; x++) {
 			bool opaque = true;
 			bool solid = false;
 			EnumSide pass = EnumSide::NONE;
 			Dimension sprite(0, 0);
-			mapFile>>sprite.width;
-			if(mapFile.fail()) logger->message(Level::ERROR, "Unable to read map '" + this->tag + "' at TILESPRITE", Output::TXT_FILE);
+
+			int index = 0;
+			mapFile>>index;
+			sprite.width = index;
+			if(mapFile.fail()) {
+				logger->message(Level::ERROR, "Unable to read map '" + this->tag + "' at TILESPRITE", Output::TXT_FILE);
+				return;
+			}
+
 			if(sprite.width > 1) solid = true;
-			this->tileMap[y].push_back(ITile(x * sizeTile.width,
+			this->tileMap.insert({{x, y}, ITile(x * sizeTile.width,
 					y * sizeTile.height,
 					sizeTile.width,
 					sizeTile.height,
 					sprite,
 					pass,
 					opaque,
-					solid));
+					solid)});
 		}
 	}
-	logger->message(Level::INFO, "Map '" + this->tag + "' has been built", Output::TXT_FILE);
+	logger->message(Level::INFO, "World '" + this->tag + "' has been built", Output::TXT_FILE);
 }
 
 

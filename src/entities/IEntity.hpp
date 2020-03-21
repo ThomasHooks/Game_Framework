@@ -72,7 +72,7 @@ public:
 	 *
 	 * This method is called each tick
 	 */
-	virtual void tick(const class GameMap &world, float deltaTime) = 0;
+	virtual void tick(const class TileMap &world, float deltaTime) = 0;
 
 
 
@@ -94,7 +94,7 @@ public:
 	 *
 	 * This method is called when the Entity collides with a Tile
 	 */
-	virtual void onTileColision(class Tile &tileIn, EnumSide side) = 0;
+	virtual void onTileColision(class ITile &tileIn, EnumSide side) = 0;
 
 
 

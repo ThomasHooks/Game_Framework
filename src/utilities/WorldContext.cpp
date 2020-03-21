@@ -8,14 +8,14 @@
 
 
 #include "WorldContext.h"
-#include "../world/GameMap.h"
 #include "../managers/EntityManager.h"
 #include "../entities/PlayerEntity.h"
+#include "../world/TileMap.h"
 
 
 
 
-WorldContext::WorldContext(GameMap *worldIn,
+WorldContext::WorldContext(TileMap *worldIn,
 		EntityManager *entites_ptr,
 		PlayerEntity *playerIn,
 		float deltaTimeIn)

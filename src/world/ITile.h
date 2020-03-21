@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: ITile.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/20/2020
+// Last Modified	: 03/21/2020
 //============================================================================
 
 
@@ -35,7 +35,7 @@ public:
 
 
 
-	//Gets this Tile's current position
+	//Gets this Tile's current position in Global-Space
 	const Position& getPos() const;
 
 
@@ -56,16 +56,25 @@ public:
 
 
 	/*
-	 * @param	state If the Tile has collision
+	 * @param	stateIn If the Tile has collision
 	 *
 	 * Sets this Tile collision state
 	 */
-	void setCollide(bool state);
+	void setCollide(bool stateIn);
 
 
 
 	//Checks if this Tile can be rendered
 	bool isOpaque() const;
+
+
+
+	/*
+	 * @param	stateIn If the Tile can be seen
+	 *
+	 * Sets if this Tile can be seen
+	 */
+	void setOpaque(bool stateIn);
 
 
 

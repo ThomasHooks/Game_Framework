@@ -47,7 +47,7 @@ public:
 	 *
 	 * This method is called each tick
 	 */
-	void tick(const class GameMap &world, float deltaTime) override;
+	void tick(const class TileMap &world, float deltaTime) override;
 
 
 
@@ -69,7 +69,7 @@ public:
 	 *
 	 * This method is called when the Entity collides with a Tile
 	 */
-	void onTileColision(class Tile &tile, EnumSide side) override;
+	void onTileColision(class ITile &tile, EnumSide side) override;
 };
 
 

@@ -23,7 +23,6 @@
 
 #include "../entities/Game_Dynamic.h"
 #include "../Game.h"
-#include "../world/GameMap.h"
 #include "../utilities/Dimension.h"
 #include "../utilities/Position.h"
 #include "../entities/PlayerEntity.h"

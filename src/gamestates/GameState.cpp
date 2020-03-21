@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/21/2020
+// Last Modified	: 03/08/2020
 //============================================================================
 
 
@@ -13,7 +13,7 @@
 #include "../Game.h"
 #include "../utilities/Dimension.h"
 #include "../utilities/Position.h"
-#include "../world/GameMap.h"
+#include "../world/TileMap.h"
 
 
 
@@ -29,7 +29,15 @@ void GameState::Draw(){
 
 
 	Dimension windowSize(game->get_windowWidth(), game->get_windowHeight());
-	Dimension map(game->Map.getWidth() * game->Map.getTileWidth(), game->Map.getHeight() * game->Map.getTileHeight());
+
+	TileMap* world = game->Map.getWorld();
+	if(world == nullptr) {
+		game->Log.message(Level::FATAL, "Null Pointer exception: Tried to render World, but world stack is empty!", Output::TXT_FILE);
+		game->set_gameOver(true);
+		return;
+	}
+
+	Dimension worldSize(world->width() * world->tileWidth(), world->height() * world->tileHeight());
 
 
 	//Keep camera inside game boundaries
@@ -37,10 +45,10 @@ void GameState::Draw(){
 	double cameraY = game->get_cameraY() - windowSize.height/2.0;
 
 	if(cameraX < 0) cameraX = 0.0;
-	else if(cameraX > map.width - windowSize.width) cameraX = map.width - windowSize.width;
+	else if(cameraX > worldSize.width - windowSize.width) cameraX = worldSize.width - windowSize.width;
 
 	if(cameraY < 0) cameraY = 0.0;
-	else if(cameraY > map.height - windowSize.height) cameraY = map.height - windowSize.height;
+	else if(cameraY > worldSize.height - windowSize.height) cameraY = worldSize.height - windowSize.height;
 
 	Position camera(cameraX, cameraY);
 

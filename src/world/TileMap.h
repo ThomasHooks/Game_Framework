@@ -12,7 +12,8 @@
 
 
 #include <string>
-#include <vector>
+#include <map>
+#include <memory>
 
 #include "ITile.h"
 
@@ -140,7 +141,7 @@ private:
 
 	Dimension sizeTile;
 
-	std::vector<std::vector<ITile>> tileMap;
+	std::map<std::pair<int, int>, ITile> tileMap;
 };
 
 

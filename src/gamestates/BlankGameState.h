@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: BlankGameState.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/20/2020
+// Last Modified	: 03/21/2020
 //============================================================================
 
 
@@ -38,7 +38,7 @@ public:
 	void ChangeState(int StateFlag, class Game *Game) override;
 
 	//----This need to be put in the base class----
-	void EntityMapCollisionRect(int EntityIndex, int MapIndex);
+	//void EntityMapCollisionRect(int EntityIndex, int MapIndex);
 	//----This need to be put in the base class----
 
 
