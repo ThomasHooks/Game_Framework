@@ -26,11 +26,13 @@
 #include "../utilities/Dimension.h"
 #include "../utilities/Position.h"
 #include "../entities/PlayerEntity.h"
+#include "../world/TileMap.h"
 
 
 
 
-BlankGameState::BlankGameState(class Game *Game, int StateID) : GameState(Game, StateID) {
+BlankGameState::BlankGameState(class Game *Game, int StateID)
+	: IGameState(Game, StateID) {
 
 	//----All of this should be removed later----
 	//This is still here because it is needed for tile v entity collision this will be changed later
@@ -39,15 +41,15 @@ BlankGameState::BlankGameState(class Game *Game, int StateID) : GameState(Game, 
 
 	this->vEntity.emplace_back(std::unique_ptr<class Game_Dynamic>(new cPlayerCharacter(64.0f, 224.0f, 32, 32, 0)));
 
-	this->game->Map.pushMap("tile_test.png","data/map/test.map");
+	this->game->Map.pushMap("tiletest","data/map/test.map");
 
 	Dimension tileDim(16, 16);
 	this->game->Render.registerTexture("mario", "./data/gfx/Mario.png", tileDim);
-	this->game->Render.registerTexture("tile_test.png", "./data/gfx/tile_test.png", tileDim);
+	this->game->Render.registerTexture("tiletest", "./data/gfx/tile_test.png", tileDim);
 	this->game->Render.setScale(2.0f);
 
 	this->game->Entities.registerEntity("mario", new EntityBuilder<PlayerEntity>());
-	this->game->Entities.spawn("mario", Position(64.0, 224.0), EnumSide::RIGHT);
+	this->player = game->Entities.spawn("mario", Position(128.0, 224.0), EnumSide::RIGHT);
 	//----All of this should be removed later----
 
 	return;
@@ -100,9 +102,11 @@ void BlankGameState::GetUserInput(){
 
 	if(state[SDL_SCANCODE_A]){
 		vEntity[0]->fdX = -192.0f;
+		player->updateVel(Position(-192.0, 0.0), 0.5f, game->Timer.get_deltaTime());
 	}
 	else if(state[SDL_SCANCODE_D]){
 		vEntity[0]->fdX = 192.0f;
+		player->updateVel(Position(192.0, 0.0), 0.5f, game->Timer.get_deltaTime());
 	}
 	//----All of this should be removed later----
 
@@ -111,7 +115,7 @@ void BlankGameState::GetUserInput(){
 
 
 
-void BlankGameState::Process(){
+void BlankGameState::tick(const Position &cameraPos){
 	//
 
 	//----All of this should be removed later----
@@ -129,6 +133,9 @@ void BlankGameState::Process(){
 //	else if((vEntity[0]->fY + vEntity[0]->nHeight) > vMap[0].mapHeight * vMap[0].tileHeight)
 //		vEntity[0]->fY = vMap[0].mapHeight * vMap[0].tileHeight - vEntity[0]->nHeight;
 
+	TileMap *world = game->Map.getWorld();
+	Dimension windowSize(game->get_windowWidth(), game->get_windowHeight());
+	game->Entities.tickAll(cameraPos, windowSize, *world, game->Timer.get_deltaTime());
 	vEntity[0]->Update(game->Timer.get_deltaTime());
 
 	//EntityMapCollisionRect(0, 0);

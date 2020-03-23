@@ -18,6 +18,7 @@ PlayerEntity::PlayerEntity() : IEntity() {
 
 	this->setRegistryTag("mario");
 	this->setEntityType(EnumEntityType::PLAYER);
+	this->setAabb(0.0, 0.0, 11.0, 15.0);
 	this->addCapability<HealthCapability>("health", 5, 5);
 }
 
@@ -48,7 +49,10 @@ void PlayerEntity::onDespwan(){}
  *
  * This method is called each tick
  */
-void PlayerEntity::tick(const TileMap &world, float deltaTime){}
+void PlayerEntity::tick(const TileMap &world, float deltaTime){
+
+	this->updatePos(0.1f, deltaTime);
+}
 
 
 

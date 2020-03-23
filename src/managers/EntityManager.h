@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: EntityManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/19/2020
+// Last Modified	: 03/22/2020
 //============================================================================
 
 
@@ -114,7 +114,7 @@ public:
 	 */
 	void tickAll(const class Position &cameraPos,
 			const struct Dimension &windowSize,
-			const class TileMap &worldIn,
+			class TileMap &worldIn,
 			float deltaTime);
 
 
@@ -158,8 +158,10 @@ protected:
 	 *
 	 * Checks if the given Entity is colliding with any Tiles in the map
 	 * and if it is colliding the Entity's position will be changed
+	 *
+	 * Entity vs Tile collision is done by creating a "collision loop" around the Entity
 	 */
-	void checkTileCollisions(const class TileMap &worldIn,
+	void checkTileCollisions(class TileMap &worldIn,
 			class IEntity &entity);
 
 

@@ -21,7 +21,7 @@
 #include <memory>
 #include <string>
 
-#include "../gamestates/GameState.h"
+#include "../gamestates/IGameState.h"
 #include "../Game.h"
 
 

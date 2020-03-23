@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IEntity.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/19/2020
+// Last Modified	: 03/22/2020
 //============================================================================
 
 
@@ -140,7 +140,7 @@ const Position& IEntity::getPos() const {
 
 
 //Gets the Entity's axis aligned bounding box
-const AABB& IEntity::getBoundingBox() const {
+const AABB& IEntity::getAabb() const {
 	return this->hitBox;
 }
 
@@ -191,6 +191,28 @@ bool IEntity::hasCapability(const std::string &stateTag){
 
 
 
+/*
+ * @param	accel The acceleration of the Entity
+ *
+ * @param	frict The friction of the Entity
+ *
+ * @param	deltaTime The amount of time since the last tick
+ *
+ * Updates the velocity of the Entity
+ */
+//TODO add breaking
+void IEntity::updateVel(const Position &accel, float frict, float deltaTime){
+
+	this->vel.move(this->vel + accel * deltaTime);
+
+	//Add dynamic friction to the Entity to slow it down
+	if(frict > 1.0f) frict = 1.0f;
+	else if(frict < 0.0f) frict = 0.0f;
+	this->vel.move(this->vel - this->vel * deltaTime * frict);
+}
+
+
+
 //Used to set the Entity's registration tag
 void IEntity::setRegistryTag(const std::string &tagIn){
 	this->tag = tagIn;
@@ -223,32 +245,15 @@ void IEntity::setEntityType(EnumEntityType typeIn){
  * @param	x2, y2 The coordinates of the bottom-right point
  *
  * Used to set the Entity's axis aligned bounding box
+ *
+ * The positions given should be relative to the tile
+ * and not the Global coordinates.
+ * ie. a tile that is 32x32 would be (0.0, 0.0, 32.0, 32.0)
  */
-void IEntity::setAABB(double x1, double y1, double x2, double y2){
+void IEntity::setAabb(double x1, double y1, double x2, double y2){
 	this->hitBox.offset(std::abs(x1), std::abs(y1));
 	this->hitBox.modify(EnumSide::RIGHT, std::abs(x2));
 	this->hitBox.modify(EnumSide::DOWN, std::abs(y2));
-}
-
-
-
-/*
- * @param	accel The acceleration of the Entity
- *
- * @param	frict The friction of the Entity
- *
- * @param	deltaTime The amount of time since the last tick
- *
- * Updates the velocity of the Entity
- */
-void IEntity::updateVel(const Position &accel, float frict, float deltaTime){
-
-	this->vel.move(this->vel + accel * deltaTime);
-
-	//Add dynamic friction to the Entity to slow it down
-	if(frict > 1.0f) frict = 1.0f;
-	else if(frict < 0.0f) frict = 0.0f;
-	this->vel.move(this->vel - this->vel * deltaTime * frict);
 }
 
 
@@ -258,11 +263,26 @@ void IEntity::updateVel(const Position &accel, float frict, float deltaTime){
  *
  * Updates the position of the Entity
  */
-void IEntity::updatePos(float deltaTime){
+void IEntity::updatePos(float frict, float deltaTime){
 
 	this->lastPos.move(this->pos - this->lastPos);
+	if(this->vel < 1.0) this->vel.move(0.0, 0.0);
 	this->pos.move(this->pos + this->vel * deltaTime);
 	this->hitBox.offset(this->vel * deltaTime);
+}
+
+
+
+//Gets the Entity's last position
+Position& IEntity::getLastPos(){
+	return this->lastPos;
+}
+
+
+
+//Gets the Entity's velocity
+Position& IEntity::getVel(){
+	return this->vel;
 }
 
 

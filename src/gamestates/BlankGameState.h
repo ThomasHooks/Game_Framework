@@ -16,10 +16,10 @@
 #include <memory>
 #include <vector>
 
-#include "GameState.h"
+#include "IGameState.h"
 
 
-class BlankGameState : public GameState {
+class BlankGameState : public IGameState {
 
 public:
 
@@ -33,7 +33,7 @@ public:
 
 	void GetUserInput() override;
 
-	void Process() override;
+	void tick(const class Position &cameraPos) override;
 
 	void ChangeState(int StateFlag, class Game *Game) override;
 
@@ -49,7 +49,7 @@ protected:
 
 	//----All of this should be removed later----
 	std::vector<std::unique_ptr<class Game_Dynamic>> vEntity;
-	//std::vector<class GameMap> vMap;
+	class IEntity* player;
 	//----All of this should be removed later----
 };
 

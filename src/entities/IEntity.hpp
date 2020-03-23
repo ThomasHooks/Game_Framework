@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IEntity.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/19/2020
+// Last Modified	: 03/22/2020
 //============================================================================
 
 
@@ -164,7 +164,7 @@ public:
 
 
 	//Gets the Entity's axis aligned bounding box
-	const AABB& getBoundingBox() const;
+	const AABB& getAabb() const;
 
 
 
@@ -199,6 +199,19 @@ public:
 	 * Checks if the Entity has the given state
 	 */
 	bool hasCapability(const std::string &stateTag);
+
+
+
+	/*
+	 * @param	accel The acceleration of the Entity
+	 *
+	 * @param	frict The friction of the Entity
+	 *
+	 * @param	deltaTime The amount of time since the last tick
+	 *
+	 * Updates the velocity of the Entity
+	 */
+	void updateVel(const Position &accel, float frict, float deltaTime);
 
 
 
@@ -264,21 +277,12 @@ protected:
 	 * @param	x2, y2 The coordinates of the bottom-right point
 	 *
 	 * Used to set the Entity's axis aligned bounding box
+	 *
+	 * The positions given should be relative to the tile
+	 * and not the Global coordinates.
+	 * ie. a tile that is 32x32 would be (0.0, 0.0, 32.0, 32.0)
 	 */
-	void setAABB(double x1, double y1, double x2, double y2);
-
-
-
-	/*
-	 * @param	accel The acceleration of the Entity
-	 *
-	 * @param	frict The friction of the Entity
-	 *
-	 * @param	deltaTime The amount of time since the last tick
-	 *
-	 * Updates the velocity of the Entity
-	 */
-	void updateVel(const Position &accel, float frict, float deltaTime);
+	void setAabb(double x1, double y1, double x2, double y2);
 
 
 
@@ -287,7 +291,17 @@ protected:
 	 *
 	 * Updates the position of the Entity
 	 */
-	void updatePos(float deltaTime);
+	void updatePos(float frict, float deltaTime);
+
+
+
+	//Gets the Entity's last position
+	Position& getLastPos();
+
+
+
+	//Gets the Entity's velocity
+	Position& getVel();
 
 
 

@@ -1,9 +1,8 @@
 //============================================================================
-// Name       		: State_Manager.h
+// Name       		: StateManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: 11/2/2019
+// Last Modified	: 03/22/2020
 //============================================================================
-
 
 
 
@@ -17,52 +16,65 @@
 #include <vector>
 #include <memory>
 
-#include "../gamestates/GameState.h"
+#include "../gamestates/IGameState.h"
 #include "GameManager.h"
 
 
 
 
-class StateManager : public GameManager<class GameState> {
+class StateManager : public GameManager<IGameState> {
 public:
 
 	StateManager(class Game *gamePtr);
 
+
+
 	~StateManager();
+
+
 
 	StateManager(const StateManager &other) = delete;
 
+
+
 	StateManager(StateManager &&other) = delete;
 
-	//------------------------------------------------------------------------
 
-	//Processes the current state
-	void Process(void);
+
+	/*
+	 * Processes the current game state in the stack
+	 * by calling its method's that gets user inputs, processes
+	 * physics, processes events, processes AI, and rendering all
+	 * changes in the game window
+	 */
+	void Process();
+
+
 
 	//Checks if the current state needs to be changed
-	void Check(void);
+	void Check();
 
-	//Getters and setters
-	int get_stateFlag(void) const {return n_gameStateFlag;}
 
-	void set_steateFlag(int newFlag) {n_gameStateFlag = newFlag;}
 
-	//------------------------------------------------------------------------
+	//Gets the current GameState ID
+	int getStateID() const;
+
+
+
+protected:
+
+	//Sets the current GameState ID
+	void setStateID(int stateIDIn);
+
+
 
 private:
 
-	int n_gameStateFlag;		//Stores the current or next game state ID
-
+	int stateID;
 };
 
 
-
-
 #endif /* SRC_STATE_MANAGER_H_ */
-
-
-
-
 
 
 

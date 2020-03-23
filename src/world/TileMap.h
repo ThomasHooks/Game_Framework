@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: TileMap.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/21/2020
+// Last Modified	: 03/22/2020
 //============================================================================
 
 
@@ -117,6 +117,19 @@ public:
 	 * @return	The Tile at that location or null if the Tile does not exist
 	 */
 	ITile* getTile(double x, double y);
+
+
+
+	/*
+	 * @nullable
+	 *
+	 * @param	posIn The coordinates to be offset by one tile
+	 *
+	 * @param	direction The offset direction
+	 *
+	 * @return	The Tile offset from that location or null if the Tile does not exist
+	 */
+	ITile* getOffsetTile(const Position& posIn, EnumSide direction);
 
 
 

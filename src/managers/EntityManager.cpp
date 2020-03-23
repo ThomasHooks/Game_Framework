@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: EntityManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/20/2020
+// Last Modified	: 03/22/2020
 //============================================================================
 
 
@@ -14,8 +14,10 @@
 #include "../utilities/Dimension.h"
 #include "../utilities/Position.h"
 #include "../utilities/Collisions.h"
+#include "../utilities/Direction.h"
 #include "RendererManager.h"
 #include "../world/TileMap.h"
+#include "../world/ITile.h"
 
 
 
@@ -137,9 +139,9 @@ void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSi
  *
  * Updates all Entities that are currently on screen
  */
-void EntityManager::tickAll(const Position &cameraPos, const Dimension &windowSize, const TileMap &worldIn, float deltaTime){
+void EntityManager::tickAll(const Position &cameraPos, const Dimension &windowSize, TileMap &worldIn, float deltaTime){
 
-	logger->message(Level::INFO, "Ticking all Entities on screen", Output::TXT_FILE);
+	//logger->message(Level::INFO, "Ticking all Entities on screen", Output::TXT_FILE);
 	std::vector<IEntity*> entitiesOnScreen;
 	this->getEntities(entitiesOnScreen, AABB(cameraPos.xPos(), cameraPos.yPos(), cameraPos.xPos() + windowSize.width, cameraPos.yPos() + windowSize.height));
 
@@ -194,7 +196,7 @@ void EntityManager::checkEntityCollisions(std::vector<IEntity*> &entities, IEnti
 	for(auto &itr : entities) {
 		if(itr->getID() != entity.getID() && itr->isActive() && itr->canCollide()) {
 			//Make sure that the Entity is not being checked against itself
-			EnumSide side = Collision::RectEdge(entity.getBoundingBox(), itr->getBoundingBox());
+			EnumSide side = Collision::RectEdge(entity.getAabb(), itr->getAabb());
 			if(side != EnumSide::NONE) {
 				entity.onEntityColision(*itr, side);
 			}
@@ -211,35 +213,57 @@ void EntityManager::checkEntityCollisions(std::vector<IEntity*> &entities, IEnti
  *
  * Checks if the given Entity is colliding with any Tiles in the map
  * and if it is colliding the Entity's position will be changed
+ *
+ * Entity vs Tile collision is done by creating a "collision loop" around the Entity
  */
-//TODO
-void EntityManager::checkTileCollisions(const TileMap &worldIn, IEntity &entity){
+void EntityManager::checkTileCollisions(TileMap &worldIn, IEntity &entity){
 
-//	//Set top-left tile
-//	Dimension topLeftTile(-1, -1);
-//
-//	//Set bottom-right tile
-//	Dimension bottomRightTile(1 + static_cast<int>(entity.getBoundingBox().width()/worldIn.getTileWidth() + 0.9),
-//			1 + static_cast<int>(entity.getBoundingBox().height()/worldIn.getTileHeight() + 0.9));
-//
-//	//This puts the entity into the maps tile unit coordinate
-//	Dimension entityTile(static_cast<int>(entity.getBoundingBox().getPos().xPos()/worldIn.getTileWidth() + 0.9),
-//			static_cast<int>(entity.getBoundingBox().getPos().yPos()/worldIn.getTileHeight() + 0.9));
-//
-//	for(int y = topLeftTile.height; y <= bottomRightTile.height; y++){
-//		//Skip if the y coordinate is outside of the map
-//		if(y + entityTile.height < 0) continue;
-//		else if(y + entityTile.height > worldIn.mapHeight/worldIn.tileHeight) continue;
-//
-//		for(int x = topLeftTile.width; x <= bottomRightTile.width; x++){
-//			//Skip if the x coordinate is outside of the map
-//			if(x + entityTile.width < 0) continue;
-//			else if(x + entityTile.width > worldIn.mapWidth/worldIn.tileWidth) continue;
-//
-//			if(!worldIn.isTileSolid(x + entityTile.width, y + entityTile.height)) continue;
-//
-//		}
-//	}
+	const Dimension topLeftTile(-1, -1);
+
+	/*
+	 * The bottom-right tile is determined by the Entity's size
+	 * this is done so that if an Entity is bigger than one tile the collision loop will grow to fully enclose the Entity
+	 */
+	Dimension bottomRightTile(1 + static_cast<int>(entity.getAabb().width()/worldIn.tileWidth() + 0.5),
+			1 + static_cast<int>(entity.getAabb().height()/worldIn.tileHeight() + 0.5));
+
+	//This translates the entity's position into the tile-map unit coordinate system aka "Tile-Space"
+	Dimension entityTile(static_cast<int>(entity.getAabb().getPos().xPos()/worldIn.tileWidth() + 0.5),
+			static_cast<int>(entity.getAabb().getPos().yPos()/worldIn.tileHeight() + 0.5));
+
+	//Check if the entity collides with any of the tiles around it
+	//TODO Improve performance by skipping the corner tiles as they can never be collided with
+	for(int y = topLeftTile.height; y <= bottomRightTile.height; y++) {
+		int yCord = y + entityTile.height;
+
+		//Skip if the y coordinate is outside of the tile-map
+		if((yCord < 0) || (yCord > worldIn.height())) continue;
+		for(int x = topLeftTile.width; x <= bottomRightTile.width; x++) {
+			int xCord = x + entityTile.width;
+
+			//Skip if the x coordinate is outside of the tile-map
+			if((xCord < 0) || (xCord > worldIn.width())) continue;
+
+			ITile *tile = worldIn.getTile(xCord, yCord);
+			if(tile == nullptr) {
+				//Fail safe if the above somehow does not catch the tile-map being indexed out of
+				logger->message(Level::WARNING,
+						"Null Pointer exception: Tried to check Tile for collisions but Tile does not exist",
+						Output::TXT_FILE);
+				return;
+			}
+
+			if(tile->canCollide()) {
+				EnumSide side = Collision::RectEdge(entity.getAabb(), tile->getAabb());
+				if(side != EnumSide::NONE) {
+					//Check if the side collided with is an "internal edge", if it is an internal edge ignore it
+					//Internal edges when collided with can cause "sticky" behavior
+					ITile *tile2 = worldIn.getOffsetTile(tile->getPos(), side);
+					if(tile2 != nullptr && !tile2->canCollide()) entity.onTileColision(*tile, side);
+				}
+			}
+		}
+	}
 }
 
 

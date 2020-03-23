@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: TileMap.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/21/2020
+// Last Modified	: 03/22/2020
 //============================================================================
 
 
@@ -133,6 +133,38 @@ ITile* TileMap::getTile(int x, int y) {
  */
 ITile* TileMap::getTile(double x, double y) {
 	return this->getTile(static_cast<int>(x/this->tileWidth() + 0.5), static_cast<int>(y/this->tileHeight() + 0.5));
+}
+
+
+
+/*
+ * @nullable
+ *
+ * @param	posIn The coordinates to be offset by one tile
+ *
+ * @param	direction The offset direction
+ *
+ * @return	The Tile offset from that location or null if the Tile does not exist
+ */
+ITile* TileMap::getOffsetTile(const Position& posIn, EnumSide direction){
+
+	switch(direction){
+
+	case EnumSide::UP:
+		return this->getTile(posIn.xPos(), posIn.yPos() - this->tileHeight());
+
+	case EnumSide::RIGHT:
+		return this->getTile(posIn.xPos() + this->tileWidth(), posIn.xPos());
+
+	case EnumSide::DOWN:
+		return this->getTile(posIn.xPos(), posIn.yPos() + this->tileHeight());
+
+	case EnumSide::LEFT:
+		return this->getTile(posIn.xPos() - this->tileWidth(), posIn.yPos());
+
+	default:
+		return nullptr;
+	}
 }
 
 

@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: WorldContext.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/19/2020
+// Last Modified	: 03/22/2020
 //============================================================================
 
 
@@ -19,8 +19,8 @@ public:
 
 	WorldContext(class TileMap *worldIn,
 			class EntityManager *entites_ptr,
-			class PlayerEntity *playerIn,
-			float deltaTimeIn);
+			class IEntity *playerIn,
+			class GameTimer* timer);
 
 
 
@@ -28,18 +28,38 @@ public:
 
 
 
+	/*
+	 * @return	The current World
+	 *
+	 * Gets the current World
+	 */
 	class TileMap& getWorld();
 
 
 
+	/*
+	 * @return	A reference to the Entity Manager
+	 *
+	 * Gets the Entity Manager
+	 */
 	class EntityManager& getEntities();
 
 
 
-	class PlayerEntity* getPlayer();
+	/*
+	 * @return	A reference to the Player
+	 *
+	 * Gets the Player
+	 */
+	class IEntity& getPlayer();
 
 
 
+	/*
+	 * @return	The amount of time since the last tick
+	 *
+	 * Gets the amount of time since the last tick
+	 */
 	float getDeltaTime();
 
 
@@ -50,9 +70,9 @@ protected:
 
 	class EntityManager *entities;
 
-	class PlayerEntity *player;
+	class IEntity *player;
 
-	float deltaTime;
+	class GameTimer* timer;
 };
 
 

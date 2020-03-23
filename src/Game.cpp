@@ -13,7 +13,7 @@
 
 #include "entities/Game_Dynamic.h"
 #include "gamestates/BlankGameState.h"
-#include "gamestates/GameState.h"
+#include "gamestates/IGameState.h"
 #include "managers/StateManager.h"
 
 
