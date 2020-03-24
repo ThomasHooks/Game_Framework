@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IEntity.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/22/2020
+// Last Modified	: 03/23/2020
 //============================================================================
 
 
@@ -40,7 +40,7 @@ IEntity::~IEntity() {}
  */
 void IEntity::spwan(const Position &posIn, EnumSide facingIn, unsigned int entityIDIn){
 	this->teleport(posIn);
-	this->hitBox.offset(posIn);
+	//this->hitBox.offset(this->pos);
 	this->setDirectionFacing(facingIn);
 	this->entityID = entityIDIn;
 	this->onSpwan();
@@ -194,21 +194,18 @@ bool IEntity::hasCapability(const std::string &stateTag){
 /*
  * @param	accel The acceleration of the Entity
  *
- * @param	frict The friction of the Entity
+ * @param	frict The friction of the Entity ranging from 0.0 - 1.0
  *
  * @param	deltaTime The amount of time since the last tick
  *
  * Updates the velocity of the Entity
  */
-//TODO add breaking
 void IEntity::updateVel(const Position &accel, float frict, float deltaTime){
-
-	this->vel.move(this->vel + accel * deltaTime);
-
-	//Add dynamic friction to the Entity to slow it down
-	if(frict > 1.0f) frict = 1.0f;
-	else if(frict < 0.0f) frict = 0.0f;
-	this->vel.move(this->vel - this->vel * deltaTime * frict);
+	
+	float deltaFrict = std::abs(frict);
+	if(deltaFrict < 0.0f) deltaFrict = 0.0f;
+	else if(deltaFrict > 1.0f) deltaFrict = 1.0f;
+	this->vel.move(this->vel + accel * deltaTime * deltaFrict);
 }
 
 
@@ -261,14 +258,23 @@ void IEntity::setAabb(double x1, double y1, double x2, double y2){
 /*
  * @param	deltaTime The amount of time since the last tick
  *
+ * @param	frict The amount of breaking friction ranging from 0.0 - 1.0
+ *
  * Updates the position of the Entity
  */
 void IEntity::updatePos(float frict, float deltaTime){
 
-	this->lastPos.move(this->pos - this->lastPos);
-	if(this->vel < 1.0) this->vel.move(0.0, 0.0);
+	float delta = std::abs(frict);
+	if(delta < 0.0f) delta = 0.0f;
+	else if(delta > 1.0f) delta = 1.0f;
+
+	this->lastPos.move(this->pos);
 	this->pos.move(this->pos + this->vel * deltaTime);
-	this->hitBox.offset(this->vel * deltaTime);
+
+	//Move AABB with this Entity
+	this->hitBox.offset(this->pos - this->lastPos);//this->vel * deltaTime
+	//Add dynamic friction to the Entity to slow it down
+	this->vel.move(this->vel * delta);
 }
 
 

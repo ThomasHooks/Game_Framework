@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: BlankGameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/20/2020
+// Last Modified	: 03/24/2020
 //============================================================================
 
 
@@ -35,12 +35,6 @@ BlankGameState::BlankGameState(class Game *Game, int StateID)
 	: IGameState(Game, StateID) {
 
 	//----All of this should be removed later----
-	//This is still here because it is needed for tile v entity collision this will be changed later
-//	vMap.emplace_back(GameMap("Test"));
-//	vMap[0].loadMap("data/map/test.map");
-
-	this->vEntity.emplace_back(std::unique_ptr<class Game_Dynamic>(new cPlayerCharacter(64.0f, 224.0f, 32, 32, 0)));
-
 	this->game->Map.pushMap("tiletest","data/map/test.map");
 
 	Dimension tileDim(16, 16);
@@ -51,8 +45,6 @@ BlankGameState::BlankGameState(class Game *Game, int StateID)
 	this->game->Entities.registerEntity("mario", new EntityBuilder<PlayerEntity>());
 	this->player = game->Entities.spawn("mario", Position(128.0, 224.0), EnumSide::RIGHT);
 	//----All of this should be removed later----
-
-	return;
 }
 
 
@@ -61,8 +53,10 @@ BlankGameState::~BlankGameState() {}
 
 
 
+/*
+ *
+ */
 void BlankGameState::GetUserInput(){
-	//
 
 	//Begin polling
 	SDL_Event event;
@@ -93,34 +87,31 @@ void BlankGameState::GetUserInput(){
 
 	//----All of this should be removed later----
 	const Uint8*state = SDL_GetKeyboardState(NULL);
-	if(state[SDL_SCANCODE_W]){
-		vEntity[0]->fdY = -128.0f;
+	if(state[SDL_SCANCODE_W]) {
+		player->updateVel(Position(0.0, -576.0), 0.93f, game->Timer.get_deltaTime());
 	}
-	else if(state[SDL_SCANCODE_S]){
-		vEntity[0]->fdY = +128.0f;
+	else if(state[SDL_SCANCODE_S]) {
+		player->updateVel(Position(0.0, 576.0), 0.93f, game->Timer.get_deltaTime());
 	}
 
-	if(state[SDL_SCANCODE_A]){
-		vEntity[0]->fdX = -192.0f;
-		player->updateVel(Position(-192.0, 0.0), 0.5f, game->Timer.get_deltaTime());
+	if(state[SDL_SCANCODE_A]) {
+		player->updateVel(Position(-576.0, 0.0), 0.93f, game->Timer.get_deltaTime());
 	}
-	else if(state[SDL_SCANCODE_D]){
-		vEntity[0]->fdX = 192.0f;
-		player->updateVel(Position(192.0, 0.0), 0.5f, game->Timer.get_deltaTime());
+	else if(state[SDL_SCANCODE_D]) {
+		player->updateVel(Position(576.0, 0.0), 0.93f, game->Timer.get_deltaTime());
 	}
 	//----All of this should be removed later----
-
-	return;
 }
 
 
 
+/*
+ *
+ */
 void BlankGameState::tick(const Position &cameraPos){
-	//
-
 	//----All of this should be removed later----
-	this->game->set_cameraX(vEntity[0]->fX);
-	this->game->set_cameraY(vEntity[0]->fY);
+	this->game->set_cameraX(player->getPos().xPosF());
+	this->game->set_cameraY(player->getPos().yPosF());
 
 //	//Keep player x position inside the map
 //	if(vEntity[0]->fX < 0.0f) vEntity[0]->fX = 0.0f;
@@ -136,38 +127,32 @@ void BlankGameState::tick(const Position &cameraPos){
 	TileMap *world = game->Map.getWorld();
 	Dimension windowSize(game->get_windowWidth(), game->get_windowHeight());
 	game->Entities.tickAll(cameraPos, windowSize, *world, game->Timer.get_deltaTime());
-	vEntity[0]->Update(game->Timer.get_deltaTime());
-
-	//EntityMapCollisionRect(0, 0);
 	//----All of this should be removed later----
-
-	return;
 }
 
 
 
+/*
+ *
+ */
 void BlankGameState::customDraw(const Position &cameraPos, const Dimension &windowSize){
-	/*
-	 *
-	 */
-
-
 	//----All of this should be removed later----
 	this->game->Map.draw(cameraPos, windowSize, this->game->Render);
 
-	this->game->Render.drawSprite("mario", Position(vEntity[0]->fX, vEntity[0]->fY), cameraPos, Dimension(0, 0), false);
+	//this->game->Render.drawSprite("mario", Position(vEntity[0]->fX, vEntity[0]->fY), cameraPos, Dimension(0, 0), false);
 
+	this->game->Render.setDrawColor(255, 0, 0, 255);
+	this->game->Render.drawRect(player->getAabb().getPos() - cameraPos, Dimension(player->getAabb().widthN(), player->getAabb().heightN()), true);
 	this->game->Entities.drawAll(cameraPos, windowSize, this->game->Render);
 	//----All of this should be removed later----
 }
 
 
 
-void BlankGameState::ChangeState(int StateFlag, Game *Game) {
-	//
-
-	return;
-}
+/*
+ *
+ */
+void BlankGameState::ChangeState(int StateFlag, Game *Game) {}
 
 
 

@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IEntity.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/22/2020
+// Last Modified	: 03/23/2020
 //============================================================================
 
 
@@ -205,7 +205,7 @@ public:
 	/*
 	 * @param	accel The acceleration of the Entity
 	 *
-	 * @param	frict The friction of the Entity
+	 * @param	frict The friction of the Entity ranging from 0.0 - 1.0
 	 *
 	 * @param	deltaTime The amount of time since the last tick
 	 *
@@ -288,6 +288,8 @@ protected:
 
 	/*
 	 * @param	deltaTime The amount of time since the last tick
+	 *
+	 * @param	frict The amount of breaking friction ranging from 0.0 - 1.0
 	 *
 	 * Updates the position of the Entity
 	 */

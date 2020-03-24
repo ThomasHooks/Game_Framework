@@ -254,12 +254,32 @@ void EntityManager::checkTileCollisions(TileMap &worldIn, IEntity &entity){
 			}
 
 			if(tile->canCollide()) {
-				EnumSide side = Collision::RectEdge(entity.getAabb(), tile->getAabb());
+				EnumSide side = Collision::RectEdge(tile->getAabb(), entity.getAabb());
+
 				if(side != EnumSide::NONE) {
 					//Check if the side collided with is an "internal edge", if it is an internal edge ignore it
 					//Internal edges when collided with can cause "sticky" behavior
 					ITile *tile2 = worldIn.getOffsetTile(tile->getPos(), side);
-					if(tile2 != nullptr && !tile2->canCollide()) entity.onTileColision(*tile, side);
+					if(tile2 != nullptr && !tile2->canCollide()) {
+						switch(side){
+						case EnumSide::UP:
+							std::cout<<"onTileColision: UP"<<std::endl;
+							break;
+
+						case EnumSide::RIGHT:
+							std::cout<<"onTileColision: RIGHT"<<std::endl;
+							break;
+
+						case EnumSide::DOWN:
+							std::cout<<"onTileColision: DOWN"<<std::endl;
+							break;
+
+						case EnumSide::LEFT:
+							std::cout<<"onTileColision: LEFT"<<std::endl;
+							break;
+						}
+						entity.onTileColision(*tile, side);
+					}
 				}
 			}
 		}

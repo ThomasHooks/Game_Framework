@@ -11,6 +11,7 @@
 
 #include <math.h>
 #include <algorithm>
+#include <iostream>
 
 
 
@@ -155,25 +156,19 @@ EnumSide Collision::RectEdge(double x1, double y1, double w1, double h1, double 
 		//first calculate each rectangle's center
 		Position rect1Center(x1 + w1/2.0, y1 + h1/2.0);
 		Position rect2Center(x2 + w2/2.0, y2 + h2/2.0);
+		Position distance(rect1Center.xPos() - rect2Center.xPos(), rect1Center.yPos() - rect2Center.yPos());
 
-
-		//Next calculate the distance between each rectangle's center
-		//And make the distance relative to rectangle 1's center
-		Position distance(std::sqrt(std::pow(rect1Center.xPos(), 2.0) + std::pow(rect2Center.xPos(), 2.0)) - rect1Center.xPos(),
-				std::sqrt(std::pow(rect1Center.yPos(), 2.0) + std::pow(rect2Center.yPos(), 2.0)) - rect1Center.yPos());
-
-
-		//Now check which components of rectangle 2 is closer to rectangle 1's center
-		if(std::abs(distance.xPos()) < std::abs(distance.yPos())) {
+		//Now check which components of rectangle 2 is further from rectangle 1's center
+		if(std::abs(distance.xPosN()) > std::abs(distance.yPosN())) {
 			//Because the x component of rectangle 2 is closer to rectangle 1's center
 			//Check if rectangle 2 is to the right or left of rectangle 1's center
-			return distance.xPosN() < 0 ? EnumSide::LEFT : EnumSide::RIGHT;
+			return rect2Center.xPosN() <= rect1Center.xPosN() ? EnumSide::LEFT : EnumSide::RIGHT;
 		}
-		//Because the y component of rectangle 2 is closer to rectangle 1's center
+		//Because the y component of rectangle 2 is further from rectangle 1's center
 		else {
 			//Check if rectangle 2 is above or below rectangle 1's center
 			//Note values will become negative when going above rectangle 1's center
-			return distance.yPosN() < 0 ? EnumSide::UP : EnumSide::DOWN;
+			return rect2Center.yPosN() <= rect1Center.yPosN() ? EnumSide::UP : EnumSide::DOWN;
 		}
 	}
 	//Because neither overlap

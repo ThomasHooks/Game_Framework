@@ -7,6 +7,8 @@
 
 
 
+#include <iostream>
+
 #include "PlayerEntity.h"
 #include "capabilities/HealthCapability.h"
 #include "../world/TileMap.h"
@@ -18,7 +20,7 @@ PlayerEntity::PlayerEntity() : IEntity() {
 
 	this->setRegistryTag("mario");
 	this->setEntityType(EnumEntityType::PLAYER);
-	this->setAabb(0.0, 0.0, 11.0, 15.0);
+	this->setAabb(0.0, 0.0, 22.0, 32.0);
 	this->addCapability<HealthCapability>("health", 5, 5);
 }
 
@@ -51,7 +53,7 @@ void PlayerEntity::onDespwan(){}
  */
 void PlayerEntity::tick(const TileMap &world, float deltaTime){
 
-	this->updatePos(0.1f, deltaTime);
+	this->updatePos(0.93f, deltaTime);
 }
 
 
