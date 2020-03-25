@@ -154,7 +154,7 @@ ITile* TileMap::getOffsetTile(const Position& posIn, EnumSide direction){
 		return this->getTile(posIn.xPos(), posIn.yPos() - this->tileHeight());
 
 	case EnumSide::RIGHT:
-		return this->getTile(posIn.xPos() + this->tileWidth(), posIn.xPos());
+		return this->getTile(posIn.xPos() + this->tileWidth(), posIn.yPos());
 
 	case EnumSide::DOWN:
 		return this->getTile(posIn.xPos(), posIn.yPos() + this->tileHeight());

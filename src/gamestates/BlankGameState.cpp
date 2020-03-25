@@ -136,14 +136,10 @@ void BlankGameState::tick(const Position &cameraPos){
  *
  */
 void BlankGameState::customDraw(const Position &cameraPos, const Dimension &windowSize){
+
 	//----All of this should be removed later----
 	this->game->Map.draw(cameraPos, windowSize, this->game->Render);
-
-	//this->game->Render.drawSprite("mario", Position(vEntity[0]->fX, vEntity[0]->fY), cameraPos, Dimension(0, 0), false);
-
-	this->game->Render.setDrawColor(255, 0, 0, 255);
-	this->game->Render.drawRect(player->getAabb().getPos() - cameraPos, Dimension(player->getAabb().widthN(), player->getAabb().heightN()), true);
-	this->game->Entities.drawAll(cameraPos, windowSize, this->game->Render);
+	this->game->Entities.drawAll(cameraPos, windowSize, this->game->Render, true);
 	//----All of this should be removed later----
 }
 
@@ -152,7 +148,7 @@ void BlankGameState::customDraw(const Position &cameraPos, const Dimension &wind
 /*
  *
  */
-void BlankGameState::ChangeState(int StateFlag, Game *Game) {}
+void BlankGameState::ChangeState(int StateFlag, Game *Game){}
 
 
 

@@ -114,14 +114,21 @@ void EntityManager::despawn(){
  *
  * @param	renderer Reference to the Renderer Manager
  *
+ * @param	renderAabb Flag if Entity's axis aligned
+ * 			bounding box should be rendered
+ *
  * Draws all Entities that are visible on screen
  */
-void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSize, RendererManager &renderer){
+void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSize, RendererManager &renderer, bool renderAabb){
 
 	std::vector<IEntity*> entitiesOnScreen;
 	this->getEntities(entitiesOnScreen, AABB(cameraPos.xPos(), cameraPos.yPos(), cameraPos.xPos() + windowSize.width, cameraPos.yPos() + windowSize.height));
 	for(auto &itr : entitiesOnScreen) {
 		//TODO fix 'pop-in', currently entities will 'pop in' along the top-left edges of the screen
+		if(renderAabb) {
+			renderer.setDrawColor(255, 0, 0, 255);
+			renderer.drawRect(itr->getAabb().getPos() - cameraPos, Dimension(itr->getAabb().widthN(), itr->getAabb().heightN()), false);
+		}
 		renderer.drawSprite(itr->getRegistryTag(), itr->getPos(), cameraPos, itr->getSprite(), false);
 	}
 }

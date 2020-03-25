@@ -93,11 +93,15 @@ public:
 	 *
 	 * @param	renderer Reference to the Renderer Manager
 	 *
+	 * @param	renderAabb Flag if Entity's axis aligned
+	 * 			bounding box should be rendered
+	 *
 	 * Draws all Entities that are visible in the Window
 	 */
 	void drawAll(const class Position &cameraPos,
 			const struct Dimension &windowSize,
-			class RendererManager &renderer);
+			class RendererManager &renderer,
+			bool renderAabb);
 
 
 
@@ -120,11 +124,13 @@ public:
 
 
 	/*
-	 * @param	vectorIn The vector that the array of Entities is to be added to
+	 * @param	vectorIn The vector that the array of
+	 * 			Entities is to be added to
 	 *
 	 * @param	area The area this is searched for Entities
 	 *
-	 * Adds a list of Entities in the given area to the vector that is passed in
+	 * Adds a list of Entities in the given area to the
+	 * vector that is passed in
 	 */
 	void getEntities(std::vector<class IEntity*> &vectorIn,
 			const class AABB &area);
@@ -159,7 +165,8 @@ protected:
 	 * Checks if the given Entity is colliding with any Tiles in the map
 	 * and if it is colliding the Entity's position will be changed
 	 *
-	 * Entity vs Tile collision is done by creating a "collision loop" around the Entity
+	 * Entity vs Tile collision is done by creating a "collision loop"
+	 * around the Entity
 	 */
 	void checkTileCollisions(class TileMap &worldIn,
 			class IEntity &entity);
