@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: SDLWindowWrapper.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/18/2020
+// Last Modified	: 03/30/2020
 //============================================================================
 
 
@@ -43,32 +43,47 @@ public:
 
 
 
-	//Gets the Windows width
-	int getWidth();
+	/*
+	 * @return	The Window's width or '0' if the window has not been Initialized
+	 *
+	 * Gets the Windows width
+	 */
+	int width() const;
 
 
 
-	//Gets the Windows Height
-	int getHeight();
+	/*
+	 * @return	The Window's height or '0' if the window has not been Initialized
+	 *
+	 * Gets the Windows height
+	 */
+	int height() const;
 
 
 
-	//Exposes the SDL_Window pointer
-	//@nullable
+	/*
+	 * @return	True if the Window is open and false if closed
+	 *
+	 * Checks if this Window is open
+	 */
+	bool isOpen() const;
+
+
+
+	/*
+	 * @nullable
+	 *
+	 * @return	The SDL_Window pointer inside of this wrapper
+	 *
+	 * Exposes the SDL_Window inside of this wrapper
+	 */
 	SDL_Window* get();
-
-
-
-	//Gets the camera's position
-	Position& getCameraPos();
 
 
 
 private:
 
 	Dimension size;
-
-	Position camera;
 
 	SDL_Window* window;
 

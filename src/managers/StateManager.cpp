@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: StateManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/21/2020
+// Last Modified	: 03/30/2020
 //============================================================================
 
 
@@ -12,6 +12,8 @@
 #include "../utilities/Dimension.h"
 #include "../utilities/Position.h"
 #include "../world/TileMap.h"
+#include "../utilities/SDLWindowWrapper.h"
+#include "../utilities/GameCamera.h"
 
 
 
@@ -39,33 +41,23 @@ void StateManager::Process(){
 	if(Empty()) {
 
 		game->Log.message(Level::FATAL, "State stack is empty, application is in an unknown state!", Output::TXT_FILE);
-		game->set_gameOver(true);
+		game->markOver();
 		return;
 	}
 
 	TileMap* world = game->Map.getWorld();
 	if(world == nullptr) {
 		game->Log.message(Level::FATAL, "Null Pointer exception: Tried to render World, but world stack is empty!", Output::TXT_FILE);
-		game->set_gameOver(true);
+		game->markOver();
 		return;
 	}
+
 	Dimension worldSize(world->width() * world->tileWidth(), world->height() * world->tileHeight());
-
-	//Keep camera inside game boundaries
-	Dimension windowSize(game->get_windowWidth(), game->get_windowHeight());
-	double cameraX = game->get_cameraX() - windowSize.width/2.0;
-	double cameraY = game->get_cameraY() - windowSize.height/2.0;
-
-	if(cameraX < 0) cameraX = 0.0;
-	else if(cameraX > worldSize.width - windowSize.width) cameraX = worldSize.width - windowSize.width;
-
-	if(cameraY < 0) cameraY = 0.0;
-	else if(cameraY > worldSize.height - windowSize.height) cameraY = worldSize.height - windowSize.height;
-
-	Position cameraPos(cameraX, cameraY);
-	v_stack.back()->render(cameraPos);
-	v_stack.back()->GetUserInput();
-	v_stack.back()->tick(cameraPos);
+	GameCamera* camera = this->game->getCamera();
+	camera->updatePos(worldSize, this->game->Timer.get_deltaTime(), true);
+	v_stack.back()->render(camera->getPos());
+	v_stack.back()->onInputEvent();
+	v_stack.back()->tick(camera->getPos());
 }
 
 
@@ -80,7 +72,7 @@ void StateManager::Check(){
 
 	if(Empty()) {
 		game->Log.message(Level::FATAL, "State stack is empty, application is in an unknown state!", Output::TXT_FILE);
-		game->set_gameOver(true);
+		game->markOver();
 	}
 
 	//Check if the game state needs to be changed

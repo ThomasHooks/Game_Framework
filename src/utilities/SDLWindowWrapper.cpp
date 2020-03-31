@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: SDLWindowWrapper.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/18/2020
+// Last Modified	: 03/30/2020
 //============================================================================
 
 
@@ -16,7 +16,6 @@
 
 SDLWindowWrapper::SDLWindowWrapper(GameLogger* logger_ptr, const std::string &title, const Dimension &sizeIn, Uint32 flags)
 	: size(sizeIn.width, sizeIn.height),
-	  camera(),
 	  window(nullptr),
 	  logger(logger_ptr) {
 
@@ -43,31 +42,48 @@ SDLWindowWrapper::~SDLWindowWrapper() {
 
 
 
-//Gets the Windows width
-int SDLWindowWrapper::getWidth(){
-	return this->size.width;
+/*
+ * @return	The Window's width or '0' if the window has not been Initialized
+ *
+ * Gets the Windows width
+ */
+int SDLWindowWrapper::width() const {
+	return this->window != nullptr ? this->size.width : 0;
 }
 
 
 
-//Gets the Windows Height
-int SDLWindowWrapper::getHeight(){
-	return this->size.height;
+/*
+ * @return	The Window's height or '0' if the window has not been Initialized
+ *
+ * Gets the Windows height
+ */
+int SDLWindowWrapper::height() const {
+	return this->window != nullptr ? this->size.height : 0;
 }
 
 
 
-//Exposes the SDL_Window pointer
-//@nullable
+/*
+ * @return	True if the Window is open and false if closed
+ *
+ * Checks if this Window is open
+ */
+bool SDLWindowWrapper::isOpen() const {
+	return this->window != nullptr ? true : false;
+}
+
+
+
+/*
+ * @nullable
+ *
+ * @return	The SDL_Window pointer inside of this wrapper
+ *
+ * Exposes the SDL_Window inside of this wrapper
+ */
 SDL_Window* SDLWindowWrapper::get(){
 	return this->window;
-}
-
-
-
-//Gets the Windows position
-Position& SDLWindowWrapper::getCameraPos(){
-	return this->camera;
 }
 
 

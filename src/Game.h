@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/20/2020
+// Last Modified	: 03/30/2020
 //============================================================================
 
 
@@ -29,9 +29,6 @@ class Game {
 
 public:
 
-	/*
-	 * Default constructor, game will need to be initialized by calling init
-	 */
 	Game();
 
 
@@ -48,7 +45,7 @@ public:
 	 *
 	 * Constructor for the game framework that create a window defined by the caller
 	 */
-	Game(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS);
+	Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32_t flags, int MaxFPS);
 
 
 
@@ -57,20 +54,23 @@ public:
 
 
 	/*
-	 * @param	title The title of the window
+	 * @param	titleIn The title of the window
 	 *
-	 * @param	Window_Height The height of the window measured in pixels
+	 * @param	widthIn The width of the window measured in pixels
 	 *
-	 * @param 	Window_Width The width of the window measured in pixels
+	 * @param	heightIn The height of the window measured in pixels
 	 *
-	 * @param 	flag The flags for the window, mask of any of the following:
-	 *          see "https://wiki.libsdl.org/SDL_WindowFlags" for window flags
+	 * @param	flags The flags for the window, mask of any of the following:
+	 *				::SDL_WINDOW_FULLSCREEN,    ::SDL_WINDOW_OPENGL,
+	 *              ::SDL_WINDOW_HIDDEN,        ::SDL_WINDOW_BORDERLESS,
+	 *              ::SDL_WINDOW_RESIZABLE,     ::SDL_WINDOW_MAXIMIZED,
+	 *              ::SDL_WINDOW_MINIMIZED,     ::SDL_WINDOW_INPUT_GRABBED,
+	 *              ::SDL_WINDOW_ALLOW_HIGHDPI, ::SDL_WINDOW_VULKAN.
+	 *    	  	see "https://wiki.libsdl.org/SDL_WindowFlags" for window flags
 	 *
-	 * @param	Max_FPS The maximum frames per second
-	 *
-	 * initializes the Window and sets the frames per second limit
+	 * Initializes the Window
 	 */
-	bool init(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS);
+	void initWindow(const std::string &title, int Window_Height, int Window_Width, uint32_t flags);
 
 
 
@@ -105,11 +105,21 @@ public:
 
 
 
-	bool get_gameOver() const {return b_gameOver;}
+//	bool get_gameOver() const {return gameOver;}
+//
+//
+//
+//	void set_gameOver(bool flag) {gameOver = flag;}
 
 
 
-	void set_gameOver(bool flag) {b_gameOver = flag;}
+	//Checks if the game has ended
+	bool isOver() const;
+
+
+
+	//Marks the game to be stopped
+	void markOver();
 
 
 
@@ -121,68 +131,43 @@ public:
 
 
 
-	int get_windowHeight() const {return WindowHeight;}
+	/*
+	 * @nullable
+	 *
+	 * @return	The wrapper for this game's Window
+	 *
+	 * Gets this game's Window
+	 */
+	const class SDLWindowWrapper* getWindow() const;
 
 
 
-	void set_windowHeight(int height) {WindowHeight = height;}
-
-
-
-	int get_windowWidth() const {return WindowWidth;}
-
-
-
-	void set_windowWidth(int width) {WindowWidth = width;}
-
-
-
-	SDL_Window* get_window() {return window;}
-
-
-
-	float get_cameraX() const {return f_cameraX;}
-
-
-
-	void set_cameraX(float positionX) {f_cameraX = positionX;}
-
-
-
-	float get_cameraY(void) const {return f_cameraY;}
-
-
-
-	void set_cameraY(float positionY) {f_cameraY = positionY;}
+	/*
+	 * @nullable
+	 *
+	 * @return	The wrapper for this game's camera
+	 *
+	 * Gets this game's Camera
+	 */
+	class GameCamera* getCamera();
 
 
 
 private:
 
-	bool b_gameOver;
-	bool b_hasBeenInit;
+	std::unique_ptr<class SDLWindowWrapper> windowWrap;
 
-	//Coordinates of camera's top left corner
-	float f_cameraX;
-	float f_cameraY;
+	std::unique_ptr<class GameCamera> cameraWrap;
+
+	bool gameOver;
+
+	bool hasBeenInit;
 
 	int n_maxFPS;
-
-	SDL_Window *window;
-	//SDL_Renderer *renderer;
-
-	int WindowHeight;
-	int WindowWidth;
 };
 
 
-
-
 #endif /* GAME_H_ */
-
-
-
-
 
 
 

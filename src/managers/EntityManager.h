@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: EntityManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/22/2020
+// Last Modified	: 03/25/2020
 //============================================================================
 
 
@@ -162,8 +162,8 @@ protected:
 	 *
 	 * @param	entity The Entity to check for collisions
 	 *
-	 * Checks if the given Entity is colliding with any Tiles in the map
-	 * and if it is colliding the Entity's position will be changed
+	 * Checks if the given Entity is colliding with any Tiles in the world
+	 * and if it is colliding the Entity's onTileColision method will be called
 	 *
 	 * Entity vs Tile collision is done by creating a "collision loop"
 	 * around the Entity

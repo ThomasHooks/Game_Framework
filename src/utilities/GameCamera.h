@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameCamera.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/23/2020
+// Last Modified	: 03/29/2020
 //============================================================================
 
 
@@ -31,6 +31,24 @@ public:
 	 * Gets the current position of the camera
 	 */
 	const Position& getPos() const;
+
+
+
+	/*
+	 * @return	The width of the camera
+	 *
+	 * Gets the width of the camera which will also be the Window width
+	 */
+	int width() const;
+
+
+
+	/*
+	 * @return	The height of the camera
+	 *
+	 * Gets the height of the camera which will also be the Window height
+	 */
+	int height() const;
 
 
 
@@ -80,7 +98,7 @@ private:
 
 	class IEntity *entity;
 
-	bool tractingEntity;
+	bool trackingEntity;
 };
 
 

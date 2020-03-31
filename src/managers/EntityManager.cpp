@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: EntityManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/22/2020
+// Last Modified	: 03/25/2020
 //============================================================================
 
 
@@ -122,11 +122,31 @@ void EntityManager::despawn(){
 void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSize, RendererManager &renderer, bool renderAabb){
 
 	std::vector<IEntity*> entitiesOnScreen;
+	//TODO fix 'pop-in', currently entities will 'pop in' along the top-left edges of the screen
 	this->getEntities(entitiesOnScreen, AABB(cameraPos.xPos(), cameraPos.yPos(), cameraPos.xPos() + windowSize.width, cameraPos.yPos() + windowSize.height));
 	for(auto &itr : entitiesOnScreen) {
-		//TODO fix 'pop-in', currently entities will 'pop in' along the top-left edges of the screen
 		if(renderAabb) {
-			renderer.setDrawColor(255, 0, 0, 255);
+			switch(itr->getType()) {
+			case EnumEntityType::AGGRESSIVE:
+				renderer.setDrawColor(255, 0, 0, 255);
+				break;
+
+			case EnumEntityType::NEUTRAL:
+				renderer.setDrawColor(255, 255, 0, 255);
+				break;
+
+			case EnumEntityType::PASSIVE:
+				renderer.setDrawColor(0, 255, 0, 255);
+				break;
+
+			case EnumEntityType::PLAYER:
+				renderer.setDrawColor(0, 0, 255, 255);
+				break;
+
+			default:
+				renderer.setDrawColor(255, 255, 255, 255);
+				break;
+			}
 			renderer.drawRect(itr->getAabb().getPos() - cameraPos, Dimension(itr->getAabb().widthN(), itr->getAabb().heightN()), false);
 		}
 		renderer.drawSprite(itr->getRegistryTag(), itr->getPos(), cameraPos, itr->getSprite(), false);
@@ -218,8 +238,8 @@ void EntityManager::checkEntityCollisions(std::vector<IEntity*> &entities, IEnti
  *
  * @param	entity The Entity to check for collisions
  *
- * Checks if the given Entity is colliding with any Tiles in the map
- * and if it is colliding the Entity's position will be changed
+ * Checks if the given Entity is colliding with any Tiles in the world
+ * and if it is colliding the Entity's onTileColision method will be called
  *
  * Entity vs Tile collision is done by creating a "collision loop" around the Entity
  */
@@ -267,26 +287,7 @@ void EntityManager::checkTileCollisions(TileMap &worldIn, IEntity &entity){
 					//Check if the side collided with is an "internal edge", if it is an internal edge ignore it
 					//Internal edges when collided with can cause "sticky" behavior
 					ITile *tile2 = worldIn.getOffsetTile(tile->getPos(), side);
-					if(tile2 != nullptr && !tile2->canCollide()) {
-						switch(side){
-						case EnumSide::UP:
-							std::cout<<"onTileColision: UP"<<std::endl;
-							break;
-
-						case EnumSide::RIGHT:
-							std::cout<<"onTileColision: RIGHT"<<std::endl;
-							break;
-
-						case EnumSide::DOWN:
-							std::cout<<"onTileColision: DOWN"<<std::endl;
-							break;
-
-						case EnumSide::LEFT:
-							std::cout<<"onTileColision: LEFT"<<std::endl;
-							break;
-						}
-						entity.onTileColision(*tile, side);
-					}
+					if(tile2 != nullptr && !tile2->canCollide()) entity.onTileColision(*tile, side);
 				}
 			}
 		}

@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/21/2020
+// Last Modified	: 03/30/2020
 //============================================================================
 
 
@@ -11,10 +11,11 @@
 
 #include "Game.h"
 
-#include "entities/Game_Dynamic.h"
 #include "gamestates/BlankGameState.h"
 #include "gamestates/IGameState.h"
 #include "managers/StateManager.h"
+#include "utilities/SDLWindowWrapper.h"
+#include "utilities/GameCamera.h"
 
 
 
@@ -29,14 +30,9 @@ Game::Game()
 		  Map(&Log),
 		  Entities(&Log),
 		  Timer(),
-		  b_gameOver(false),
-		  b_hasBeenInit(false),
-		  f_cameraX(0),
-		  f_cameraY(0),
-		  n_maxFPS(60),
-		  window(nullptr),
-		  WindowHeight(0),
-		  WindowWidth(0) {
+		  gameOver(false),
+		  hasBeenInit(false),
+		  n_maxFPS(60) {
 
 	Log.message(Level::INFO, "Initializing SDL", Output::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
@@ -66,47 +62,30 @@ Game::Game()
  *
  * Constructor for the game engine class that create a window defined by the caller, and sets SDL flags
  */
-Game::Game(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS)
+Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32_t flags, int MaxFPS)
 		: Log(Level::TRACE),
 		  Render(&Log),
 		  State(this),
 		  Map(&Log),
 		  Entities(&Log),
 		  Timer(),
-		  b_gameOver(false),
-		  b_hasBeenInit(true),
-		  f_cameraX(0),
-		  f_cameraY(0),
-		  n_maxFPS(Max_FPS) {
-
-	WindowHeight = Window_Height;
-	WindowWidth = Window_Width;
+		  gameOver(false),
+		  hasBeenInit(false),
+		  n_maxFPS(MaxFPS) {
 
 	//Start SDL2
-	Log.message(Level::INFO, "Initializing SDL", Output::TXT_FILE);
+	Log.message(Level::INFO, "Initializing SDL Video and Audio", Output::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
-	//Create a Window in the middle of the screen that is Window_Width by Window_Height in (px)
-	Log.message(Level::INFO, "Initializing Window", Output::TXT_FILE);
-	window = SDL_CreateWindow(title,
-			SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED,
-			WindowWidth, WindowHeight,
-			flags);
+	this->initWindow(titleIn, windowWidth, windowHeight, flags);
 
-	this->Render.init(this->window);
-
-	const int startingStateID = 0;
-	State.Push(new BlankGameState(this, startingStateID));
+	const int INITSTATEID = 0;
+	State.Push(new BlankGameState(this, INITSTATEID));
 }
 
 
 
 Game::~Game(){
-
-	Log.message(Level::INFO, "Closing window", Output::TXT_FILE);
-	SDL_DestroyWindow(window);
-	window = nullptr;
 
 	Log.message(Level::INFO, "Terminating SDL", Output::TXT_FILE);
 	SDL_Quit();
@@ -115,33 +94,31 @@ Game::~Game(){
 
 
 /*
+ * @param	titleIn The title of the window
  *
+ * @param	widthIn The width of the window measured in pixels
+ *
+ * @param	heightIn The height of the window measured in pixels
+ *
+ * @param	flags The flags for the window, mask of any of the following:
+ *				::SDL_WINDOW_FULLSCREEN,    ::SDL_WINDOW_OPENGL,
+ *              ::SDL_WINDOW_HIDDEN,        ::SDL_WINDOW_BORDERLESS,
+ *              ::SDL_WINDOW_RESIZABLE,     ::SDL_WINDOW_MAXIMIZED,
+ *              ::SDL_WINDOW_MINIMIZED,     ::SDL_WINDOW_INPUT_GRABBED,
+ *              ::SDL_WINDOW_ALLOW_HIGHDPI, ::SDL_WINDOW_VULKAN.
+ *    	  	see "https://wiki.libsdl.org/SDL_WindowFlags" for window flags
+ *
+ * Initializes the Window
  */
-bool Game::init(const char * title, int Window_Height, int Window_Width, Uint32 flags, int Max_FPS){
+void Game::initWindow(const std::string &titleIn, int widthIn, int heightIn, uint32_t flags){
 
-	if (!b_hasBeenInit){
+	if (!this->hasBeenInit){
 
-		b_hasBeenInit = true;
-		Log.message(Level::INFO, "Initializing Window", Output::TXT_FILE);
-
-		WindowHeight = Window_Height;
-		WindowWidth = Window_Width;
-
-		//Create a Window in the middle of the screen that is Window_Width by Window_Height in (px)
-		window = SDL_CreateWindow(title,
-				SDL_WINDOWPOS_CENTERED,
-				SDL_WINDOWPOS_CENTERED,
-				WindowWidth, WindowHeight,
-				flags);
-
-		this->Render.init(this->window);
-
-		set_maxFPS(Max_FPS);
-
-		return true;
+		this->windowWrap = std::make_unique<SDLWindowWrapper>(&this->Log, titleIn, Dimension(widthIn, heightIn), flags);
+		this->Render.init(this->windowWrap->get());
+		this->cameraWrap = std::make_unique<GameCamera>(&this->Log, this->windowWrap.get());
+		this->hasBeenInit = true;
 	}
-
-	else return false;
 }
 
 
@@ -151,8 +128,8 @@ bool Game::init(const char * title, int Window_Height, int Window_Width, Uint32 
  */
 void Game::run(){
 
-	if (b_hasBeenInit){
-		while(!get_gameOver()){
+	if (hasBeenInit){
+		while(!this->isOver()){
 
 			//Update current time in (ms)
 			Timer.Start();
@@ -170,10 +147,50 @@ void Game::run(){
 
 	else {
 		Log.message(Level::FATAL, "Object Game has not been initialized", Output::TXT_FILE);
-		set_gameOver(true);
+		this->markOver();
 	}
 
 	return;
+}
+
+
+
+//Checks if the game has ended
+bool Game::isOver() const {
+	return this->gameOver;
+}
+
+
+
+//Marks the game to be stopped
+void Game::markOver(){
+	this->gameOver = true;
+}
+
+
+
+/*
+ * @nullable
+ *
+ * @return	The wrapper for this game's Window
+ *
+ * Gets this game's Window
+ */
+const class SDLWindowWrapper* Game::getWindow() const {
+	return this->windowWrap.get();
+}
+
+
+
+/*
+ * @nullable
+ *
+ * @return	The wrapper for this game's camera
+ *
+ * Gets this game's Camera
+ */
+class GameCamera* Game::getCamera(){
+	return this->cameraWrap.get();
 }
 
 

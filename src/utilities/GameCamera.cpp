@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameCamera.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/23/2020
+// Last Modified	: 03/29/2020
 //============================================================================
 
 
@@ -21,7 +21,7 @@ GameCamera::GameCamera(GameLogger *loggerPtr, SDLWindowWrapper* windowIn)
 	  posOffset(),
 	  posTract(),
 	  entity(nullptr),
-	  tractingEntity(false) {
+	  trackingEntity(false) {
 
 	logger->message(Level::INFO, "Camera has been built", Output::TXT_FILE);
 }
@@ -46,6 +46,28 @@ const Position& GameCamera::getPos() const {
 
 
 /*
+ * @return	The width of the camera
+ *
+ * Gets the width of the camera which will also be the screen width
+ */
+int GameCamera::width() const {
+	return this->window->width();
+}
+
+
+
+/*
+ * @return	The height of the camera
+ *
+ * Gets the height of the camera which will also be the screen height
+ */
+int GameCamera::height() const {
+	return this->window->height();
+}
+
+
+
+/*
  * @param	worldSize The size of the current World in Global-Space
  *
  * Updates the camera's position in the Global-Space coordinate system
@@ -53,15 +75,19 @@ const Position& GameCamera::getPos() const {
  */
 void GameCamera::updatePos(const Dimension &worldSize, float deltaTime, bool keepInsideWindow){
 
-	double xOffset = this->posTract.xPos() - window->getWidth()/2.0;
-	double yOffset = this->posTract.yPos() - window->getHeight()/2.0;
+	if(this->trackingEntity) {
+		//Update the Camera's tracking position to the Entity's current position
+		this->posTract.move(this->entity->getPos());
+	}
+	double xOffset = this->posTract.xPos() - window->width()/2.0;
+	double yOffset = this->posTract.yPos() - window->height()/2.0;
 
-	if(keepInsideWindow){
+	if(keepInsideWindow) {
 		if(xOffset < 0) xOffset = 0.0;
-		else if(xOffset > worldSize.width - window->getWidth()) xOffset = worldSize.width - window->getWidth();
+		else if(xOffset > worldSize.width - window->width()) xOffset = worldSize.width - window->width();
 
 		if(yOffset < 0) yOffset = 0.0;
-		else if(yOffset > worldSize.height - window->getHeight()) yOffset = worldSize.height - window->getHeight();
+		else if(yOffset > worldSize.height - window->height()) yOffset = worldSize.height - window->height();
 	}
 
 	this->posOffset.move(xOffset, yOffset);
@@ -76,9 +102,9 @@ void GameCamera::updatePos(const Dimension &worldSize, float deltaTime, bool kee
  */
 void GameCamera::trackEntity(IEntity *entityIn){
 
-	if(entityIn != nullptr){
+	if(entityIn != nullptr) {
 		this->entity = entityIn;
-		this->tractingEntity = true;
+		this->trackingEntity = true;
 		this->posTract.move(entityIn->getPos());
 		logger->message(Level::INFO, "Camera is tracking Entity '" + entityIn->getRegistryTag() + "'", Output::TXT_FILE);
 	}
@@ -98,7 +124,7 @@ void GameCamera::trackPos(const Position &posIn){
 		logger->message(Level::INFO, "Camera has stopped tracking Entity '" + this->entity->getRegistryTag() + "'", Output::TXT_FILE);
 		this->entity = nullptr;
 	}
-	this->tractingEntity = false;
+	this->trackingEntity = false;
 	this->posTract.move(posIn);
 }
 

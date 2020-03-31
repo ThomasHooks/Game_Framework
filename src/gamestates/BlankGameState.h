@@ -37,7 +37,7 @@ public:
 
 
 
-	void GetUserInput() override;
+	void onInputEvent() override;
 
 
 
