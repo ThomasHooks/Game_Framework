@@ -1,33 +1,26 @@
 //============================================================================
 // Name       		: BlankGameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/30/2020
+// Last Modified	: 03/31/2020
 //============================================================================
 
 
 
 
-#include "BlankGameState.h"
-
-#include <sstream>
-#include <list>
-#include <ctime>
-#include <math.h>
-#include <vector>
-#include <memory>
-
 #include <SDL.h>
-#include "SDL_image.h"
-#include "SDL_ttf.h"
-#include "SDL_mixer.h"
 
+#include "BlankGameState.h"
 #include "../Game.h"
-#include "../utilities/Dimension.h"
-#include "../utilities/Position.h"
+#include "../managers/RendererManager.h"
+#include "../managers/EntityManager.h"
+#include "../managers/MapManager.h"
 #include "../entities/PlayerEntity.h"
 #include "../world/TileMap.h"
+#include "../utilities/Dimension.h"
+#include "../utilities/Position.h"
 #include "../utilities/SDLWindowWrapper.h"
 #include "../utilities/GameCamera.h"
+#include "../utilities/GameTimer.h"
 
 
 

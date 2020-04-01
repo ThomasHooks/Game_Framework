@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/30/2020
+// Last Modified	: 03/31/2020
 //============================================================================
 
 
@@ -13,14 +13,7 @@
 
 
 
-#include <SDL.h>
-
-#include "managers/RendererManager.h"
-#include "managers/MapManager.h"
 #include "managers/StateManager.h"
-#include "utilities/GameLogger.h"
-#include "utilities/GameTimer.h"
-#include "managers/EntityManager.h"
 
 
 
@@ -60,7 +53,7 @@ public:
 	 *
 	 * @param	heightIn The height of the window measured in pixels
 	 *
-	 * @param	flags The flags for the window, mask of any of the following:
+	 * @param	flags The flags for the window, OR any of the following:
 	 *				::SDL_WINDOW_FULLSCREEN,    ::SDL_WINDOW_OPENGL,
 	 *              ::SDL_WINDOW_HIDDEN,        ::SDL_WINDOW_BORDERLESS,
 	 *              ::SDL_WINDOW_RESIZABLE,     ::SDL_WINDOW_MAXIMIZED,
@@ -81,35 +74,7 @@ public:
 
 
 
-	GameLogger Log;
-
-
-
-	RendererManager Render;
-
-
-
 	StateManager State;
-
-
-
-	MapManager Map;
-
-
-
-	EntityManager Entities;
-
-
-
-	GameTimer Timer;
-
-
-
-//	bool get_gameOver() const {return gameOver;}
-//
-//
-//
-//	void set_gameOver(bool flag) {gameOver = flag;}
 
 
 
@@ -128,6 +93,31 @@ public:
 
 
 	void set_maxFPS(int Max_FPS) {if(Max_FPS != 0) n_maxFPS = Max_FPS;}
+
+
+
+	//Gets this game's logger
+	class GameLogger& getLogger();
+
+
+
+	//Gets this game's renderer
+	class RendererManager& getRenderManager();
+
+
+
+	//Gets this game's world manager
+	class MapManager& getWorldManager();
+
+
+
+	//Gets this game's entity manager
+	class EntityManager& getEntityManager();
+
+
+
+	//Gets this game's timer
+	class GameTimer& getTimer();
 
 
 
@@ -154,6 +144,16 @@ public:
 
 
 private:
+
+	mutable std::unique_ptr<class GameLogger> logger;
+
+	std::unique_ptr<class RendererManager> renderManager;
+
+	std::unique_ptr<class MapManager> worldManager;
+
+	std::unique_ptr<class EntityManager> entityManager;
+
+	std::unique_ptr<class GameTimer> timer;
 
 	std::unique_ptr<class SDLWindowWrapper> windowWrap;
 

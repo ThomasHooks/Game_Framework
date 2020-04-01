@@ -10,31 +10,33 @@
 #include <SDL.h>
 
 #include "Game.h"
-
 #include "gamestates/BlankGameState.h"
 #include "gamestates/IGameState.h"
 #include "managers/StateManager.h"
+#include "managers/RendererManager.h"
+#include "managers/EntityManager.h"
+#include "managers/MapManager.h"
+#include "utilities/GameLogger.h"
 #include "utilities/SDLWindowWrapper.h"
 #include "utilities/GameCamera.h"
+#include "utilities/GameTimer.h"
 
 
 
 
-/*
- * Default constructor, game will need to be initialized by calling init
- */
 Game::Game()
-		: Log(Level::TRACE),
-		  Render(&Log),
-		  State(this),
-		  Map(&Log),
-		  Entities(&Log),
-		  Timer(),
+		: State(this),
 		  gameOver(false),
 		  hasBeenInit(false),
 		  n_maxFPS(60) {
 
-	Log.message(Level::INFO, "Initializing SDL", Output::TXT_FILE);
+	this->logger = std::make_unique<GameLogger>(Level::TRACE);
+	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
+	this->worldManager = std::make_unique<MapManager>(this->logger.get());
+	this->entityManager = std::make_unique<EntityManager>(this->logger.get());
+	this->timer = std::make_unique<GameTimer>();
+
+	getLogger().message(Level::INFO, "Initializing SDL", Output::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	const int startingStateID = 0;
@@ -63,18 +65,18 @@ Game::Game()
  * Constructor for the game engine class that create a window defined by the caller, and sets SDL flags
  */
 Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32_t flags, int MaxFPS)
-		: Log(Level::TRACE),
-		  Render(&Log),
-		  State(this),
-		  Map(&Log),
-		  Entities(&Log),
-		  Timer(),
+		: State(this),
 		  gameOver(false),
 		  hasBeenInit(false),
 		  n_maxFPS(MaxFPS) {
 
-	//Start SDL2
-	Log.message(Level::INFO, "Initializing SDL Video and Audio", Output::TXT_FILE);
+	this->logger = std::make_unique<GameLogger>(Level::TRACE);
+	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
+	this->worldManager = std::make_unique<MapManager>(this->logger.get());
+	this->entityManager = std::make_unique<EntityManager>(this->logger.get());
+	this->timer = std::make_unique<GameTimer>();
+
+	getLogger().message(Level::INFO, "Initializing SDL Video and Audio", Output::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	this->initWindow(titleIn, windowWidth, windowHeight, flags);
@@ -87,7 +89,7 @@ Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32
 
 Game::~Game(){
 
-	Log.message(Level::INFO, "Terminating SDL", Output::TXT_FILE);
+	getLogger().message(Level::INFO, "Terminating SDL", Output::TXT_FILE);
 	SDL_Quit();
 }
 
@@ -100,7 +102,7 @@ Game::~Game(){
  *
  * @param	heightIn The height of the window measured in pixels
  *
- * @param	flags The flags for the window, mask of any of the following:
+ * @param	flags The flags for the window, OR any of the following:
  *				::SDL_WINDOW_FULLSCREEN,    ::SDL_WINDOW_OPENGL,
  *              ::SDL_WINDOW_HIDDEN,        ::SDL_WINDOW_BORDERLESS,
  *              ::SDL_WINDOW_RESIZABLE,     ::SDL_WINDOW_MAXIMIZED,
@@ -114,9 +116,9 @@ void Game::initWindow(const std::string &titleIn, int widthIn, int heightIn, uin
 
 	if (!this->hasBeenInit){
 
-		this->windowWrap = std::make_unique<SDLWindowWrapper>(&this->Log, titleIn, Dimension(widthIn, heightIn), flags);
-		this->Render.init(this->windowWrap->get());
-		this->cameraWrap = std::make_unique<GameCamera>(&this->Log, this->windowWrap.get());
+		this->windowWrap = std::make_unique<SDLWindowWrapper>(this->logger.get(), titleIn, Dimension(widthIn, heightIn), flags);
+		this->getRenderManager().init(this->windowWrap->get());
+		this->cameraWrap = std::make_unique<GameCamera>(this->logger.get(), this->windowWrap.get());
 		this->hasBeenInit = true;
 	}
 }
@@ -132,7 +134,7 @@ void Game::run(){
 		while(!this->isOver()){
 
 			//Update current time in (ms)
-			Timer.Start();
+			getTimer().Start();
 
 			//Update the current game state
 			State.Process();
@@ -141,12 +143,12 @@ void Game::run(){
 			State.Check();
 
 			//Check the frame rate and limit if necessary
-			Timer.Check(get_maxFPS());
+			getTimer().Check(get_maxFPS());
 		}
 	}
 
 	else {
-		Log.message(Level::FATAL, "Object Game has not been initialized", Output::TXT_FILE);
+		getLogger().message(Level::FATAL, "Game has not been initialized", Output::TXT_FILE);
 		this->markOver();
 	}
 
@@ -164,7 +166,43 @@ bool Game::isOver() const {
 
 //Marks the game to be stopped
 void Game::markOver(){
+	logger->message(Level::INFO, "Quitting Game", Output::TXT_FILE);
 	this->gameOver = true;
+}
+
+
+
+//Gets this game's logger
+GameLogger& Game::getLogger(){
+	return *this->logger.get();
+}
+
+
+
+//Gets this game's renderer
+RendererManager& Game::getRenderManager(){
+	return *this->renderManager.get();
+}
+
+
+
+//Gets this game's world manager
+MapManager& Game::getWorldManager(){
+	return *this->worldManager.get();
+}
+
+
+
+//Gets this game's entity manager
+EntityManager& Game::getEntityManager(){
+	return *this->entityManager.get();
+}
+
+
+
+//Gets this game's timer
+GameTimer& Game::getTimer(){
+	return *this->timer.get();
 }
 
 

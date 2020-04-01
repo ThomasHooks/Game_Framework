@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: StateManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/30/2020
+// Last Modified	: 03/31/2020
 //============================================================================
 
 
@@ -9,11 +9,13 @@
 
 #include "StateManager.h"
 #include "../Game.h"
+#include "../managers/MapManager.h"
+#include "../world/TileMap.h"
 #include "../utilities/Dimension.h"
 #include "../utilities/Position.h"
-#include "../world/TileMap.h"
 #include "../utilities/SDLWindowWrapper.h"
 #include "../utilities/GameCamera.h"
+#include "../utilities/GameTimer.h"
 
 
 
@@ -40,21 +42,21 @@ void StateManager::Process(){
 
 	if(Empty()) {
 
-		game->Log.message(Level::FATAL, "State stack is empty, application is in an unknown state!", Output::TXT_FILE);
+		game->getLogger().message(Level::FATAL, "State stack is empty, application is in an unknown state!", Output::TXT_FILE);
 		game->markOver();
 		return;
 	}
 
-	TileMap* world = game->Map.getWorld();
+	TileMap* world = game->getWorldManager().getWorld();
 	if(world == nullptr) {
-		game->Log.message(Level::FATAL, "Null Pointer exception: Tried to render World, but world stack is empty!", Output::TXT_FILE);
+		game->getLogger().message(Level::FATAL, "Null Pointer exception: Tried to render World, but world stack is empty!", Output::TXT_FILE);
 		game->markOver();
 		return;
 	}
 
 	Dimension worldSize(world->width() * world->tileWidth(), world->height() * world->tileHeight());
 	GameCamera* camera = this->game->getCamera();
-	camera->updatePos(worldSize, this->game->Timer.get_deltaTime(), true);
+	camera->updatePos(worldSize, this->game->getTimer().get_deltaTime(), true);
 	v_stack.back()->render(camera->getPos());
 	v_stack.back()->onInputEvent();
 	v_stack.back()->tick(camera->getPos());
@@ -71,7 +73,7 @@ void StateManager::Process(){
 void StateManager::Check(){
 
 	if(Empty()) {
-		game->Log.message(Level::FATAL, "State stack is empty, application is in an unknown state!", Output::TXT_FILE);
+		game->getLogger().message(Level::FATAL, "State stack is empty, application is in an unknown state!", Output::TXT_FILE);
 		game->markOver();
 	}
 
