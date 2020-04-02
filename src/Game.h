@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/31/2020
+// Last Modified	: 04/01/2020
 //============================================================================
 
 
@@ -11,11 +11,9 @@
 #define GAME_H_
 
 
-
-
-#include "managers/StateManager.h"
-
-
+#include <string>
+#include <memory>
+#include <vector>
 
 
 class Game {
@@ -68,13 +66,24 @@ public:
 
 
 	/*
-	 *
+	 * Starts the game loop
+	 * which will continue running until Game::markOver() is called
 	 */
 	void run();
 
 
 
-	StateManager State;
+	/*
+	 * @param	stateIn A pointer to the new Game State
+	 *
+	 * Adds a new Game State to this Game
+	 */
+	void addState(class IGameState* stateIn);
+
+
+
+	//Removes the current Game State
+	void removeState();
 
 
 
@@ -87,12 +96,12 @@ public:
 	void markOver();
 
 
+	//TODO move this to GameTimer
+	int get_maxFPS() const {return maxFPS;}
 
-	int get_maxFPS() const {return n_maxFPS;}
 
-
-
-	void set_maxFPS(int Max_FPS) {if(Max_FPS != 0) n_maxFPS = Max_FPS;}
+	//TODO move this to GameTimer
+	void set_maxFPS(int limit) {if(limit != 0) maxFPS = limit;}
 
 
 
@@ -143,6 +152,18 @@ public:
 
 
 
+protected:
+
+	//Gets the current Game State
+	class IGameState& getState();
+
+
+
+	//Checks if the Game State stack is empty
+	bool isNullState() const;
+
+
+
 private:
 
 	mutable std::unique_ptr<class GameLogger> logger;
@@ -163,7 +184,9 @@ private:
 
 	bool hasBeenInit;
 
-	int n_maxFPS;
+	int maxFPS;
+
+	std::vector<std::unique_ptr<class IGameState>> states;
 };
 
 

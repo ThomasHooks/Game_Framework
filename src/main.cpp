@@ -1,7 +1,6 @@
 //============================================================================
 // Name       		: main.cpp
 // Author     		: Thomas Hooks
-// Version    		: 1
 // Last Modified	: 11/2/2019
 // Description		: An example of how the Game class should be used in main
 //============================================================================
@@ -33,12 +32,12 @@ int main(int argc, char** argv) {
 
 
 	//If the default constructor was used call the init method
-	/*gameTest.init("Name of Game", Window_Height, Window_Width,
+	/*gameTest.initWindow("Name of Game", Window_Height, Window_Width,
 			SDL_WindowFlags, Max_FPS);*/
 
 
 	//Push the introduction game state here before loop
-	//gameTest.State.Push(new myState(&gameTest, 0));
+	//gameTest.addState(new myState(&gameTest, 0));
 
 
 	//Game Loop

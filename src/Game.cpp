@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/30/2020
+// Last Modified	: 04/01/2020
 //============================================================================
 
 
@@ -12,23 +12,23 @@
 #include "Game.h"
 #include "gamestates/BlankGameState.h"
 #include "gamestates/IGameState.h"
-#include "managers/StateManager.h"
 #include "managers/RendererManager.h"
 #include "managers/EntityManager.h"
 #include "managers/MapManager.h"
+#include "world/TileMap.h"
 #include "utilities/GameLogger.h"
 #include "utilities/SDLWindowWrapper.h"
 #include "utilities/GameCamera.h"
 #include "utilities/GameTimer.h"
+#include "utilities/GameBuilder.h"
 
 
 
 
 Game::Game()
-		: State(this),
-		  gameOver(false),
+		: gameOver(false),
 		  hasBeenInit(false),
-		  n_maxFPS(60) {
+		  maxFPS(60) {
 
 	this->logger = std::make_unique<GameLogger>(Level::TRACE);
 	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
@@ -40,7 +40,7 @@ Game::Game()
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	const int startingStateID = 0;
-	State.Push(new BlankGameState(this, startingStateID));
+	addState(new BlankGameState(this, startingStateID));
 }
 
 
@@ -65,10 +65,9 @@ Game::Game()
  * Constructor for the game engine class that create a window defined by the caller, and sets SDL flags
  */
 Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32_t flags, int MaxFPS)
-		: State(this),
-		  gameOver(false),
+		: gameOver(false),
 		  hasBeenInit(false),
-		  n_maxFPS(MaxFPS) {
+		  maxFPS(MaxFPS) {
 
 	this->logger = std::make_unique<GameLogger>(Level::TRACE);
 	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
@@ -79,10 +78,10 @@ Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32
 	getLogger().message(Level::INFO, "Initializing SDL Video and Audio", Output::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
-	this->initWindow(titleIn, windowWidth, windowHeight, flags);
+	initWindow(titleIn, windowWidth, windowHeight, flags);
 
 	const int INITSTATEID = 0;
-	State.Push(new BlankGameState(this, INITSTATEID));
+	addState(new BlankGameState(this, INITSTATEID));
 }
 
 
@@ -126,33 +125,69 @@ void Game::initWindow(const std::string &titleIn, int widthIn, int heightIn, uin
 
 
 /*
- *
+ * Starts the game loop
+ * which will continue running until Game::markOver() is called
  */
 void Game::run(){
 
-	if (hasBeenInit){
-		while(!this->isOver()){
-
-			//Update current time in (ms)
-			getTimer().Start();
-
-			//Update the current game state
-			State.Process();
-
-			//Check if the current game state needs to be change
-			State.Check();
-
-			//Check the frame rate and limit if necessary
-			getTimer().Check(get_maxFPS());
-		}
-	}
-
-	else {
+	if (!hasBeenInit) {
 		getLogger().message(Level::FATAL, "Game has not been initialized", Output::TXT_FILE);
-		this->markOver();
+		markOver();
 	}
 
-	return;
+	while(!this->isOver() && !this->isNullState()) {
+
+		getTimer().Start();
+
+		TileMap* world = getWorldManager().getWorld();
+		if(world == nullptr){
+			getLogger().message(Level::FATAL, "Null Pointer exception: Tried to get a null World!", Output::TXT_FILE);
+			markOver();
+		}
+		else {
+			Dimension worldSize(world->width() * world->tileWidth(), world->height() * world->tileHeight());
+			getCamera()->updatePos(worldSize, getTimer().get_deltaTime(), true);
+
+			getState().onInputEvent();
+			getState().tick(getCamera()->getPos());
+			getState().render(getCamera()->getPos());
+
+			getState().ChangeState(0, this);
+		}
+
+		getTimer().Check(get_maxFPS());
+	}
+}
+
+
+
+/*
+ * @param	stateIn A pointer to the new Game State
+ *
+ * Adds a new Game State to this Game
+ */
+void Game::addState(IGameState* stateIn){
+
+	if(stateIn == nullptr){
+		logger->message(Level::ERROR, "Null Pointer exception: Tried to add a null State!", Output::TXT_FILE);
+		return;
+	}
+	this->states.emplace_back(std::unique_ptr<IGameState>(stateIn));
+	//This is done to prevent the user from trying to access the pointer
+	//Or from trying to free the pointer after they passed it
+	stateIn = nullptr;
+}
+
+
+
+//Removes the current Game State
+void Game::removeState(){
+
+	if(this->states.empty()){
+		logger->message(Level::WARNING, "Tried to remove State but there are none!", Output::TXT_FILE);
+		return;
+	}
+	this->states.pop_back();
 }
 
 
@@ -229,6 +264,24 @@ const class SDLWindowWrapper* Game::getWindow() const {
  */
 class GameCamera* Game::getCamera(){
 	return this->cameraWrap.get();
+}
+
+
+
+//Gets the current Game State
+class IGameState& Game::getState(){
+	return *this->states.back().get();
+}
+
+
+
+//Checks if the Game State stack is empty
+bool Game::isNullState() const {
+	if(this->states.empty()) {
+		logger->message(Level::FATAL, "Game is in an unknown state!", Output::TXT_FILE);
+		return true;
+	}
+	else return false;
 }
 
 

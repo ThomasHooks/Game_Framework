@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IGameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/31/2020
+// Last Modified	: 04/01/2020
 //============================================================================
 
 
@@ -9,7 +9,6 @@
 
 #include "IGameState.h"
 #include "../Game.h"
-#include "../managers/StateManager.h"
 #include "../managers/RendererManager.h"
 #include "../managers/EntityManager.h"
 #include "../managers/MapManager.h"

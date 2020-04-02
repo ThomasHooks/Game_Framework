@@ -15,6 +15,7 @@
 #include "SDL_mixer.h"
 
 #include "../Game.h"
+#include "../utilities/GameLogger.h"
 
 
 
