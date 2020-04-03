@@ -23,13 +23,13 @@ GameCamera::GameCamera(GameLogger *loggerPtr, SDLWindowWrapper* windowIn)
 	  entity(nullptr),
 	  trackingEntity(false) {
 
-	logger->message(Level::INFO, "Camera has been built", Output::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "Camera has been built", EnumLogOutput::TXT_FILE);
 }
 
 
 
 GameCamera::~GameCamera() {
-	logger->message(Level::INFO, "Camera has been removed", Output::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "Camera has been removed", EnumLogOutput::TXT_FILE);
 }
 
 
@@ -106,9 +106,9 @@ void GameCamera::trackEntity(IEntity *entityIn){
 		this->entity = entityIn;
 		this->trackingEntity = true;
 		this->posTract.move(entityIn->getPos());
-		logger->message(Level::INFO, "Camera is tracking Entity '" + entityIn->getRegistryTag() + "'", Output::TXT_FILE);
+		logger->message(EnumLogLevel::INFO, "Camera is tracking Entity '" + entityIn->getRegistryTag() + "'", EnumLogOutput::TXT_FILE);
 	}
-	else logger->message(Level::WARNING, "Null Pointer exception: Camera cannot track Entity!", Output::TXT_FILE);
+	else logger->message(EnumLogLevel::WARNING, "Null Pointer exception: Camera cannot track Entity!", EnumLogOutput::TXT_FILE);
 }
 
 
@@ -121,7 +121,7 @@ void GameCamera::trackEntity(IEntity *entityIn){
 void GameCamera::trackPos(const Position &posIn){
 
 	if(this->entity != nullptr) {
-		logger->message(Level::INFO, "Camera has stopped tracking Entity '" + this->entity->getRegistryTag() + "'", Output::TXT_FILE);
+		logger->message(EnumLogLevel::INFO, "Camera has stopped tracking Entity '" + this->entity->getRegistryTag() + "'", EnumLogOutput::TXT_FILE);
 		this->entity = nullptr;
 	}
 	this->trackingEntity = false;

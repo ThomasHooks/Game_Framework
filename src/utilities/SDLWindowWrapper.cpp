@@ -19,7 +19,7 @@ SDLWindowWrapper::SDLWindowWrapper(GameLogger* logger_ptr, const std::string &ti
 	  window(nullptr),
 	  logger(logger_ptr) {
 
-	logger->message(Level::INFO, "Initializing Window", Output::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "Initializing Window", EnumLogOutput::TXT_FILE);
 
 	window = SDL_CreateWindow(title.c_str(),
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -27,17 +27,17 @@ SDLWindowWrapper::SDLWindowWrapper(GameLogger* logger_ptr, const std::string &ti
 			size.height,
 			flags);
 
-	logger->message(Level::INFO, "Window has been initialized", Output::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "Window has been initialized", EnumLogOutput::TXT_FILE);
 }
 
 
 
 SDLWindowWrapper::~SDLWindowWrapper() {
 
-	logger->message(Level::INFO, "Closing Window", Output::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "Closing Window", EnumLogOutput::TXT_FILE);
 	SDL_DestroyWindow(window);
 	window = nullptr;
-	logger->message(Level::INFO, "Window has been closed ", Output::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "Window has been closed ", EnumLogOutput::TXT_FILE);
 }
 
 

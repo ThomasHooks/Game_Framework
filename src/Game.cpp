@@ -30,13 +30,13 @@ Game::Game()
 		  hasBeenInit(false),
 		  maxFPS(60) {
 
-	this->logger = std::make_unique<GameLogger>(Level::TRACE);
+	this->logger = std::make_unique<GameLogger>(EnumLogLevel::TRACE);
 	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
 	this->worldManager = std::make_unique<MapManager>(this->logger.get());
 	this->entityManager = std::make_unique<EntityManager>(this->logger.get());
 	this->timer = std::make_unique<GameTimer>();
 
-	getLogger().message(Level::INFO, "Initializing SDL", Output::TXT_FILE);
+	getLogger().message(EnumLogLevel::INFO, "Initializing SDL", EnumLogOutput::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	const int startingStateID = 0;
@@ -69,13 +69,13 @@ Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32
 		  hasBeenInit(false),
 		  maxFPS(MaxFPS) {
 
-	this->logger = std::make_unique<GameLogger>(Level::TRACE);
+	this->logger = std::make_unique<GameLogger>(EnumLogLevel::TRACE);
 	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
 	this->worldManager = std::make_unique<MapManager>(this->logger.get());
 	this->entityManager = std::make_unique<EntityManager>(this->logger.get());
 	this->timer = std::make_unique<GameTimer>();
 
-	getLogger().message(Level::INFO, "Initializing SDL Video and Audio", Output::TXT_FILE);
+	getLogger().message(EnumLogLevel::INFO, "Initializing SDL Video and Audio", EnumLogOutput::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	initWindow(titleIn, windowWidth, windowHeight, flags);
@@ -88,7 +88,7 @@ Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32
 
 Game::~Game(){
 
-	getLogger().message(Level::INFO, "Terminating SDL", Output::TXT_FILE);
+	getLogger().message(EnumLogLevel::INFO, "Terminating SDL", EnumLogOutput::TXT_FILE);
 	SDL_Quit();
 }
 
@@ -126,12 +126,12 @@ void Game::initWindow(const std::string &titleIn, int widthIn, int heightIn, uin
 
 /*
  * Starts the game loop
- * which will continue running until Game::markOver() is called
+ * which will continue running until Game::markOver is called
  */
 void Game::run(){
 
 	if (!hasBeenInit) {
-		getLogger().message(Level::FATAL, "Game has not been initialized", Output::TXT_FILE);
+		getLogger().message(EnumLogLevel::FATAL, "Game has not been initialized", EnumLogOutput::TXT_FILE);
 		markOver();
 	}
 
@@ -141,7 +141,7 @@ void Game::run(){
 
 		TileMap* world = getWorldManager().getWorld();
 		if(world == nullptr){
-			getLogger().message(Level::FATAL, "Null Pointer exception: Tried to get a null World!", Output::TXT_FILE);
+			getLogger().message(EnumLogLevel::FATAL, "Null Pointer exception: Tried to get a null World!", EnumLogOutput::TXT_FILE);
 			markOver();
 		}
 		else {
@@ -169,7 +169,7 @@ void Game::run(){
 void Game::addState(IGameState* stateIn){
 
 	if(stateIn == nullptr){
-		logger->message(Level::ERROR, "Null Pointer exception: Tried to add a null State!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::ERROR, "Null Pointer exception: Tried to add a null State!", EnumLogOutput::TXT_FILE);
 		return;
 	}
 	this->states.emplace_back(std::unique_ptr<IGameState>(stateIn));
@@ -184,7 +184,7 @@ void Game::addState(IGameState* stateIn){
 void Game::removeState(){
 
 	if(this->states.empty()){
-		logger->message(Level::WARNING, "Tried to remove State but there are none!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::WARNING, "Tried to remove State but there are none!", EnumLogOutput::TXT_FILE);
 		return;
 	}
 	this->states.pop_back();
@@ -201,7 +201,7 @@ bool Game::isOver() const {
 
 //Marks the game to be stopped
 void Game::markOver(){
-	logger->message(Level::INFO, "Quitting Game", Output::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "Quitting Game", EnumLogOutput::TXT_FILE);
 	this->gameOver = true;
 }
 
@@ -278,7 +278,7 @@ class IGameState& Game::getState(){
 //Checks if the Game State stack is empty
 bool Game::isNullState() const {
 	if(this->states.empty()) {
-		logger->message(Level::FATAL, "Game is in an unknown state!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::FATAL, "Game is in an unknown state!", EnumLogOutput::TXT_FILE);
 		return true;
 	}
 	else return false;

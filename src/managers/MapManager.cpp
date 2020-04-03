@@ -26,9 +26,9 @@
 MapManager::MapManager(class GameLogger *log_ptr)
 	: logger(log_ptr) {
 
-	logger->message(Level::INFO,
+	logger->message(EnumLogLevel::INFO,
 				 "Map Manager has been initialized",
-				 Output::TXT_FILE);
+				 EnumLogOutput::TXT_FILE);
 }
 
 
@@ -52,7 +52,7 @@ void MapManager::pushMap(std::string tileSheetTag, std::string mapFilePath){
 
 //Removes the back world from the stack
 void MapManager::popMap(){
-	worldStack.empty() ? logger->message(Level::WARNING, "Tried to free map, but map stack is empty!", Output::TXT_FILE) : worldStack.pop_back();
+	worldStack.empty() ? logger->message(EnumLogLevel::WARNING, "Tried to free map, but map stack is empty!", EnumLogOutput::TXT_FILE) : worldStack.pop_back();
 }
 
 
@@ -70,7 +70,7 @@ void MapManager::draw(const Position &cameraPos, const Dimension &windowSize, Re
 	
 	TileMap* world = this->getWorld();
 	if(world == nullptr) {
-		logger->message(Level::FATAL, "Null Pointer exception: Tried to render World, but world stack is empty!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::FATAL, "Null Pointer exception: Tried to render World, but world stack is empty!", EnumLogOutput::TXT_FILE);
 		return;
 	}
 
@@ -112,9 +112,9 @@ void MapManager::draw(const Position &cameraPos, const Dimension &windowSize, Re
 			if(tile == nullptr) {
 				//std::string xLocation = std::to_string(xCord);
 				//std::string yLocation = std::to_string(yCord);
-				logger->message(Level::WARNING,
+				logger->message(EnumLogLevel::WARNING,
 						"Null Pointer exception: Tried to get tile, but tile does not exist",
-						Output::TXT_FILE);
+						EnumLogOutput::TXT_FILE);
 			}
 			else {
 				renderer.drawSprite(world->getTag(), tile->getPos(), cameraPos, tile->getSprite(), false);

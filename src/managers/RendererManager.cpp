@@ -33,14 +33,14 @@ RendererManager::RendererManager(class GameLogger *logger_ptr)
 
 RendererManager::~RendererManager() {
 
-	logger->message(Level::INFO, "Stopping Renderer Manager", Output::TXT_FILE);
-	logger->message(Level::INFO, "Freeing SDL renderer", Output::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "Stopping Renderer Manager", EnumLogOutput::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "Freeing SDL renderer", EnumLogOutput::TXT_FILE);
 	SDL_DestroyRenderer(renderer);
 	renderer = nullptr;
-	logger->message(Level::INFO, "SDL renderer has been freed", Output::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "SDL renderer has been freed", EnumLogOutput::TXT_FILE);
 
 	this->deregisterAllTextures();
-	logger->message(Level::INFO, "Rendering stopped", Output::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "Rendering stopped", EnumLogOutput::TXT_FILE);
 }
 
 
@@ -57,7 +57,7 @@ void RendererManager::init(SDL_Window *windowIn){
 
 	if(!this->hasBeenInit) {
 		this->renderer = SDL_CreateRenderer(windowIn, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-		logger->message(Level::INFO, "Renderer has been initialized", Output::TXT_FILE);
+		logger->message(EnumLogLevel::INFO, "Renderer has been initialized", EnumLogOutput::TXT_FILE);
 		this->hasBeenInit = true;
 	}
 }
@@ -81,14 +81,14 @@ bool RendererManager::registerTexture(const std::string &tag, const std::string 
 
 
 	if(!this->hasBeenInit) {
-		logger->message(Level::ERROR, "Cannot register textures, Renderer has not been initialized!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::ERROR, "Cannot register textures, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 		return false;
 	}
 
-	logger->message(Level::INFO, "Registering texture '" + tag + "' at "+ fileLocation, Output::TXT_FILE);
+	logger->message(EnumLogLevel::INFO, "Registering texture '" + tag + "' at "+ fileLocation, EnumLogOutput::TXT_FILE);
 
 	if(textureMap.find(tag) != textureMap.end()) {
-		logger->message(Level::WARNING, "Unable to register texture, tag: '" + tag +"' is not unique", Output::TXT_FILE);
+		logger->message(EnumLogLevel::WARNING, "Unable to register texture, tag: '" + tag +"' is not unique", EnumLogOutput::TXT_FILE);
 		return false;
 	}
 
@@ -98,7 +98,7 @@ bool RendererManager::registerTexture(const std::string &tag, const std::string 
 
 		//Could not find the sprite sheet
 		std::string sdlMessage = IMG_GetError();
-		logger->message(Level::WARNING, "Cannot find the file '" + fileLocation + "'. SDL: " + sdlMessage, Output::TXT_FILE);
+		logger->message(EnumLogLevel::WARNING, "Cannot find the file '" + fileLocation + "'. SDL: " + sdlMessage, EnumLogOutput::TXT_FILE);
 
 		//Register this tag with the missing texture
 		tmpSurface = IMG_Load("./data/gfx/null.png");
@@ -118,7 +118,7 @@ bool RendererManager::registerTexture(const std::string &tag, const std::string 
 		SDL_FreeSurface(tmpSurface);
 		tmpSurface = nullptr;
 
-		logger->message(Level::INFO, "File '" + fileLocation + "' has been registered", Output::TXT_FILE);
+		logger->message(EnumLogLevel::INFO, "File '" + fileLocation + "' has been registered", EnumLogOutput::TXT_FILE);
 		return true;
 	}
 }
@@ -140,19 +140,19 @@ bool RendererManager::deregisterTexture(const std::string &tag){
 	if(hasBeenInit) {
 
 		if(textureMap.find(tag) == textureMap.end()) {
-			logger->message(Level::WARNING, "Could not find tag: '" + tag + "' unable to deregister texture", Output::TXT_FILE);
+			logger->message(EnumLogLevel::WARNING, "Could not find tag: '" + tag + "' unable to deregister texture", EnumLogOutput::TXT_FILE);
 			return false;
 		}
 
-		logger->message(Level::INFO, "Deregistering texture '" + tag +"'", Output::TXT_FILE);
+		logger->message(EnumLogLevel::INFO, "Deregistering texture '" + tag +"'", EnumLogOutput::TXT_FILE);
 
 		textureMap.erase(tag);
 
-		logger->message(Level::INFO, "Texture '" + tag +"' has been deregistered", Output::TXT_FILE);
+		logger->message(EnumLogLevel::INFO, "Texture '" + tag +"' has been deregistered", EnumLogOutput::TXT_FILE);
 		return true;
 	}
 	else {
-		logger->message(Level::ERROR, "Cannot deregister textures, Renderer has not been initialized!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::ERROR, "Cannot deregister textures, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 		return false;
 	}
 }
@@ -169,19 +169,19 @@ void RendererManager::deregisterAllTextures(){
 
 	if(this->hasBeenInit) {
 
-		logger->message(Level::INFO, "Deregistering all textures", Output::TXT_FILE);
+		logger->message(EnumLogLevel::INFO, "Deregistering all textures", EnumLogOutput::TXT_FILE);
 		auto itr = textureMap.begin();
 		while(itr != textureMap.end()){
 
 			std::string tag = itr->first;
-			logger->message(Level::INFO, "Deregistering texture '" + tag + "'", Output::TXT_FILE);
+			logger->message(EnumLogLevel::INFO, "Deregistering texture '" + tag + "'", EnumLogOutput::TXT_FILE);
 
 			itr = textureMap.erase(itr);
 
-			logger->message(Level::INFO, "Texture '" + tag + "' has been deregistered", Output::TXT_FILE);
+			logger->message(EnumLogLevel::INFO, "Texture '" + tag + "' has been deregistered", EnumLogOutput::TXT_FILE);
 		}
 	}
-	else logger->message(Level::ERROR, "Cannot deregister textures, Renderer has not been initialized!", Output::TXT_FILE);
+	else logger->message(EnumLogLevel::ERROR, "Cannot deregister textures, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 }
 
 
@@ -209,7 +209,7 @@ bool RendererManager::setDrawColor(uint32_t red, uint32_t green, uint32_t blue, 
 		return true;
 	}
 	else {
-		logger->message(Level::ERROR, "Cannot set draw color, Renderer has not been initialized!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::ERROR, "Cannot set draw color, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 		return false;
 	}
 }
@@ -239,7 +239,7 @@ bool RendererManager::setTextureColor(const std::string &tag, uint32_t red, uint
 		return true;
 	}
 	else {
-		logger->message(Level::ERROR, "Cannot set texture color, Renderer has not been initialized!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::ERROR, "Cannot set texture color, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 		return false;
 	}
 }
@@ -265,7 +265,7 @@ bool RendererManager::setTextureAlpha(const std::string &tag, uint32_t alpha){
 		return true;
 	}
 	else {
-		logger->message(Level::ERROR, "Cannot set texture alpha, Renderer has not been initialized!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::ERROR, "Cannot set texture alpha, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 		return false;
 	}
 }
@@ -287,7 +287,7 @@ bool RendererManager::setTextureBlendMode(const std::string &tag, EnumBlendMode 
 
 
 	if(!this->hasBeenInit) {
-		logger->message(Level::ERROR, "Cannot set texture blend mode, Renderer has not been initialized!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::ERROR, "Cannot set texture blend mode, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 		return false;
 	}
 
@@ -331,7 +331,7 @@ bool RendererManager::clear(){
 		return true;
 	}
 	else {
-		logger->message(Level::ERROR, "Cannot clear, Renderer has not been initialized!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::ERROR, "Cannot clear, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 		return false;
 	}
 }
@@ -353,7 +353,7 @@ bool RendererManager::present(){
 		return true;
 	}
 	else {
-		logger->message(Level::ERROR, "Cannot present, Renderer has not been initialized!", Output::TXT_FILE);
+		logger->message(EnumLogLevel::ERROR, "Cannot present, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 		return false;
 	}
 }
@@ -374,11 +374,11 @@ void RendererManager::drawPoint(const Position &pos){
 		int code = SDL_RenderDrawPoint(this->renderer, pos.xPosN(), pos.yPosN());
 		if(code < 0) {
 			std::string sdlMessage = SDL_GetError();
-			logger->message(Level::ERROR, "SDL Error while trying to draw a point: " + sdlMessage, Output::CONSOLE);
+			logger->message(EnumLogLevel::ERROR, "SDL Error while trying to draw a point: " + sdlMessage, EnumLogOutput::CONSOLE);
 		}
 	}
 
-	else logger->message(Level::ERROR, "Cannot draw point, Renderer has not been initialized!", Output::TXT_FILE);
+	else logger->message(EnumLogLevel::ERROR, "Cannot draw point, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 }
 
 
@@ -404,11 +404,11 @@ void RendererManager::drawLine(const class Position &startPos, const class Posit
 
 		if(code < 0) {
 			std::string sdlMessage = SDL_GetError();
-			logger->message(Level::ERROR, "SDL Error while trying to draw a line: " + sdlMessage, Output::CONSOLE);
+			logger->message(EnumLogLevel::ERROR, "SDL Error while trying to draw a line: " + sdlMessage, EnumLogOutput::CONSOLE);
 		}
 	}
 
-	else logger->message(Level::ERROR, "Cannot draw rectangle, Renderer has not been initialized!", Output::TXT_FILE);
+	else logger->message(EnumLogLevel::ERROR, "Cannot draw rectangle, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 }
 
 
@@ -434,11 +434,11 @@ void RendererManager::drawRect(const class Position &pos, const class Dimension 
 
 		if(code < 0) {
 			std::string sdlMessage = SDL_GetError();
-			logger->message(Level::ERROR, "SDL Error while trying to draw a rectangle: " + sdlMessage, Output::CONSOLE);
+			logger->message(EnumLogLevel::ERROR, "SDL Error while trying to draw a rectangle: " + sdlMessage, EnumLogOutput::CONSOLE);
 		}
 	}
 
-	else logger->message(Level::ERROR, "Cannot draw rectangle, Renderer has not been initialized!", Output::TXT_FILE);
+	else logger->message(EnumLogLevel::ERROR, "Cannot draw rectangle, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 }
 
 
@@ -493,7 +493,7 @@ void RendererManager::drawSprite(const std::string &tag,
 		SDL_RenderCopyEx(this->renderer, this->getTexture(tag), &spriteRect, &entityRect, angle, NULL, flip);
 	}
 
-	else logger->message(Level::ERROR, "Cannot render sprite, Renderer has not been initialized!", Output::TXT_FILE);
+	else logger->message(EnumLogLevel::ERROR, "Cannot render sprite, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
 }
 
 
@@ -557,9 +557,9 @@ SDL_Texture* RendererManager::getTexture(const std::string &tag){
 
 	if(textureMap.find(tag) == textureMap.end()){
 
-		logger->message(Level::WARNING,
+		logger->message(EnumLogLevel::WARNING,
 				"Could not get the texture '" + tag + "'",
-				Output::TXT_FILE);
+				EnumLogOutput::TXT_FILE);
 
 		return nullptr;
 	}
@@ -585,7 +585,7 @@ int RendererManager::getTextureTileWidth(const std::string &tag){
 
 	if(textureMap.find(tag) == textureMap.end()){
 
-		logger->message(Level::WARNING, "Could not get the texture '" + tag + "' width", Output::TXT_FILE);
+		logger->message(EnumLogLevel::WARNING, "Could not get the texture '" + tag + "' width", EnumLogOutput::TXT_FILE);
 		return 0;
 	}
 
@@ -610,7 +610,7 @@ int RendererManager::getTextureTileHeight(const std::string &tag){
 
 	if(textureMap.find(tag) == textureMap.end()){
 
-		logger->message(Level::WARNING, "Could not get the texture '" + tag + "' height", Output::TXT_FILE);
+		logger->message(EnumLogLevel::WARNING, "Could not get the texture '" + tag + "' height", EnumLogOutput::TXT_FILE);
 		return 0;
 	}
 

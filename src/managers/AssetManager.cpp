@@ -110,8 +110,8 @@ bool AssetManager::add_texture(std::string key, std::string fileDirectory){
 			//Log warning message
 			std::string sdlMessage = IMG_GetError();
 
-			log->message(Level::WARNING, "Cannot find the file: '"
-					+ fileDirectory + "'. SDL: " + sdlMessage, Output::CONSOLE);
+			log->message(EnumLogLevel::WARNING, "Cannot find the file: '"
+					+ fileDirectory + "'. SDL: " + sdlMessage, EnumLogOutput::CONSOLE);
 
 			return false;
 		}
@@ -127,8 +127,8 @@ bool AssetManager::add_texture(std::string key, std::string fileDirectory){
 			tmp = nullptr;
 
 			//Log that the texture was successfully loaded
-			log->message(Level::INFO, "File '" + fileDirectory
-					+ "' has been loaded", Output::TXT_FILE);
+			log->message(EnumLogLevel::INFO, "File '" + fileDirectory
+					+ "' has been loaded", EnumLogOutput::TXT_FILE);
 
 			return true;
 		}
@@ -138,8 +138,8 @@ bool AssetManager::add_texture(std::string key, std::string fileDirectory){
 	else{
 		//Was able to find the key, so warn the user
 
-		log->message(Level::WARNING, "Unable to add texture, key: '"
-				+ key +"' is not unique", Output::TXT_FILE);
+		log->message(EnumLogLevel::WARNING, "Unable to add texture, key: '"
+				+ key +"' is not unique", EnumLogOutput::TXT_FILE);
 
 		return false;
 	}
@@ -170,8 +170,8 @@ struct SDL_Texture* AssetManager::get_texture(std::string key){
 	if(textureMap.find(key) == textureMap.end()){
 		//Could not find the key, so log and return a null pointer
 
-		log->message(Level::WARNING, "Could not find key: " + key,
-				Output::TXT_FILE);
+		log->message(EnumLogLevel::WARNING, "Could not find key: " + key,
+				EnumLogOutput::TXT_FILE);
 
 		return nullptr;
 	}
@@ -209,8 +209,8 @@ bool AssetManager::remove_texture(std::string key){
 	if(textureMap.find(key) == textureMap.end()){
 		//Could not find the key
 
-		log->message(Level::WARNING, "Could not find key: '" + key +
-				"' unable to remove", Output::TXT_FILE);
+		log->message(EnumLogLevel::WARNING, "Could not find key: '" + key +
+				"' unable to remove", EnumLogOutput::TXT_FILE);
 
 		return false;
 	}
@@ -219,13 +219,13 @@ bool AssetManager::remove_texture(std::string key){
 	else{
 		//Was able to find the key
 
-		log->message(Level::INFO, "Freeing texture '" + key +"'", Output::TXT_FILE);
+		log->message(EnumLogLevel::INFO, "Freeing texture '" + key +"'", EnumLogOutput::TXT_FILE);
 
 		SDL_DestroyTexture(textureMap[key]);
 		textureMap[key] = nullptr;
 		textureMap.erase(key);
 
-		log->message(Level::INFO, "Texture '" + key +"' has been freed", Output::TXT_FILE);
+		log->message(EnumLogLevel::INFO, "Texture '" + key +"' has been freed", EnumLogOutput::TXT_FILE);
 
 		return true;
 	}
@@ -252,7 +252,7 @@ void AssetManager::remove_allTextures(void){
 
 	if(!b_hasBeenInit) return;
 
-	log->message(Level::INFO, "Freeing all textures", Output::TXT_FILE);
+	log->message(EnumLogLevel::INFO, "Freeing all textures", EnumLogOutput::TXT_FILE);
 
 	//iterate over the texture map and free all SDL textures
 	std::map<std::string, struct SDL_Texture*>::iterator itr = textureMap.begin();
@@ -261,8 +261,8 @@ void AssetManager::remove_allTextures(void){
 		//the first element in the iterator is the key
 		std::string key = itr->first;
 
-		log->message(Level::INFO, "Freeing texture '" + key
-				+ "'", Output::TXT_FILE);
+		log->message(EnumLogLevel::INFO, "Freeing texture '" + key
+				+ "'", EnumLogOutput::TXT_FILE);
 
 		//Free the texture, and remove it from the map
 		SDL_DestroyTexture(textureMap[key]);
@@ -270,8 +270,8 @@ void AssetManager::remove_allTextures(void){
 		//If key was used instead it would return the number of elements erased
 		 itr = textureMap.erase(itr);
 
-		 log->message(Level::INFO, "Texture '" + key
-				+ "' has been freed", Output::TXT_FILE);
+		 log->message(EnumLogLevel::INFO, "Texture '" + key
+				+ "' has been freed", EnumLogOutput::TXT_FILE);
 	}
 
 	return;

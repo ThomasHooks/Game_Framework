@@ -29,7 +29,7 @@ public:
 
 
 
-	GameBuilder& setLoggerLevel(Level levelIn);
+	GameBuilder& setLoggerLevel(EnumLogLevel levelIn);
 
 
 
@@ -55,7 +55,7 @@ public:
 
 protected:
 
-	Level logLevel;
+	EnumLogLevel logLevel;
 
 	std::string logFileLocation;
 
