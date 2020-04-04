@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.h
 // Author     		: Thomas Hooks
-// Last Modified	: 04/01/2020
+// Last Modified	: 04/04/2020
 //============================================================================
 
 
@@ -67,7 +67,7 @@ public:
 
 	/*
 	 * Starts the game loop
-	 * which will continue running until Game::markOver() is called
+	 * which will continue running until Game::markOver is called
 	 */
 	void run();
 
@@ -87,7 +87,7 @@ public:
 
 
 
-	//Checks if the game has ended
+	// @return	True if the game has ended
 	bool isOver() const;
 
 
@@ -96,36 +96,27 @@ public:
 	void markOver();
 
 
-	//TODO move this to GameTimer
-	int get_maxFPS() const {return maxFPS;}
-
-
-	//TODO move this to GameTimer
-	void set_maxFPS(int limit) {if(limit != 0) maxFPS = limit;}
-
-
-
-	//Gets this game's logger
+	// @return	Gets this game's logger
 	class GameLogger& getLogger();
 
 
 
-	//Gets this game's renderer
+	// @return	Gets this game's renderer
 	class RendererManager& getRenderManager();
 
 
 
-	//Gets this game's world manager
+	// @return	Gets this game's world manager
 	class MapManager& getWorldManager();
 
 
 
-	//Gets this game's entity manager
+	// @return	Gets this game's entity manager
 	class EntityManager& getEntityManager();
 
 
 
-	//Gets this game's timer
+	// @return	Gets this game's timer
 	class GameTimer& getTimer();
 
 
@@ -133,9 +124,7 @@ public:
 	/*
 	 * @nullable
 	 *
-	 * @return	The wrapper for this game's Window
-	 *
-	 * Gets this game's Window
+	 * @return	Gets this game's Window
 	 */
 	const class SDLWindowWrapper* getWindow() const;
 
@@ -144,9 +133,7 @@ public:
 	/*
 	 * @nullable
 	 *
-	 * @return	The wrapper for this game's camera
-	 *
-	 * Gets this game's Camera
+	 * @return	Gets this game's Camera
 	 */
 	class GameCamera* getCamera();
 
@@ -154,12 +141,12 @@ public:
 
 protected:
 
-	//Gets the current Game State
+	// @return	Gets the current Game State
 	class IGameState& getState();
 
 
 
-	//Checks if the Game State stack is empty
+	// @return	True if the Game State stack is empty
 	bool isNullState() const;
 
 
@@ -184,7 +171,7 @@ private:
 
 	bool hasBeenInit;
 
-	int maxFPS;
+	unsigned int tickRate;
 
 	std::vector<std::unique_ptr<class IGameState>> states;
 };

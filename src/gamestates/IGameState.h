@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IGameState.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/26/2020
+// Last Modified	: 04/04/2020
 //============================================================================
 
 
@@ -29,16 +29,25 @@ public:
 
 
 
-	virtual void tick(const class Position &cameraPos) = 0;
+	/*
+	 * @param	camera Reference to the Game's Camera
+	 *
+	 * @param	worldIn The current World
+	 *
+	 * @param	deltaTime Amount of time that has elapsed since the last tick
+	 *
+	 * Causes the current Game State to update
+	 */
+	virtual void tick(const class GameCamera &camera, class TileMap &worldIn, float deltaTime) = 0;
 
 
 
 	/*
-	 * @param	camera The coordinates of the camera
+	 * @param	camera Reference to the Game's Camera
 	 *
 	 * Renders the current GameState
 	 */
-	void render(const class Position &cameraPos);
+	virtual void render(const class GameCamera &camera) = 0;
 
 
 
@@ -49,11 +58,6 @@ public:
 	int nGameStateID;
 
 protected:
-
-	virtual void customDraw(const class Position &camera,
-			const class Dimension &windowSize) = 0;
-
-
 
 	//Gets the Entity Manager
 	class EntityManager& getEntities();

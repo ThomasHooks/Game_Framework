@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 04/01/2020
+// Last Modified	: 04/04/2020
 //============================================================================
 
 
@@ -28,7 +28,7 @@
 Game::Game()
 		: gameOver(false),
 		  hasBeenInit(false),
-		  maxFPS(60) {
+		  tickRate(50) {
 
 	this->logger = std::make_unique<GameLogger>(EnumLogLevel::TRACE);
 	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
@@ -67,7 +67,7 @@ Game::Game()
 Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32_t flags, int MaxFPS)
 		: gameOver(false),
 		  hasBeenInit(false),
-		  maxFPS(MaxFPS) {
+		  tickRate(20) {
 
 	this->logger = std::make_unique<GameLogger>(EnumLogLevel::TRACE);
 	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
@@ -86,7 +86,7 @@ Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32
 
 
 
-Game::~Game(){
+Game::~Game() {
 
 	getLogger().message(EnumLogLevel::INFO, "Terminating SDL", EnumLogOutput::TXT_FILE);
 	SDL_Quit();
@@ -111,9 +111,9 @@ Game::~Game(){
  *
  * Initializes the Window
  */
-void Game::initWindow(const std::string &titleIn, int widthIn, int heightIn, uint32_t flags){
+void Game::initWindow(const std::string &titleIn, int widthIn, int heightIn, uint32_t flags) {
 
-	if (!this->hasBeenInit){
+	if (!this->hasBeenInit) {
 
 		this->windowWrap = std::make_unique<SDLWindowWrapper>(this->logger.get(), titleIn, Dimension(widthIn, heightIn), flags);
 		this->getRenderManager().init(this->windowWrap->get());
@@ -128,34 +128,35 @@ void Game::initWindow(const std::string &titleIn, int widthIn, int heightIn, uin
  * Starts the game loop
  * which will continue running until Game::markOver is called
  */
-void Game::run(){
+void Game::run() {
 
 	if (!hasBeenInit) {
 		getLogger().message(EnumLogLevel::FATAL, "Game has not been initialized", EnumLogOutput::TXT_FILE);
 		markOver();
 	}
 
+	getTimer().start();
 	while(!this->isOver() && !this->isNullState()) {
 
-		getTimer().Start();
-
 		TileMap* world = getWorldManager().getWorld();
-		if(world == nullptr){
+		if(world == nullptr) {
 			getLogger().message(EnumLogLevel::FATAL, "Null Pointer exception: Tried to get a null World!", EnumLogOutput::TXT_FILE);
 			markOver();
 		}
 		else {
 			Dimension worldSize(world->width() * world->tileWidth(), world->height() * world->tileHeight());
-			getCamera()->updatePos(worldSize, getTimer().get_deltaTime(), true);
+			getCamera()->updatePos(worldSize, true);
+
+			getState().render(*getCamera());
 
 			getState().onInputEvent();
-			getState().tick(getCamera()->getPos());
-			getState().render(getCamera()->getPos());
 
-			getState().ChangeState(0, this);
+			if(getTimer().getTicks() >= this->tickRate) {
+				getState().tick(*getCamera(), *world, getTimer().getDelta());
+				getState().ChangeState(0, this);
+				getTimer().start();
+			}
 		}
-
-		getTimer().Check(get_maxFPS());
 	}
 }
 
@@ -166,7 +167,7 @@ void Game::run(){
  *
  * Adds a new Game State to this Game
  */
-void Game::addState(IGameState* stateIn){
+void Game::addState(IGameState* stateIn) {
 
 	if(stateIn == nullptr){
 		logger->message(EnumLogLevel::ERROR, "Null Pointer exception: Tried to add a null State!", EnumLogOutput::TXT_FILE);
@@ -181,9 +182,9 @@ void Game::addState(IGameState* stateIn){
 
 
 //Removes the current Game State
-void Game::removeState(){
+void Game::removeState() {
 
-	if(this->states.empty()){
+	if(this->states.empty()) {
 		logger->message(EnumLogLevel::WARNING, "Tried to remove State but there are none!", EnumLogOutput::TXT_FILE);
 		return;
 	}
@@ -192,7 +193,7 @@ void Game::removeState(){
 
 
 
-//Checks if the game has ended
+// @return	True if the game has ended
 bool Game::isOver() const {
 	return this->gameOver;
 }
@@ -200,43 +201,43 @@ bool Game::isOver() const {
 
 
 //Marks the game to be stopped
-void Game::markOver(){
+void Game::markOver() {
 	logger->message(EnumLogLevel::INFO, "Quitting Game", EnumLogOutput::TXT_FILE);
 	this->gameOver = true;
 }
 
 
 
-//Gets this game's logger
-GameLogger& Game::getLogger(){
+// @return	Gets this game's logger
+GameLogger& Game::getLogger() {
 	return *this->logger.get();
 }
 
 
 
-//Gets this game's renderer
-RendererManager& Game::getRenderManager(){
+// @return	Gets this game's renderer
+RendererManager& Game::getRenderManager() {
 	return *this->renderManager.get();
 }
 
 
 
-//Gets this game's world manager
-MapManager& Game::getWorldManager(){
+// @return	Gets this game's world manager
+MapManager& Game::getWorldManager() {
 	return *this->worldManager.get();
 }
 
 
 
-//Gets this game's entity manager
-EntityManager& Game::getEntityManager(){
+// @return	Gets this game's entity manager
+EntityManager& Game::getEntityManager() {
 	return *this->entityManager.get();
 }
 
 
 
-//Gets this game's timer
-GameTimer& Game::getTimer(){
+// @return	Gets this game's timer
+GameTimer& Game::getTimer() {
 	return *this->timer.get();
 }
 
@@ -245,9 +246,7 @@ GameTimer& Game::getTimer(){
 /*
  * @nullable
  *
- * @return	The wrapper for this game's Window
- *
- * Gets this game's Window
+ * @return	Gets this game's Window
  */
 const class SDLWindowWrapper* Game::getWindow() const {
 	return this->windowWrap.get();
@@ -258,24 +257,22 @@ const class SDLWindowWrapper* Game::getWindow() const {
 /*
  * @nullable
  *
- * @return	The wrapper for this game's camera
- *
- * Gets this game's Camera
+ * @return	Gets this game's CameraGets this game's Camera
  */
-class GameCamera* Game::getCamera(){
+class GameCamera* Game::getCamera() {
 	return this->cameraWrap.get();
 }
 
 
 
-//Gets the current Game State
-class IGameState& Game::getState(){
+// @return	Gets the current Game State
+class IGameState& Game::getState() {
 	return *this->states.back().get();
 }
 
 
 
-//Checks if the Game State stack is empty
+// @return	True if the Game State stack is empty
 bool Game::isNullState() const {
 	if(this->states.empty()) {
 		logger->message(EnumLogLevel::FATAL, "Game is in an unknown state!", EnumLogOutput::TXT_FILE);

@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: BlankGameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/31/2020
+// Last Modified	: 04/04/2020
 //============================================================================
 
 
@@ -51,7 +51,7 @@ BlankGameState::~BlankGameState() {}
 /*
  *
  */
-void BlankGameState::onInputEvent(){
+void BlankGameState::onInputEvent() {
 
 	//Begin polling
 	SDL_Event event;
@@ -83,17 +83,17 @@ void BlankGameState::onInputEvent(){
 	//----All of this should be removed later----
 	const Uint8*state = SDL_GetKeyboardState(NULL);
 	if(state[SDL_SCANCODE_W]) {
-		player->updateVel(Position(0.0, -576.0), 0.93f, getTimer().get_deltaTime());
+		player->updateVel(Position(0.0, -576.0), 0.93f, getTimer().getDelta());
 	}
 	else if(state[SDL_SCANCODE_S]) {
-		player->updateVel(Position(0.0, 576.0), 0.93f, getTimer().get_deltaTime());
+		player->updateVel(Position(0.0, 576.0), 0.93f, getTimer().getDelta());
 	}
 
 	if(state[SDL_SCANCODE_A]) {
-		player->updateVel(Position(-576.0, 0.0), 0.93f, getTimer().get_deltaTime());
+		player->updateVel(Position(-288.0, 0.0), 0.93f, getTimer().getDelta());
 	}
 	else if(state[SDL_SCANCODE_D]) {
-		player->updateVel(Position(576.0, 0.0), 0.93f, getTimer().get_deltaTime());
+		player->updateVel(Position(288.0, 0.0), 0.93f, getTimer().getDelta());
 	}
 	//----All of this should be removed later----
 }
@@ -101,14 +101,41 @@ void BlankGameState::onInputEvent(){
 
 
 /*
+ * @param	camera Reference to the Game's Camera
  *
+ * @param	worldIn The current World
+ *
+ * @param	deltaTime Amount of time that has elapsed since the last tick
+ *
+ * Causes the current Game State to update
  */
-void BlankGameState::tick(const Position &cameraPos){
+void BlankGameState::tick(const GameCamera &camera, TileMap &worldIn, float deltaTime) {
+
 	//----All of this should be removed later----
-	TileMap *world = getWorlds().getWorld();
-	Dimension windowSize(game->getWindow()->width(), game->getWindow()->height());
-	this->getEntities().tickAll(cameraPos, windowSize, *world, getTimer().get_deltaTime());
+	Dimension windowSize(camera.width(), camera.height());
+	this->getEntities().tickAll(camera.getPos(), windowSize, worldIn, deltaTime);
 	//----All of this should be removed later----
+}
+
+
+
+/*
+ * @param	camera Reference to the Game's Camera
+ *
+ * Renders the current GameState
+ */
+void BlankGameState::render(const GameCamera &camera) {
+
+	getRenderer().setDrawColor(0, 0, 0, 255);
+	getRenderer().clear();
+
+	//----All of this should be removed later----
+	Dimension windowSize(camera.width(), camera.height());
+	getWorlds().draw(camera.getPos(), windowSize, getRenderer());
+	getEntities().drawAll(camera.getPos(), windowSize, getRenderer(), true);
+	//----All of this should be removed later----
+
+	getRenderer().present();
 }
 
 
@@ -116,19 +143,7 @@ void BlankGameState::tick(const Position &cameraPos){
 /*
  *
  */
-void BlankGameState::customDraw(const Position &cameraPos, const Dimension &windowSize){
-	//----All of this should be removed later----
-	getWorlds().draw(cameraPos, windowSize, getRenderer());
-	getEntities().drawAll(cameraPos, windowSize, getRenderer(), true);
-	//----All of this should be removed later----
-}
-
-
-
-/*
- *
- */
-void BlankGameState::ChangeState(int StateFlag, Game *Game){}
+void BlankGameState::ChangeState(int StateFlag, Game *Game) {}
 
 
 

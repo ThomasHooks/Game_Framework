@@ -1,86 +1,67 @@
 //============================================================================
 // Name       		: GameTimer.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 02/24/2020
+// Last Modified	: 04/04/2020
 //============================================================================
 
 
 
-
-#include "GameTimer.h"
 
 #include <SDL.h>
 #include <ctime>
 
+#include "GameTimer.h"
 
 
 
-GameTimer::GameTimer() {
-	//Initialize clock
 
-	frameStart = SDL_GetTicks();
-	f_deltaTime = 0.0f;
+GameTimer::GameTimer()
+	: tickStart(0),
+	  stopped(true) {}
 
-	return;
+
+
+GameTimer::~GameTimer() {}
+
+
+
+//Starts a Timer that measure the number of a ticks in milliseconds
+void GameTimer::start() {
+	this->stopped = false;
+	this->tickStart = SDL_GetTicks();
 }
 
 
-GameTimer::~GameTimer() {
-	//Nothing to free
-	//Do nothing
+
+//Stops this timer
+void GameTimer::stop() {
+	this->stopped = true;
+	this->tickStart = 0;
 }
 
 
-void GameTimer::Start(void){
-	/*
-	 * *brief* Starts a timer that measure the length of a frame in (ms)
-	 *
-	 * This method is to be called at the beginning of the loop
-	 * so that the engine can measure the time it takes to complete one frame
-	 *
-	 * */
 
-
-
-	//Update current time in (ms) since SDL was initialized
-	frameStart = SDL_GetTicks();
-
-	return;
-
+//@return	Gets the number of seconds since this Timer was started
+float GameTimer::getDelta() const {
+	return getTicks()/1000.0f;
 }
 
 
-void GameTimer::Check(const int Max_FPS){
-	/*
-	 * *brief* Prevents the game from exceeding its maximum frames rate
-	 *
-	 * This method is to be called at the end of the game loop
-	 * to slow the system down
-	 *
-	 * */
 
-
-
-	const int frameDelay = 1000/Max_FPS;
-
-	//Calculate this frames time length
-	f_deltaTime = SDL_GetTicks() - frameStart;
-
-	//Check if the frame rate needs to be limited
-	if(frameDelay > f_deltaTime){
-		//The frame rate is above the maximum limit
-		//So the game is delayed by the difference
-		SDL_Delay(frameDelay - f_deltaTime);
-
-		//Update delta time to reflect the delay
-		f_deltaTime = f_deltaTime + (frameDelay - f_deltaTime);
-	}
-
-	return;
+//@return	Gets the number of ticks since this Timer was started
+unsigned int GameTimer::getTicks() const {
+	return this->stopped ? 0 : SDL_GetTicks() - this->tickStart;
 }
 
 
-//============================================================================
+
+//@return	True if this Timer is running
+bool GameTimer::isRunning() const {
+	return !this->stopped;
+}
+
+
+
 
 
 

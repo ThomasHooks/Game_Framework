@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: GameCamera.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 03/29/2020
+// Last Modified	: 04/04/2020
 //============================================================================
 
 
@@ -70,10 +70,12 @@ int GameCamera::height() const {
 /*
  * @param	worldSize The size of the current World in Global-Space
  *
+ * @param	keepInsideWindow Flag if the camera should stay in the window
+ *
  * Updates the camera's position in the Global-Space coordinate system
  * This should be called every game tick
  */
-void GameCamera::updatePos(const Dimension &worldSize, float deltaTime, bool keepInsideWindow){
+void GameCamera::updatePos(const Dimension &worldSize, bool keepInsideWindow){
 
 	if(this->trackingEntity) {
 		//Update the Camera's tracking position to the Entity's current position

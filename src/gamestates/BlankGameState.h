@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: BlankGameState.h
 // Author     		: Thomas Hooks
-// Last Modified	: 03/24/2020
+// Last Modified	: 04/04/2020
 //============================================================================
 
 
@@ -41,7 +41,25 @@ public:
 
 
 
-	void tick(const class Position &cameraPos) override;
+	/*
+	 * @param	camera Reference to the Game's Camera
+	 *
+	 * @param	worldIn The current World
+	 *
+	 * @param	deltaTime Amount of time that has elapsed since the last tick
+	 *
+	 * Causes the current Game State to update
+	 */
+	void tick(const class GameCamera &camera, class TileMap &worldIn, float deltaTime) override;
+
+
+
+	/*
+	 * @param	camera Reference to the Game's Camera
+	 *
+	 * Renders the current GameState
+	 */
+	void render(const class GameCamera &camera) override;
 
 
 
@@ -50,9 +68,6 @@ public:
 
 
 protected:
-
-	void customDraw(const class Position &cameraPos,
-			const class Dimension &windowSize) override;
 
 	//----All of this should be removed later----
 		class IEntity* player;

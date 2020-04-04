@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IGameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 04/01/2020
+// Last Modified	: 04/04/2020
 //============================================================================
 
 
@@ -29,55 +29,36 @@ IGameState::IGameState(class Game *Game, int StateID)
 
 
 
-/*
- * @param	camera The coordinates of the camera
- *
- * Renders the current GameState
- */
-void IGameState::render(const Position &camera){
-
-	this->game->getRenderManager().setDrawColor(0, 0, 0, 255);
-	this->game->getRenderManager().clear();
-
-	Dimension windowSize(game->getWindow()->width(), game->getWindow()->height());
-	this->customDraw(camera, windowSize);
-
-	//SDL_RenderPresent(game->get_renderer());
-	this->game->getRenderManager().present();
-}
-
-
-
 //Gets the Entity Manager
-class EntityManager& IGameState::getEntities(){
+class EntityManager& IGameState::getEntities() {
 	return this->game->getEntityManager();
 }
 
 
 
 //Gets the World Manager
-class MapManager& IGameState::getWorlds(){
+class MapManager& IGameState::getWorlds() {
 	return this->game->getWorldManager();
 }
 
 
 
 //Gets the Renderer
-class RendererManager& IGameState::getRenderer(){
+class RendererManager& IGameState::getRenderer() {
 	return this->game->getRenderManager();
 }
 
 
 
 //Gets the Logger
-class GameLogger& IGameState::getLogger(){
+class GameLogger& IGameState::getLogger() {
 	return this->game->getLogger();
 }
 
 
 
 //Gets the Timer
-class GameTimer& IGameState::getTimer(){
+class GameTimer& IGameState::getTimer() {
 	return this->game->getTimer();
 }
 

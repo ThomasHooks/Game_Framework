@@ -1,7 +1,7 @@
 //============================================================================
-// Name       		: Game_Timer.h
+// Name       		: GameTimer.h
 // Author     		: Thomas Hooks
-// Last Modified	: 02/24/2020
+// Last Modified	: 04/03/2020
 //============================================================================
 
 
@@ -19,34 +19,47 @@ class GameTimer {
 public:
 
 	GameTimer();
+
+
+
 	~GameTimer();
 
-	//Starts a timer that measure the length of a frame in (ms)
-	void Start(void);
 
-	//Prevents the game from exceeding its maximum frames rate
-	void Check(const int Max_FPS);
 
-	//Getters and setters for the timer
-	float get_deltaTime(void) const {return f_deltaTime/1000.0f;}
+	//Starts a Timer that measure the number of a ticks in milliseconds
+	void start();
+
+
+
+	//Stops this timer
+	void stop();
+
+
+
+	//@return	Gets the number of seconds since this Timer was started
+	float getDelta() const;
+
+
+
+	//@return	Gets the number of ticks since this Timer was started
+	unsigned int getTicks() const;
+
+
+
+	//@return	True if this Timer is running
+	bool isRunning() const;
+
+
 
 private:
 
-	//Current time since SDL was Initialized
-	uint32_t frameStart;
+	unsigned int tickStart;
 
-	//Time since the last frame
-	float f_deltaTime;
+	bool stopped;
 };
 
 
-
-
 #endif /* SRC_GAME_TIMER_H_ */
-
-
-//============================================================================
-
 
 
 

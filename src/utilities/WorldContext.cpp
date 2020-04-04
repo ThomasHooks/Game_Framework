@@ -70,7 +70,7 @@ IEntity& WorldContext::getPlayer(){
  * Gets the amount of time since the last tick
  */
 float WorldContext::getDeltaTime(){
-	return this->timer->get_deltaTime();
+	return this->timer->getDelta();
 }
 
 
