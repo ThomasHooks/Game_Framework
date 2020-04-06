@@ -17,10 +17,10 @@
 #include "managers/MapManager.h"
 #include "world/TileMap.h"
 #include "utilities/GameLogger.h"
-#include "utilities/SDLWindowWrapper.h"
 #include "utilities/GameCamera.h"
 #include "utilities/GameTimer.h"
 #include "utilities/GameBuilder.h"
+#include "utilities/wrappers/SDLWindowWrapper.h"
 
 
 

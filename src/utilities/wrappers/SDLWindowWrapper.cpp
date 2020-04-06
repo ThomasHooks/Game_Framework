@@ -9,7 +9,8 @@
 
 
 #include "SDLWindowWrapper.h"
-#include "GameLogger.h"
+
+#include "../GameLogger.h"
 
 
 

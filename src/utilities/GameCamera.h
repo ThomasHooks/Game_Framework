@@ -10,7 +10,7 @@
 #define GAMECAMERA_H_
 
 
-#include "Position.h"
+#include "physics/Position.h"
 
 
 class GameCamera {

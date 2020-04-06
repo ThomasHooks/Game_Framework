@@ -17,7 +17,7 @@
 #include <map>
 #include <memory>
 
-#include "../utilities/EnumBlendMode.h"
+#include "EnumBlendMode.h"
 
 
 

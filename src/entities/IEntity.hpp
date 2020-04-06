@@ -16,12 +16,12 @@
 #include <vector>
 #include <map>
 
-#include "../utilities/EnumSide.h"
-#include "../utilities/Position.h"
-#include "../utilities/Dimension.h"
+#include "../utilities/physics/AABB.h"
+#include "../utilities/physics/Dimension.h"
+#include "../utilities/physics/EnumSide.h"
+#include "../utilities/physics/Position.h"
 #include "capabilities/IEntityCapability.h"
 #include "EnumEntityType.h"
-#include "../utilities/AABB.h"
 
 
 

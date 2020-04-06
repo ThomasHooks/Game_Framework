@@ -11,7 +11,7 @@
 #define SDLTEXTUREWRAPPER_H_
 
 
-#include "Dimension.h"
+#include "../physics/Dimension.h"
 
 
 class SDLTextureWrapper {

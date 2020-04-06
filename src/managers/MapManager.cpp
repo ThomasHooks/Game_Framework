@@ -16,8 +16,8 @@
 #include "MapManager.h"
 #include "../world/TileMap.h"
 #include "../utilities/GameLogger.h"
-#include "../utilities/Dimension.h"
-#include "../utilities/Position.h"
+#include "../utilities/physics/Dimension.h"
+#include "../utilities/physics/Position.h"
 #include "RendererManager.h"
 
 

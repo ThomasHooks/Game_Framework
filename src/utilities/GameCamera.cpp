@@ -9,8 +9,8 @@
 
 #include "GameCamera.h"
 #include "GameLogger.h"
-#include "SDLWindowWrapper.h"
 #include "../entities/IEntity.hpp"
+#include "wrappers/SDLWindowWrapper.h"
 
 
 

@@ -11,8 +11,8 @@
 #define AABB_H_
 
 
+#include "EnumSide.h"
 #include "Position.h"
-#include  "EnumSide.h"
 
 
 class AABB {

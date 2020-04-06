@@ -16,8 +16,8 @@
 
 #include <SDL.h>
 
-#include "Dimension.h"
-#include "Position.h"
+#include "../physics/Dimension.h"
+#include "../physics/Position.h"
 
 
 class SDLWindowWrapper {

@@ -16,9 +16,9 @@
 
 #include "RendererManager.h"
 #include "../utilities/GameLogger.h"
-#include "../utilities/Position.h"
-#include "../utilities/Dimension.h"
-#include "../utilities/SDLTextureWrapper.h"
+#include "../utilities/physics/Dimension.h"
+#include "../utilities/physics/Position.h"
+#include "../utilities/wrappers/SDLTextureWrapper.h"
 
 
 

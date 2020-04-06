@@ -11,9 +11,9 @@
 #define ITILE_H_
 
 
-#include "../utilities/Position.h"
-#include "../utilities/Dimension.h"
-#include "../utilities/AABB.h"
+#include "../utilities/physics/AABB.h"
+#include "../utilities/physics/Dimension.h"
+#include "../utilities/physics/Position.h"
 
 
 class ITile {

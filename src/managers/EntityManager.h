@@ -19,8 +19,8 @@
 #include <memory>
 #include <string>
 
+#include "../utilities/physics/EnumSide.h"
 #include "Builder.h"
-#include "../utilities/EnumSide.h"
 
 
 

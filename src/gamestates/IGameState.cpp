@@ -13,12 +13,12 @@
 #include "../managers/EntityManager.h"
 #include "../managers/MapManager.h"
 #include "../world/TileMap.h"
-#include "../utilities/Dimension.h"
-#include "../utilities/Position.h"
 #include "../utilities/GameLogger.h"
-#include "../utilities/SDLWindowWrapper.h"
 #include "../utilities/GameCamera.h"
 #include "../utilities/GameTimer.h"
+#include "../utilities/physics/Dimension.h"
+#include "../utilities/physics/Position.h"
+#include "../utilities/wrappers/SDLWindowWrapper.h"
 
 
 

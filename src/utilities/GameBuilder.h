@@ -14,7 +14,7 @@
 #include <string>
 
 #include "GameLogger.h"
-#include "Dimension.h"
+#include "physics/Dimension.h"
 
 
 class GameBuilder {
