@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.h
 // Author     		: Thomas Hooks
-// Last Modified	: 04/04/2020
+// Last Modified	: 04/05/2020
 //============================================================================
 
 
@@ -96,6 +96,7 @@ public:
 	void markOver();
 
 
+
 	// @return	Gets this game's logger
 	class GameLogger& getLogger();
 
@@ -103,6 +104,11 @@ public:
 
 	// @return	Gets this game's renderer
 	class RendererManager& getRenderManager();
+
+
+
+	// @return	Gets this game's audio manager
+	class AudioManager& getMixer();
 
 
 
@@ -156,6 +162,8 @@ private:
 	mutable std::unique_ptr<class GameLogger> logger;
 
 	std::unique_ptr<class RendererManager> renderManager;
+
+	std::unique_ptr<class AudioManager> audioManager;
 
 	std::unique_ptr<class MapManager> worldManager;
 

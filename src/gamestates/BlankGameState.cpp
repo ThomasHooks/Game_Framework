@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: BlankGameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 04/04/2020
+// Last Modified	: 04/05/2020
 //============================================================================
 
 
@@ -14,6 +14,7 @@
 #include "../managers/RendererManager.h"
 #include "../managers/EntityManager.h"
 #include "../managers/MapManager.h"
+#include "../managers/AudioManager.h"
 #include "../entities/PlayerEntity.h"
 #include "../world/TileMap.h"
 #include "../utilities/GameCamera.h"
@@ -35,6 +36,8 @@ BlankGameState::BlankGameState(class Game *Game, int StateID)
 	getRenderer().registerTexture("mario", "./data/gfx/Mario.png", tileDim);
 	getRenderer().registerTexture("tiletest", "./data/gfx/tile_test.png", tileDim);
 	getRenderer().setScale(2.0f);
+
+	game->getMixer().registerSFX("hit01", "./data/sfx/hit01.wav");
 
 	getEntities().registerEntity("mario", new EntityBuilder<PlayerEntity>());
 	this->player = getEntities().spawn("mario", Position(128.0, 224.0), EnumSide::RIGHT);
@@ -87,6 +90,9 @@ void BlankGameState::onInputEvent() {
 	}
 	else if(state[SDL_SCANCODE_S]) {
 		player->updateVel(Position(0.0, 576.0), 0.93f, getTimer().getDelta());
+	}
+	else if(state[SDL_SCANCODE_SPACE]) {
+		game->getMixer().playSFX("hit01");
 	}
 
 	if(state[SDL_SCANCODE_A]) {

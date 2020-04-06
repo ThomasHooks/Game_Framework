@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: Game.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 04/04/2020
+// Last Modified	: 04/05/2020
 //============================================================================
 
 
@@ -15,6 +15,7 @@
 #include "managers/RendererManager.h"
 #include "managers/EntityManager.h"
 #include "managers/MapManager.h"
+#include "managers/AudioManager.h"
 #include "world/TileMap.h"
 #include "utilities/GameLogger.h"
 #include "utilities/GameCamera.h"
@@ -32,12 +33,15 @@ Game::Game()
 
 	this->logger = std::make_unique<GameLogger>(EnumLogLevel::TRACE);
 	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
+	this->audioManager = std::make_unique<AudioManager>(this->logger.get());
 	this->worldManager = std::make_unique<MapManager>(this->logger.get());
 	this->entityManager = std::make_unique<EntityManager>(this->logger.get());
 	this->timer = std::make_unique<GameTimer>();
 
 	getLogger().message(EnumLogLevel::INFO, "Initializing SDL", EnumLogOutput::TXT_FILE);
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+
+	getMixer().init();
 
 	const int startingStateID = 0;
 	addState(new BlankGameState(this, startingStateID));
@@ -46,20 +50,20 @@ Game::Game()
 
 
 /*
- * @param	title  				The title of the window
+ * @param	titleIn The title of the window
  *
- * @param	Window_Height		The height of the window measured in pixels
+ * @param	windowHeight The height of the window measured in pixels
  *
- * @param 	Window_Width		The width of the window measured in pixels
+ * @param 	windowWidth The width of the window measured in pixels
  *
- * @param 	flag				The flags for the window, mask of any of the following:
- *               				::SDL_WINDOW_FULLSCREEN,    ::SDL_WINDOW_OPENGL,
- *               				::SDL_WINDOW_HIDDEN,        ::SDL_WINDOW_BORDERLESS,
- *               				::SDL_WINDOW_RESIZABLE,     ::SDL_WINDOW_MAXIMIZED,
- *               				::SDL_WINDOW_MINIMIZED,     ::SDL_WINDOW_INPUT_GRABBED,
- *               				::SDL_WINDOW_ALLOW_HIGHDPI, ::SDL_WINDOW_VULKAN.
+ * @param 	flag The flags for the window, mask of any of the following:
+ *               ::SDL_WINDOW_FULLSCREEN,    ::SDL_WINDOW_OPENGL,
+ *               ::SDL_WINDOW_HIDDEN,        ::SDL_WINDOW_BORDERLESS,
+ *               ::SDL_WINDOW_RESIZABLE,     ::SDL_WINDOW_MAXIMIZED,
+ *               ::SDL_WINDOW_MINIMIZED,     ::SDL_WINDOW_INPUT_GRABBED,
+ *               ::SDL_WINDOW_ALLOW_HIGHDPI, ::SDL_WINDOW_VULKAN.
  *
- *               			See "https://wiki.libsdl.org/SDL_WindowFlags" for more window flags
+ *               See "https://wiki.libsdl.org/SDL_WindowFlags" for more window flags
  *
  *
  * Constructor for the game engine class that create a window defined by the caller, and sets SDL flags
@@ -71,6 +75,7 @@ Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32
 
 	this->logger = std::make_unique<GameLogger>(EnumLogLevel::TRACE);
 	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
+	this->audioManager = std::make_unique<AudioManager>(this->logger.get());
 	this->worldManager = std::make_unique<MapManager>(this->logger.get());
 	this->entityManager = std::make_unique<EntityManager>(this->logger.get());
 	this->timer = std::make_unique<GameTimer>();
@@ -79,6 +84,7 @@ Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	initWindow(titleIn, windowWidth, windowHeight, flags);
+	getMixer().init();
 
 	const int INITSTATEID = 0;
 	addState(new BlankGameState(this, INITSTATEID));
@@ -218,6 +224,13 @@ GameLogger& Game::getLogger() {
 // @return	Gets this game's renderer
 RendererManager& Game::getRenderManager() {
 	return *this->renderManager.get();
+}
+
+
+
+// @return	Gets this game's audio manager
+AudioManager& Game::getMixer() {
+	return *this->audioManager.get();
 }
 
 
