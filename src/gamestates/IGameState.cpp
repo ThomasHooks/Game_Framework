@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IGameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 04/04/2020
+// Last Modified	: 04/06/2020
 //============================================================================
 
 
@@ -12,6 +12,7 @@
 #include "../managers/RendererManager.h"
 #include "../managers/EntityManager.h"
 #include "../managers/MapManager.h"
+#include "../managers/AudioManager.h"
 #include "../world/TileMap.h"
 #include "../utilities/GameLogger.h"
 #include "../utilities/GameCamera.h"
@@ -46,6 +47,13 @@ class MapManager& IGameState::getWorlds() {
 //Gets the Renderer
 class RendererManager& IGameState::getRenderer() {
 	return this->game->getRenderManager();
+}
+
+
+
+//Gets the Audio Manager
+class AudioManager& IGameState::getMixer() {
+	return this->game->getMixer();
 }
 
 

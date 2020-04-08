@@ -37,7 +37,8 @@ BlankGameState::BlankGameState(class Game *Game, int StateID)
 	getRenderer().registerTexture("tiletest", "./data/gfx/tile_test.png", tileDim);
 	getRenderer().setScale(2.0f);
 
-	game->getMixer().registerSFX("hit01", "./data/sfx/hit01.wav");
+	getMixer().registerSample("hit01", "./data/sfx/hit01.wav");
+	getMixer().setSampleVolume("hit01", 32);
 
 	getEntities().registerEntity("mario", new EntityBuilder<PlayerEntity>());
 	this->player = getEntities().spawn("mario", Position(128.0, 224.0), EnumSide::RIGHT);
@@ -73,6 +74,10 @@ void BlankGameState::onInputEvent() {
 				//Escape has been pressed by user
 				game->markOver();
 				break;
+
+			case SDLK_SPACE:
+				getMixer().playSample("hit01", 0);
+				break;
 			}
 		}
 		break;
@@ -90,9 +95,6 @@ void BlankGameState::onInputEvent() {
 	}
 	else if(state[SDL_SCANCODE_S]) {
 		player->updateVel(Position(0.0, 576.0), 0.93f, getTimer().getDelta());
-	}
-	else if(state[SDL_SCANCODE_SPACE]) {
-		game->getMixer().playSFX("hit01");
 	}
 
 	if(state[SDL_SCANCODE_A]) {

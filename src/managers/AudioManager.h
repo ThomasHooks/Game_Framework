@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: AudioManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: Apr 5, 2020
+// Last Modified	: Apr 7, 2020
 //============================================================================
 
 
@@ -31,11 +31,12 @@ public:
 
 
 	/*
-	 * @param	frequency
+	 * @param	frequency Output sampling frequency in samples per second
 	 *
-	 * @param	format
+	 * @param	format Output sample format
 	 *
-	 * @param	channels
+	 * @param	channels Number of hardware channels
+	 * 					 2 for stereo and 1 for mono
 	 *
 	 * Initializes this Audio Manager
 	 */
@@ -44,105 +45,195 @@ public:
 
 
 	/*
-	 * @param	tag The ID of the sound
+	 * @param	tag The ID of the audio sample
 	 *
-	 * @param	location The location of the sound file
+	 * @param	location The location of the sample file
 	 * 					 supports WAVE, AIFF, RIFF, OGG, and VOC audio files
 	 *
-	 * @return	True if the sound was successfully registered
+	 * @return	True if the audio sample was successfully registered
 	 *
-	 * Register a sound to the Audio Manager
+	 * Register an audio sample to the Audio Manager
 	 */
-	bool registerSFX(const std::string &tag, const std::string &location);
+	bool registerSample(const std::string &tag, const std::string &location);
 
 
 
 	/*
-	 * @param	tag The ID of the texture to be deregistered
+	 * @param	tag The ID of the audio sample to be deregistered
 	 *
 	 * @return	True if tag was successfully deregistered
 	 *
-	 * Deregister the sound specified by its tag
+	 * Deregister the audio sample specified by its tag
 	 */
-	bool deregisterSFX(const std::string &tag);
+	bool deregisterSample(const std::string &tag);
 
 
 
-	//Deregister all sounds in the Audio Manager
-	void deregisterAllSFX();
+	//Deregister all audio samples in the Audio Manager
+	void deregisterAllSamples();
 
 
 
 	/*
-	 * @param	tag The ID of the sound
+	 * @param	tag The ID of the audio sample
 	 *
-	 * @param	channel	The channel that the sound is to be played on
+	 * @param	channel	The channel that the audio sample is to be played on
 	 * 					If -1 is passed it will pick the first open channel
 	 *
-	 * @param	loops The number of times the sound is to be played
+	 * @param	loops The number of times the audio sample is to be played
 	 * 				  If 0 is passed it will play once
 	 * 				  If -1 is passed it will loop infinitely
 	 *
-	 * @return The channel the sound is being played on
+	 * @return The channel the audio sample is being played on
 	 *
-	 * Plays a sound given by its tag
+	 * Plays an audio sample given by its tag
 	 */
-	int playSFX(const std::string &tag, int channel, int loops);
+	int playSample(const std::string &tag, int channel, int loops);
 
 
 
 	/*
-	 * @param	tag The ID of the sound
+	 * @param	tag The ID of the audio sample
 	 *
-	 * @param	loops The number of times the sound is to be played
+	 * @param	loops The number of times the audio sample is to be played
 	 * 				  If 0 is passed it will play once
 	 * 				  If -1 is passed it will loop infinitely
 	 *
-	 * @return The channel the sound is being played on
+	 * @return The channel the audio sample is being played on
 	 *
-	 * Plays a sound given by its tag
+	 * Plays an audio sample given by its tag
 	 */
-	int playSFX(const std::string &tag, int loops);
+	int playSample(const std::string &tag, int loops);
 
 
 
 	/*
-	 * @param	tag The ID of the sound
+	 * @param	tag The ID of the audio sample
 	 *
-	 * @return The channel the sound is being played on
+	 * @return The channel the audio sample is being played on
 	 *
-	 * Plays a sound given by its tag once
+	 * Plays an audio sample given by its tag once
 	 */
-	int playSFX(const std::string &tag);
+	int playSample(const std::string &tag);
 
 
 
 	/*
-	 * @param	tag The ID of the sound
+	 * @param	tag The ID of the audio sample
 	 *
-	 * @param	channel	The channel that the sound is to be played on
+	 * @param	channel	The channel that the audio sample is to be played on
 	 * 					If -1 is passed it will pick the first open channel
 	 *
-	 * @param	ticks The amount of time the sound is played in millisecond
+	 * @param	ticks The amount of time the audio sample is played in millisecond
 	 *
-	 * @return The channel the sound is being played on
+	 * @return The channel the audio sample is being played on
 	 *
-	 * Plays a sound given by its tag for a certain amount of time
+	 * Plays an audio sample given by its tag for a certain amount of time
 	 */
-	int playSFX(const std::string &tag, int channel, unsigned int ticks);
+	int playSampleTimed(const std::string &tag, int channel, unsigned int ticks);
 
 
 
 	/*
-	 * @param	tag The ID of the sound
+	 * @param	tag The ID of the audio sample
 	 *
-	 * @param	ticks The amount of time the sound is played in millisecond
+	 * @param	ticks The amount of time the sample is played in millisecond
 	 *
-	 * @return The channel the sound is being played on
+	 * @return The channel the audio sample is being played on
 	 *
-	 * Plays a sound given by its tag for a certain amount of time
+	 * Plays an audio sample given by its tag for a certain amount of time
 	 */
-	int playSFX(const std::string &tag, unsigned int ticks);
+	int playSampleTimed(const std::string &tag, unsigned int ticks);
+
+
+
+	/*
+	 * @param	tag The ID of the audio sample
+	 *
+	 * @param	volume The volume of the audio sample ranging from 0 to 128
+	 *
+	 * Sets the volume that the given audio sample will be played at
+	 */
+	void setSampleVolume(const std::string &tag, int volumeIn);
+
+
+
+	/*
+	 * @param	channel The ID of the channel
+	 *
+	 * @param	volume The volume of the channel ranging from 0 to 128
+	 *
+	 * Sets the volume that the given channel will be played at
+	 */
+	void setChannelVolume(int channel, int volumeIn);
+
+
+
+	/*
+	 * @param	channel The ID of the channel
+	 *
+	 * Gets the volume of the given channel
+	 */
+	int getChannelVolume(int channel) const;
+
+
+
+	/*
+	 * @param	channel The ID of the channel
+	 *
+	 * Stops the given channel
+	 */
+	void stopChannel(int channel);
+
+
+
+	/*
+	 * @param	channel The ID of the channel
+	 *
+	 * @param	ticks The amount of time in milliseconds
+	 * 				  until the channel is stopped
+	 *
+	 * Stops the given channel
+	 */
+	void stopChannel(int channel, int ticks);
+
+
+
+	/*
+	 * @param	channel The ID of the channel
+	 *
+	 * Pauses the given channel
+	 * only channels that are currently playing can be paused
+	 */
+	void pauseChannel(int channel);
+
+
+
+	/*
+	 * @param	channel The ID of the channel
+	 *
+	 * Unpause the given channel
+	 * only channels that are currently paused can be unpaused
+	 */
+	void unpauseChannel(int channel);
+
+
+
+	/*
+	 * @param	channel The ID of the channel
+	 *
+	 * Checks if the given channel is playing
+	 */
+	bool isChannelPlaying(int channel) const;
+
+
+
+	/*
+	 * @param	channel The ID of the channel
+	 *
+	 * Checks if the given channel is paused
+	 */
+	bool isChannelPaused(int channel) const;
 
 
 
@@ -151,19 +242,21 @@ protected:
 	/*
 	 * @nullable
 	 *
-	 * @return	Pointer to the sound wrapper or null if the tag cannot be found
+	 * @return	Pointer to the audio sample wrapper or null if the tag cannot be found
 	 */
-	class SDLMixChunkWrapper* getSound(const std::string &tag);
+	class SDLMixChunkWrapper* getSample(const std::string &tag);
 
 
 
 private:
 
+	const int NUMBEROFCHANNELS = 16;
+
 	class GameLogger *logger;
 
 	bool hasBeenInit;
 
-	std::unordered_map<std::string, std::unique_ptr<class SDLMixChunkWrapper>> sounds;
+	std::unordered_map<std::string, std::unique_ptr<class SDLMixChunkWrapper>> samples;
 };
 
 

@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: IGameState.h
 // Author     		: Thomas Hooks
-// Last Modified	: 04/04/2020
+// Last Modified	: 04/06/2020
 //============================================================================
 
 
@@ -69,8 +69,13 @@ protected:
 
 
 
-	//Gets the Renderer
+	//Gets the Renderer Manager
 	class RendererManager& getRenderer();
+
+
+
+	//Gets the Audio Manager
+	class AudioManager& getMixer();
 
 
 
