@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: BlankGameState.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: 04/05/2020
+// Last Modified	: 04/10/2020
 //============================================================================
 
 
@@ -38,7 +38,7 @@ BlankGameState::BlankGameState(class Game *Game, int StateID)
 	getRenderer().setScale(2.0f);
 
 	getMixer().registerSample("hit01", "./data/sfx/hit01.wav");
-	getMixer().setSampleVolume("hit01", 32);
+	getMixer().setSampleVolume("hit01", 0.75f);
 
 	getEntities().registerEntity("mario", new EntityBuilder<PlayerEntity>());
 	this->player = getEntities().spawn("mario", Position(128.0, 224.0), EnumSide::RIGHT);
@@ -76,7 +76,7 @@ void BlankGameState::onInputEvent() {
 				break;
 
 			case SDLK_SPACE:
-				getMixer().playSample("hit01", 0);
+				getMixer().playSample(*this->game->getCamera(), Position(1000.0, 320.0), "hit01", 0.25f);
 				break;
 			}
 		}

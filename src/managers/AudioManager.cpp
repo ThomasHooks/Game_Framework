@@ -1,15 +1,20 @@
 //============================================================================
 // Name       		: AudioManager.cpp
 // Author     		: Thomas Hooks
-// Last Modified	: Apr 7, 2020
+// Last Modified	: Apr 10, 2020
 //============================================================================
 
 
 
 
+#include <cmath>
+
 #include "SDL_mixer.h"
+
 #include "AudioManager.h"
 #include "../utilities/GameLogger.h"
+#include "../utilities/GameCamera.h"
+#include "../utilities/physics/Position.h"
 #include "../utilities/wrappers/SDLMixChunkWrapper.h"
 
 
@@ -164,61 +169,12 @@ void AudioManager::deregisterAllSamples() {
 /*
  * @param	tag The ID of the audio sample
  *
- * @param	channel	The channel that the audio sample is to be played on
- * 					If -1 is passed it will pick the first open channel
- *
- * @param	loops The number of times the audio sample is to be played
- * 				  If 0 is passed it will play once
- * 				  If -1 is passed it will loop infinitely
- *
- * @return The channel the audio sample is being played on
- *
- * Plays an audio sample given by its tag
- */
-int AudioManager::playSample(const std::string &tag, int channel, int loops) {
-
-	if(!this->hasBeenInit) {
-		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot play sample!", EnumLogOutput::TXT_FILE);
-		return -1;
-	}
-
-	SDLMixChunkWrapper *sound = getSample(tag);
-	if(sound == nullptr) {
-		logger->message(EnumLogLevel::ERROR, "Cannot play sample, '" + tag + "' cannot be found!", EnumLogOutput::TXT_FILE);
-		return -1;
-	}
-
-	return Mix_PlayChannel(channel, sound->get(), loops);
-}
-
-
-
-/*
- * @param	tag The ID of the audio sample
- *
- * @param	loops The number of times the audio sample is to be played
- * 				  If 0 is passed it will play once
- * 				  If -1 is passed it will loop infinitely
- *
- * @return The channel the audio sample is being played on
- *
- * Plays an audio sample given by its tag
- */
-int AudioManager::playSample(const std::string &tag, int loops) {
-	return playSample(tag, -1, loops);
-}
-
-
-
-/*
- * @param	tag The ID of the audio sample
- *
- * @return The channel the audio sample is being played on
+ * @return	The channel the audio sample is being played on or -1 on error
  *
  * Plays an audio sample given by its tag once
  */
 int AudioManager::playSample(const std::string &tag) {
-	return playSample(tag, -1, 0);
+	return playSample(tag, -1, 0, -1);
 }
 
 
@@ -226,29 +182,38 @@ int AudioManager::playSample(const std::string &tag) {
 /*
  * @param	tag The ID of the audio sample
  *
- * @param	channel	The channel that the audio sample is to be played on
- * 					If -1 is passed it will pick the first open channel
+ * @param	loops The number of times the audio sample is to be played
+ * 				  If 0 is passed it will play once
+ * 				  If -1 is passed it will loop infinitely
  *
- * @param	ticks The amount of time the audio sample is played in millisecond
+ * @return	The channel the audio sample is being played on or -1 on error
  *
- * @return The channel the audio sample is being played on
- *
- * Plays an audio sample given by its tag for a certain amount of time
+ * Plays an audio sample given by its tag
  */
-int AudioManager::playSampleTimed(const std::string &tag, int channel, unsigned int ticks) {
+int AudioManager::playSample(const std::string &tag, int loops) {
+	return playSample(tag, -1, loops, -1);
+}
 
-	if(!this->hasBeenInit) {
-		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot play sample!", EnumLogOutput::TXT_FILE);
-		return -1;
-	}
 
-	SDLMixChunkWrapper *sample = getSample(tag);
-	if(sample == nullptr) {
-		logger->message(EnumLogLevel::ERROR, "Cannot play sample, '" + tag + "' cannot be found!", EnumLogOutput::TXT_FILE);
-		return -1;
-	}
 
-	return Mix_PlayChannelTimed(channel, sample->get(), -1, ticks);
+/*
+ * @param	tag The ID of the audio sample
+ *
+ * @param	loops The number of times the audio sample is to be played
+ * 				  If 0 is passed it will play once
+ * 				  If -1 is passed it will loop infinitely
+ *
+ * @param	volume The volume the audio sample will be played at ranging from 0.0 to 1.0
+ *
+ * @return	The channel the audio sample is being played on or -1 on error
+ *
+ * Plays an audio sample given by its tag
+ */
+int AudioManager::playSample(const std::string &tag, int loops, float volume) {
+
+	int channel = playSample(tag, -1, loops, -1);
+	if(channel != -1) setChannelVolume(channel, volume);
+	return channel;
 }
 
 
@@ -258,12 +223,12 @@ int AudioManager::playSampleTimed(const std::string &tag, int channel, unsigned 
  *
  * @param	ticks The amount of time the sample is played in millisecond
  *
- * @return The channel the audio sample is being played on
+ * @return	The channel the audio sample is being played on or -1 on error
  *
  * Plays an audio sample given by its tag for a certain amount of time
  */
-int AudioManager::playSampleTimed(const std::string &tag, unsigned int ticks) {
-	return playSample(tag, -1, ticks);
+int AudioManager::playSample(const std::string &tag, uint32_t ticks) {
+	return playSample(tag, -1, -1, ticks);
 }
 
 
@@ -271,11 +236,93 @@ int AudioManager::playSampleTimed(const std::string &tag, unsigned int ticks) {
 /*
  * @param	tag The ID of the audio sample
  *
- * @param	volume The volume of the audio sample ranging from 0 to 128
+ * @param	ticks The amount of time the sample is played in millisecond
+ *
+ * @param	volume The volume the audio sample will be played at ranging from 0.0 to 1.0
+ *
+ * @return	The channel the audio sample is being played on or -1 on error
+ *
+ * Plays an audio sample given by its tag for a certain amount of time
+ */
+int AudioManager::playSample(const std::string &tag, uint32_t ticks, float volume) {
+
+	int channel = playSample(tag, -1, -1, ticks);
+	if(channel != -1) setChannelVolume(channel, volume);
+	return channel;
+}
+
+
+
+/*
+ * @param	tag The ID of the audio sample
+ *
+ * @param	volume The volume the audio sample will be played at ranging from 0.0 to 1.0
+ *
+ * @return	The channel the audio sample is being played on or -1 on error
+ *
+ * Plays an audio sample given by its tag once at the given volume
+ */
+int AudioManager::playSample(const std::string &tag, float volume) {
+
+	int channel = playSample(tag, -1, 0, -1);
+	if(channel != -1) setChannelVolume(channel, volume);
+	return channel;
+}
+
+
+
+/*
+ * @param	camera Reference to the Game's Camera
+ *
+ * @param	origin Coordinates where the sample is being played from
+ *
+ * @param	tag The ID of the audio sample
+ *
+ * @param	volume The volume of the audio sample ranging from 0.0 to 1.0
+ *
+ * @return	The channel the audio sample is being played on or -1 on error
+ *
+ * Plays an audio sample given by its tag once at the given position and volume
+ */
+int AudioManager::playSample(const GameCamera &camera, const Position &origin, const std::string &tag, float volume) {
+
+	int channel = playSample(tag, -1, 0, -1);
+	if(channel != -1) {
+
+		Position listener(camera.getPos().xPos(), camera.getPos().yPos());
+
+		/*
+		 * The angle ranges from 0 degrees to 360 degrees
+		 * 0 = directly in front
+		 * 90 = directly to the right
+		 * 180 = directly behind
+		 * 270 = directly to the left
+		 */
+		double theta = std::atan2(listener.yPos() - origin.yPos(), origin.xPos() - listener.xPos());
+		const double pi = 3.14159;
+		Sint16 angle = 90 - static_cast<Sint16>(theta * (180.0/pi) + 0.5);
+
+		//The distance factor ranges from 0(near) to 255(far)
+		double distance = std::sqrt(std::pow(listener.xPos() - origin.xPos(), 2.0) + std::pow(listener.yPos() - origin.yPos(), 2.0));
+		Uint8 distanceFactor = static_cast<Uint8>(std::abs(distance/15.938) + 0.5);
+		if(distanceFactor > 255) distanceFactor = 255;
+
+		Mix_SetPosition(channel, angle, distanceFactor);
+		setChannelVolume(channel, volume);
+	}
+	return channel;
+}
+
+
+
+/*
+ * @param	tag The ID of the audio sample
+ *
+ * @param	volume The volume of the audio sample ranging from 0.0 to 1.0
  *
  * Sets the volume that the given audio sample will be played at
  */
-void AudioManager::setSampleVolume(const std::string &tag, int volumeIn) {
+void AudioManager::setSampleVolume(const std::string &tag, float volume) {
 
 	if(!this->hasBeenInit) {
 		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot set volume!", EnumLogOutput::TXT_FILE);
@@ -288,25 +335,20 @@ void AudioManager::setSampleVolume(const std::string &tag, int volumeIn) {
 		return;
 	}
 
-	int volume;
-	volumeIn < 0 ? volume = 0 : volume = volumeIn;
-	Mix_VolumeChunk(sample->get(), volume);
+	std::abs(volume) > 1.0f ? Mix_VolumeChunk(sample->get(), 128) : Mix_VolumeChunk(sample->get(), static_cast<int>(128.0f * std::abs(volume) + 0.5f));
 }
 
 
 
 /*
- * @param	channel The ID of the channel
+ * @param	channel The ID of the channel, passing -1 will set all channels
  *
- * @param	volume The volume of the channel ranging from 0 to 128
+ * @param	volume The volume of the channel ranging from 0.0 to 1.0
  *
  * Sets the volume that the given channel will be played at
  */
-void AudioManager::setChannelVolume(int channel, int volumeIn) {
-
-	int volume;
-	volumeIn < 0 ? volume = 0 : volume = volumeIn;
-	Mix_Volume(channel, volume);
+void AudioManager::setChannelVolume(int channel, float volume) {
+	std::abs(volume) > 1.0f ? Mix_Volume(channel, 128) : Mix_Volume(channel, static_cast<int>(128.0f * std::abs(volume) + 0.5f));
 }
 
 
@@ -388,6 +430,40 @@ bool AudioManager::isChannelPlaying(int channel) const {
  */
 bool AudioManager::isChannelPaused(int channel) const {
 	return Mix_Paused(channel);
+}
+
+
+
+/*
+ * @param	tag The ID of the audio sample
+ *
+ * @param	channel	The channel that the audio sample is to be played on
+ * 					If -1 is passed it will pick the first open channel
+ *
+ * @param	loops The number of times the audio sample is to be played
+ * 				  If 0 is passed it will play once
+ * 				  If -1 is passed it will loop infinitely
+ *
+ * @param	ticks The amount of time the sample is played in millisecond
+ *
+ * @return The channel the audio sample is being played on or -1 on error
+ *
+ * Plays an audio sample given by its tag until it has played for either the given number of loops or ticks
+ */
+int AudioManager::playSample(const std::string &tag, int channel, int loops, uint32_t ticks) {
+
+	if(!this->hasBeenInit) {
+		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot play sample!", EnumLogOutput::TXT_FILE);
+		return -1;
+	}
+
+	SDLMixChunkWrapper *sample = getSample(tag);
+	if(sample == nullptr) {
+		logger->message(EnumLogLevel::ERROR, "Cannot play sample, '" + tag + "' cannot be found!", EnumLogOutput::TXT_FILE);
+		return -1;
+	}
+
+	return Mix_PlayChannelTimed(channel, sample->get(), loops, ticks);
 }
 
 

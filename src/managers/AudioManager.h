@@ -1,7 +1,7 @@
 //============================================================================
 // Name       		: AudioManager.h
 // Author     		: Thomas Hooks
-// Last Modified	: Apr 7, 2020
+// Last Modified	: Apr 10, 2020
 //============================================================================
 
 
@@ -77,40 +77,7 @@ public:
 	/*
 	 * @param	tag The ID of the audio sample
 	 *
-	 * @param	channel	The channel that the audio sample is to be played on
-	 * 					If -1 is passed it will pick the first open channel
-	 *
-	 * @param	loops The number of times the audio sample is to be played
-	 * 				  If 0 is passed it will play once
-	 * 				  If -1 is passed it will loop infinitely
-	 *
-	 * @return The channel the audio sample is being played on
-	 *
-	 * Plays an audio sample given by its tag
-	 */
-	int playSample(const std::string &tag, int channel, int loops);
-
-
-
-	/*
-	 * @param	tag The ID of the audio sample
-	 *
-	 * @param	loops The number of times the audio sample is to be played
-	 * 				  If 0 is passed it will play once
-	 * 				  If -1 is passed it will loop infinitely
-	 *
-	 * @return The channel the audio sample is being played on
-	 *
-	 * Plays an audio sample given by its tag
-	 */
-	int playSample(const std::string &tag, int loops);
-
-
-
-	/*
-	 * @param	tag The ID of the audio sample
-	 *
-	 * @return The channel the audio sample is being played on
+	 * @return	The channel the audio sample is being played on or -1 on error
 	 *
 	 * Plays an audio sample given by its tag once
 	 */
@@ -121,16 +88,32 @@ public:
 	/*
 	 * @param	tag The ID of the audio sample
 	 *
-	 * @param	channel	The channel that the audio sample is to be played on
-	 * 					If -1 is passed it will pick the first open channel
+	 * @param	loops The number of times the audio sample is to be played
+	 * 				  If 0 is passed it will play once
+	 * 				  If -1 is passed it will loop infinitely
 	 *
-	 * @param	ticks The amount of time the audio sample is played in millisecond
+	 * @return	The channel the audio sample is being played on or -1 on error
 	 *
-	 * @return The channel the audio sample is being played on
-	 *
-	 * Plays an audio sample given by its tag for a certain amount of time
+	 * Plays an audio sample given by its tag
 	 */
-	int playSampleTimed(const std::string &tag, int channel, unsigned int ticks);
+	int playSample(const std::string &tag, int loops);
+
+
+
+	/*
+	 * @param	tag The ID of the audio sample
+	 *
+	 * @param	loops The number of times the audio sample is to be played
+	 * 				  If 0 is passed it will play once
+	 * 				  If -1 is passed it will loop infinitely
+	 *
+	 * @param	volume The volume the audio sample will be played at ranging from 0.0 to 1.0
+	 *
+	 * @return	The channel the audio sample is being played on or -1 on error
+	 *
+	 * Plays an audio sample given by its tag
+	 */
+	int playSample(const std::string &tag, int loops, float volume);
 
 
 
@@ -139,11 +122,59 @@ public:
 	 *
 	 * @param	ticks The amount of time the sample is played in millisecond
 	 *
-	 * @return The channel the audio sample is being played on
+	 * @return	The channel the audio sample is being played on or -1 on error
 	 *
 	 * Plays an audio sample given by its tag for a certain amount of time
 	 */
-	int playSampleTimed(const std::string &tag, unsigned int ticks);
+	int playSample(const std::string &tag, uint32_t ticks);
+
+
+
+	/*
+	 * @param	tag The ID of the audio sample
+	 *
+	 * @param	ticks The amount of time the sample is played in millisecond
+	 *
+	 * @param	volume The volume the audio sample will be played at ranging from 0.0 to 1.0
+	 *
+	 * @return	The channel the audio sample is being played on or -1 on error
+	 *
+	 * Plays an audio sample given by its tag for a certain amount of time
+	 */
+	int playSample(const std::string &tag, uint32_t ticks, float volume);
+
+
+
+	/*
+	 * @param	tag The ID of the audio sample
+	 *
+	 * @param	volume The volume the audio sample will be played at ranging from 0.0 to 1.0
+	 *
+	 * @return	The channel the audio sample is being played on or -1 on error
+	 *
+	 * Plays an audio sample given by its tag once at the given volume
+	 */
+	int playSample(const std::string &tag, float volume);
+
+
+
+	/*
+	 * @param	camera Reference to the Game's Camera
+	 *
+	 * @param	origin Coordinates where the sample is being played from
+	 *
+	 * @param	tag The ID of the audio sample
+	 *
+	 * @param	volume The volume of the audio sample ranging from 0.0 to 1.0
+	 *
+	 * @return	The channel the audio sample is being played on or -1 on error
+	 *
+	 * Plays an audio sample given by its tag once at the given position and volume
+	 */
+	int playSample(const class GameCamera &camera,
+			const class Position &origin,
+			const std::string &tag,
+			float volume);
 
 
 
@@ -154,18 +185,18 @@ public:
 	 *
 	 * Sets the volume that the given audio sample will be played at
 	 */
-	void setSampleVolume(const std::string &tag, int volumeIn);
+	void setSampleVolume(const std::string &tag, float volume);
 
 
 
 	/*
-	 * @param	channel The ID of the channel
+	 * @param	channel The ID of the channel, passing -1 will set all channels
 	 *
-	 * @param	volume The volume of the channel ranging from 0 to 128
+	 * @param	volume The volume of the channel ranging from 0.0 to 1.0
 	 *
 	 * Sets the volume that the given channel will be played at
 	 */
-	void setChannelVolume(int channel, int volumeIn);
+	void setChannelVolume(int channel, float volume);
 
 
 
@@ -238,6 +269,26 @@ public:
 
 
 protected:
+
+	/*
+	 * @param	tag The ID of the audio sample
+	 *
+	 * @param	channel	The channel that the audio sample is to be played on
+	 * 					If -1 is passed it will pick the first open channel
+	 *
+	 * @param	loops The number of times the audio sample is to be played
+	 * 				  If 0 is passed it will play once
+	 * 				  If -1 is passed it will loop infinitely
+	 *
+	 * @param	ticks The amount of time the sample is played in millisecond
+	 *
+	 * @return The channel the audio sample is being played on or -1 on error
+	 *
+	 * Plays an audio sample given by its tag until it has played for either the given number of loops or ticks
+	 */
+	int playSample(const std::string &tag, int channel, int loops, uint32_t ticks);
+
+
 
 	/*
 	 * @nullable
