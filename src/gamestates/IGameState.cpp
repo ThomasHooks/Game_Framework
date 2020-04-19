@@ -8,11 +8,11 @@
 
 
 #include "IGameState.h"
+
+#include "../audiomixer/AudioMixer.h"
+#include "../entities/EntityManager.h"
 #include "../Game.h"
-#include "../managers/RendererManager.h"
-#include "../managers/EntityManager.h"
-#include "../managers/MapManager.h"
-#include "../managers/AudioManager.h"
+#include "../renderer/Renderer.h"
 #include "../world/TileMap.h"
 #include "../utilities/GameLogger.h"
 #include "../utilities/GameCamera.h"
@@ -20,6 +20,7 @@
 #include "../utilities/physics/Dimension.h"
 #include "../utilities/physics/Position.h"
 #include "../utilities/wrappers/SDLWindowWrapper.h"
+#include "../world/WorldStack.h"
 
 
 
@@ -38,21 +39,21 @@ class EntityManager& IGameState::getEntities() {
 
 
 //Gets the World Manager
-class MapManager& IGameState::getWorlds() {
-	return this->game->getWorldManager();
+class WorldStack& IGameState::getWorlds() {
+	return this->game->getWorldStack();
 }
 
 
 
 //Gets the Renderer
-class RendererManager& IGameState::getRenderer() {
+class Renderer& IGameState::getRenderer() {
 	return this->game->getRenderManager();
 }
 
 
 
 //Gets the Audio Manager
-class AudioManager& IGameState::getMixer() {
+class AudioMixer& IGameState::getMixer() {
 	return this->game->getMixer();
 }
 

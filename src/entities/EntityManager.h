@@ -19,8 +19,8 @@
 #include <memory>
 #include <string>
 
+#include "../utilities/Builder.hpp"
 #include "../utilities/physics/EnumSide.h"
-#include "Builder.h"
 
 
 
@@ -100,7 +100,7 @@ public:
 	 */
 	void drawAll(const class Position &cameraPos,
 			const struct Dimension &windowSize,
-			class RendererManager &renderer,
+			class Renderer &renderer,
 			bool renderAabb);
 
 

@@ -91,29 +91,29 @@ EnumEntityType IEntity::getType() const {
 
 
 //Checks if the Entity is passive
-bool IEntity::isPassive(void)const {
-	return this->type == EnumEntityType::PASSIVE ? true : false;
+bool IEntity::isPassive()const {
+	return this->type == EnumEntityType::PASSIVE;
 }
 
 
 
 //Checks if the Entity is neutral
-bool IEntity::isNeutral(void) const {
-	return this->type == EnumEntityType::NEUTRAL ? true : false;
+bool IEntity::isNeutral() const {
+	return this->type == EnumEntityType::NEUTRAL;
 }
 
 
 
 //Checks if the Entity is aggressive
-bool IEntity::isAggressive(void) const {
-	return this->type == EnumEntityType::AGGRESSIVE ? true : false;
+bool IEntity::isAggressive() const {
+	return this->type == EnumEntityType::AGGRESSIVE;
 }
 
 
 
 //Checks if the Entity is a player
-bool IEntity::isPlayer(void) const {
-	return this->type == EnumEntityType::PLAYER ? true : false;
+bool IEntity::isPlayer() const {
+	return this->type == EnumEntityType::PLAYER;
 }
 
 
@@ -161,8 +161,8 @@ void IEntity::teleport(const Position &posIn){
 
 
 //Checks if the Entity is moving
-bool IEntity::isMoving(void) const {
-	return this->vel + 0.5 > 0 ? true : false;
+bool IEntity::isMoving() const {
+	return this->vel + 0.5 > 0;
 }
 
 
@@ -186,7 +186,7 @@ void IEntity::setDirectionFacing(EnumSide facingIn){
  * Checks if the Entity has the given state
  */
 bool IEntity::hasCapability(const std::string &stateTag){
-	return this->states.count(stateTag) > 0 ? true : false;
+	return this->states.count(stateTag) > 0;
 }
 
 

@@ -10,18 +10,19 @@
 #include <SDL.h>
 
 #include "BlankGameState.h"
+
+#include "../audiomixer/AudioMixer.h"
+#include "../entities/EntityManager.h"
 #include "../Game.h"
-#include "../managers/RendererManager.h"
-#include "../managers/EntityManager.h"
-#include "../managers/MapManager.h"
-#include "../managers/AudioManager.h"
 #include "../entities/PlayerEntity.h"
+#include "../renderer/Renderer.h"
 #include "../world/TileMap.h"
 #include "../utilities/GameCamera.h"
 #include "../utilities/GameTimer.h"
 #include "../utilities/physics/Dimension.h"
 #include "../utilities/physics/Position.h"
 #include "../utilities/wrappers/SDLWindowWrapper.h"
+#include "../world/WorldStack.h"
 
 
 
@@ -59,7 +60,7 @@ void BlankGameState::onInputEvent() {
 
 	//Begin polling
 	SDL_Event event;
-	while(SDL_PollEvent(&event)){
+	while(SDL_PollEvent(&event)) {
 		switch(event.type){
 		case SDL_WINDOWEVENT_CLOSE:{
 			if(game->getWindow()->isOpen()){

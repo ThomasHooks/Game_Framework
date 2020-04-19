@@ -7,6 +7,8 @@
 
 
 
+#include "Renderer.h"
+
 #include <SDL.h>
 #include "SDL_image.h"
 
@@ -14,7 +16,6 @@
 #include <map>
 #include <memory>
 
-#include "RendererManager.h"
 #include "../utilities/GameLogger.h"
 #include "../utilities/physics/Dimension.h"
 #include "../utilities/physics/Position.h"
@@ -23,7 +24,7 @@
 
 
 
-RendererManager::RendererManager(class GameLogger *logger_ptr)
+Renderer::Renderer(class GameLogger *logger_ptr)
 	: hasBeenInit(false),
 	  scale(1.0f),
 	  logger(logger_ptr),
@@ -31,7 +32,7 @@ RendererManager::RendererManager(class GameLogger *logger_ptr)
 
 
 
-RendererManager::~RendererManager() {
+Renderer::~Renderer() {
 
 	logger->message(EnumLogLevel::INFO, "Stopping Renderer Manager", EnumLogOutput::TXT_FILE);
 	logger->message(EnumLogLevel::INFO, "Freeing SDL renderer", EnumLogOutput::TXT_FILE);
@@ -50,7 +51,7 @@ RendererManager::~RendererManager() {
  *
  * Initializes the Renderer Manager and must be called before using any other methods
  */
-void RendererManager::init(SDL_Window *windowIn){
+void Renderer::init(SDL_Window *windowIn){
 
 	if(!this->hasBeenInit) {
 		this->renderer = SDL_CreateRenderer(windowIn, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -72,7 +73,7 @@ void RendererManager::init(SDL_Window *windowIn){
  *
  * Register a texture to the renderer manager
  */
-bool RendererManager::registerTexture(const std::string &tag, const std::string &fileLocation, Dimension &tileSize){
+bool Renderer::registerTexture(const std::string &tag, const std::string &fileLocation, Dimension &tileSize){
 
 	if(!this->hasBeenInit) {
 		logger->message(EnumLogLevel::ERROR, "Cannot register textures, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
@@ -126,7 +127,7 @@ bool RendererManager::registerTexture(const std::string &tag, const std::string 
  *
  * Deregister the texture specified by the tag argument
  */
-bool RendererManager::deregisterTexture(const std::string &tag){
+bool Renderer::deregisterTexture(const std::string &tag){
 
 	if(hasBeenInit) {
 
@@ -151,7 +152,7 @@ bool RendererManager::deregisterTexture(const std::string &tag){
 
 
 //Deregister all textures in the Renderer Manager
-void RendererManager::deregisterAllTextures(){
+void Renderer::deregisterAllTextures(){
 
 	if(this->hasBeenInit) {
 
@@ -185,7 +186,7 @@ void RendererManager::deregisterAllTextures(){
  *
  * Sets the drawing color
  */
-bool RendererManager::setDrawColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha){
+bool Renderer::setDrawColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha){
 
 	if(this->hasBeenInit) {
 		SDL_SetRenderDrawColor(this->renderer, red, green, blue, alpha);
@@ -212,7 +213,7 @@ bool RendererManager::setDrawColor(uint8_t red, uint8_t green, uint8_t blue, uin
  *
  * Sets the given texture's color
  */
-bool RendererManager::setTextureColor(const std::string &tag, uint8_t red, uint8_t green, uint8_t blue){
+bool Renderer::setTextureColor(const std::string &tag, uint8_t red, uint8_t green, uint8_t blue){
 
 	if(this->hasBeenInit) {
 		SDL_SetTextureColorMod(this->getTexture(tag), red, green, blue);
@@ -235,7 +236,7 @@ bool RendererManager::setTextureColor(const std::string &tag, uint8_t red, uint8
  *
  * Sets the given texture's opacity
  */
-bool RendererManager::setTextureAlpha(const std::string &tag, uint8_t alpha){
+bool Renderer::setTextureAlpha(const std::string &tag, uint8_t alpha){
 
 	if(this->hasBeenInit) {
 		SDL_SetTextureAlphaMod(this->getTexture(tag), alpha);
@@ -258,7 +259,7 @@ bool RendererManager::setTextureAlpha(const std::string &tag, uint8_t alpha){
  *
  * Sets the given textures blend mode
  */
-bool RendererManager::setTextureBlendMode(const std::string &tag, EnumBlendMode blendMode){
+bool Renderer::setTextureBlendMode(const std::string &tag, RendererBlendMode blendMode){
 
 	if(!this->hasBeenInit) {
 		logger->message(EnumLogLevel::ERROR, "Cannot set texture blend mode, Renderer has not been initialized!", EnumLogOutput::TXT_FILE);
@@ -267,19 +268,19 @@ bool RendererManager::setTextureBlendMode(const std::string &tag, EnumBlendMode 
 
 	switch(blendMode) {
 
-	case EnumBlendMode::NONE:
+	case RendererBlendMode::NONE:
 		SDL_SetTextureBlendMode(this->getTexture(tag), SDL_BLENDMODE_NONE);
 		break;
 
-	case EnumBlendMode::BLEND:
+	case RendererBlendMode::BLEND:
 		SDL_SetTextureBlendMode(this->getTexture(tag), SDL_BLENDMODE_BLEND);
 		break;
 
-	case EnumBlendMode::ADD:
+	case RendererBlendMode::ADD:
 		SDL_SetTextureBlendMode(this->getTexture(tag), SDL_BLENDMODE_ADD);
 		break;
 
-	case EnumBlendMode::MOD:
+	case RendererBlendMode::MOD:
 		SDL_SetTextureBlendMode(this->getTexture(tag), SDL_BLENDMODE_MOD);
 		break;
 	}
@@ -294,7 +295,7 @@ bool RendererManager::setTextureBlendMode(const std::string &tag, EnumBlendMode 
  *
  * Clears the renderer and fill it in with the current draw color
  */
-bool RendererManager::clear(){
+bool Renderer::clear(){
 
 	if(this->hasBeenInit) {
 		SDL_RenderClear(this->renderer);
@@ -313,7 +314,7 @@ bool RendererManager::clear(){
  *
  * Presents what has been drawn to the renderer on the screen
  */
-bool RendererManager::present(){
+bool Renderer::present(){
 
 	if(this->hasBeenInit) {
 		SDL_RenderPresent(this->renderer);
@@ -332,7 +333,7 @@ bool RendererManager::present(){
  *
  * Draws a point at the given coordinates to the renderer
  */
-void RendererManager::drawPoint(const Position &pos){
+void Renderer::drawPoint(const Position &pos){
 
 	if(this->hasBeenInit) {
 		int code = SDL_RenderDrawPoint(this->renderer, pos.xPosN(), pos.yPosN());
@@ -354,7 +355,7 @@ void RendererManager::drawPoint(const Position &pos){
  *
  * Draws a line to the renderer
  */
-void RendererManager::drawLine(const class Position &startPos, const class Position &endPos){
+void Renderer::drawLine(const class Position &startPos, const class Position &endPos){
 
 	if(this->hasBeenInit) {
 		int code = SDL_RenderDrawLine(this->renderer,
@@ -383,7 +384,7 @@ void RendererManager::drawLine(const class Position &startPos, const class Posit
  *
  * Draws a rectangle to the renderer
  */
-void RendererManager::drawRect(const class Position &pos, const class Dimension &dim, bool fill){
+void Renderer::drawRect(const class Position &pos, const class Dimension &dim, bool fill){
 
 	if(this->hasBeenInit) {
 		SDL_Rect rect = {pos.xPosN(), pos.yPosN(), dim.width, dim.height};
@@ -416,7 +417,7 @@ void RendererManager::drawRect(const class Position &pos, const class Dimension 
  *
  * Draws a sprite given by tag to the renderer
  */
-void RendererManager::drawSprite(const std::string &tag,
+void Renderer::drawSprite(const std::string &tag,
 		const class Position &pos,
 		const class Position &cameraOffset,
 		const struct Dimension &spriteLocation,
@@ -466,7 +467,7 @@ void RendererManager::drawSprite(const std::string &tag,
  *
  * Draws a sprite given by tag to the renderer
  */
-void RendererManager::drawSprite(const std::string &tag,
+void Renderer::drawSprite(const std::string &tag,
 		const Position &pos,
 		const Position &cameraOffset,
 		const Dimension &spriteLocation,
@@ -482,7 +483,7 @@ void RendererManager::drawSprite(const std::string &tag,
  *
  * The new scale cannot be zero or negative, and if scaleIn is either it will default to 1.0
  */
-void RendererManager::setScale(float scaleIn){
+void Renderer::setScale(float scaleIn){
 	scaleIn <= 0.0f ? this->scale = 1.0f : this->scale = scaleIn;
 }
 
@@ -497,7 +498,7 @@ void RendererManager::setScale(float scaleIn){
  *
  * Gets the texture specified by the tag. If it doesn't find the texture it will return a null pointer
  */
-SDL_Texture* RendererManager::getTexture(const std::string &tag){
+SDL_Texture* Renderer::getTexture(const std::string &tag){
 
 	if(!this->hasBeenInit) return nullptr;
 
@@ -522,7 +523,7 @@ SDL_Texture* RendererManager::getTexture(const std::string &tag){
  *
  * Gets the tile width of the texture specified by the tag. If it doesn't find the texture it will return 0
  */
-int RendererManager::getTextureTileWidth(const std::string &tag){
+int Renderer::getTextureTileWidth(const std::string &tag){
 
 	if(!this->hasBeenInit) return 0;
 
@@ -544,7 +545,7 @@ int RendererManager::getTextureTileWidth(const std::string &tag){
  *
  * Gets the tile height of the texture specified by the tag. If it doesn't find the texture it will return 0
  */
-int RendererManager::getTextureTileHeight(const std::string &tag){
+int Renderer::getTextureTileHeight(const std::string &tag){
 
 	if(!this->hasBeenInit) return 0;
 
@@ -567,7 +568,7 @@ int RendererManager::getTextureTileHeight(const std::string &tag){
  * Gets a copy of  tile dimensions of the texture specified by the tag
  * if it doesn't find the texture it will return a size of (0, 0)
  */
-Dimension RendererManager::getTextureSize(const std::string &tag){
+Dimension Renderer::getTextureSize(const std::string &tag){
 	return !this->hasBeenInit ? Dimension() : Dimension(this->getTextureTileWidth(tag), this->getTextureTileHeight(tag));
 }
 

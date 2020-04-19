@@ -1,5 +1,5 @@
 //============================================================================
-// Name       		: Game.h
+// Name       		: Game
 // Author     		: Thomas Hooks
 // Last Modified	: 04/05/2020
 //============================================================================
@@ -14,6 +14,8 @@
 #include <string>
 #include <memory>
 #include <vector>
+
+
 
 
 class Game {
@@ -103,17 +105,17 @@ public:
 
 
 	// @return	Gets this game's renderer
-	class RendererManager& getRenderManager();
+	class Renderer& getRenderManager();
 
 
 
 	// @return	Gets this game's audio manager
-	class AudioManager& getMixer();
+	class AudioMixer& getMixer();
 
 
 
 	// @return	Gets this game's world manager
-	class MapManager& getWorldManager();
+	class WorldStack& getWorldStack();
 
 
 
@@ -161,11 +163,11 @@ private:
 
 	mutable std::unique_ptr<class GameLogger> logger;
 
-	std::unique_ptr<class RendererManager> renderManager;
+	std::unique_ptr<class Renderer> renderer;
 
-	std::unique_ptr<class AudioManager> audioManager;
+	std::unique_ptr<class AudioMixer> audioManager;
 
-	std::unique_ptr<class MapManager> worldManager;
+	std::unique_ptr<class WorldStack> worlds;
 
 	std::unique_ptr<class EntityManager> entityManager;
 

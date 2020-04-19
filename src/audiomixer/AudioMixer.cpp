@@ -1,5 +1,5 @@
 //============================================================================
-// Name       		: AudioManager.cpp
+// Name       		: AudioMixer
 // Author     		: Thomas Hooks
 // Last Modified	: Apr 10, 2020
 //============================================================================
@@ -11,7 +11,7 @@
 
 #include "SDL_mixer.h"
 
-#include "AudioManager.h"
+#include "AudioMixer.h"
 #include "../utilities/GameLogger.h"
 #include "../utilities/GameCamera.h"
 #include "../utilities/physics/Position.h"
@@ -20,7 +20,7 @@
 
 
 
-AudioManager::AudioManager(GameLogger *loggerPtr)
+AudioMixer::AudioMixer(GameLogger *loggerPtr)
 	: logger(loggerPtr),
 	  hasBeenInit(false) {
 
@@ -29,7 +29,7 @@ AudioManager::AudioManager(GameLogger *loggerPtr)
 
 
 
-AudioManager::~AudioManager() {
+AudioMixer::~AudioMixer() {
 
 	logger->message(EnumLogLevel::INFO, "Stopping Audio Manager", EnumLogOutput::TXT_FILE);
 	deregisterAllSamples();
@@ -56,7 +56,7 @@ AudioManager::~AudioManager() {
  *
  * Initializes this Audio Manager
  */
-bool AudioManager::init() {
+bool AudioMixer::init() {
 
 	if(!this->hasBeenInit) {
 		logger->message(EnumLogLevel::INFO, "Initializing Audio Manager", EnumLogOutput::TXT_FILE);
@@ -96,7 +96,7 @@ bool AudioManager::init() {
  *
  * Register an audio sample to the Audio Manager
  */
-bool AudioManager::registerSample(const std::string &tag, const std::string &location) {
+bool AudioMixer::registerSample(const std::string &tag, const std::string &location) {
 
 	if(!this->hasBeenInit) {
 		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot register samples!", EnumLogOutput::TXT_FILE);
@@ -131,7 +131,7 @@ bool AudioManager::registerSample(const std::string &tag, const std::string &loc
  *
  * Deregister the audio sample specified by its tag
  */
-bool AudioManager::deregisterSample(const std::string &tag) {
+bool AudioMixer::deregisterSample(const std::string &tag) {
 
 	if(!this->hasBeenInit) {
 		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot deregister samples!", EnumLogOutput::TXT_FILE);
@@ -147,7 +147,7 @@ bool AudioManager::deregisterSample(const std::string &tag) {
 
 
 //Deregister all audio samples in the Audio Manager
-void AudioManager::deregisterAllSamples() {
+void AudioMixer::deregisterAllSamples() {
 
 	if(!this->hasBeenInit) {
 		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot deregister sample!", EnumLogOutput::TXT_FILE);
@@ -173,7 +173,7 @@ void AudioManager::deregisterAllSamples() {
  *
  * Plays an audio sample given by its tag once
  */
-int AudioManager::playSample(const std::string &tag) {
+int AudioMixer::playSample(const std::string &tag) {
 	return playSample(tag, -1, 0, -1);
 }
 
@@ -190,7 +190,7 @@ int AudioManager::playSample(const std::string &tag) {
  *
  * Plays an audio sample given by its tag
  */
-int AudioManager::playSample(const std::string &tag, int loops) {
+int AudioMixer::playSample(const std::string &tag, int loops) {
 	return playSample(tag, -1, loops, -1);
 }
 
@@ -209,7 +209,7 @@ int AudioManager::playSample(const std::string &tag, int loops) {
  *
  * Plays an audio sample given by its tag
  */
-int AudioManager::playSample(const std::string &tag, int loops, float volume) {
+int AudioMixer::playSample(const std::string &tag, int loops, float volume) {
 
 	int channel = playSample(tag, -1, loops, -1);
 	if(channel != -1) setChannelVolume(channel, volume);
@@ -227,7 +227,7 @@ int AudioManager::playSample(const std::string &tag, int loops, float volume) {
  *
  * Plays an audio sample given by its tag for a certain amount of time
  */
-int AudioManager::playSample(const std::string &tag, uint32_t ticks) {
+int AudioMixer::playSample(const std::string &tag, uint32_t ticks) {
 	return playSample(tag, -1, -1, ticks);
 }
 
@@ -244,7 +244,7 @@ int AudioManager::playSample(const std::string &tag, uint32_t ticks) {
  *
  * Plays an audio sample given by its tag for a certain amount of time
  */
-int AudioManager::playSample(const std::string &tag, uint32_t ticks, float volume) {
+int AudioMixer::playSample(const std::string &tag, uint32_t ticks, float volume) {
 
 	int channel = playSample(tag, -1, -1, ticks);
 	if(channel != -1) setChannelVolume(channel, volume);
@@ -262,7 +262,7 @@ int AudioManager::playSample(const std::string &tag, uint32_t ticks, float volum
  *
  * Plays an audio sample given by its tag once at the given volume
  */
-int AudioManager::playSample(const std::string &tag, float volume) {
+int AudioMixer::playSample(const std::string &tag, float volume) {
 
 	int channel = playSample(tag, -1, 0, -1);
 	if(channel != -1) setChannelVolume(channel, volume);
@@ -284,7 +284,7 @@ int AudioManager::playSample(const std::string &tag, float volume) {
  *
  * Plays an audio sample given by its tag once at the given position and volume
  */
-int AudioManager::playSample(const GameCamera &camera, const Position &origin, const std::string &tag, float volume) {
+int AudioMixer::playSample(const GameCamera &camera, const Position &origin, const std::string &tag, float volume) {
 
 	int channel = playSample(tag, -1, 0, -1);
 	if(channel != -1) {
@@ -322,7 +322,7 @@ int AudioManager::playSample(const GameCamera &camera, const Position &origin, c
  *
  * Sets the volume that the given audio sample will be played at
  */
-void AudioManager::setSampleVolume(const std::string &tag, float volume) {
+void AudioMixer::setSampleVolume(const std::string &tag, float volume) {
 
 	if(!this->hasBeenInit) {
 		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot set volume!", EnumLogOutput::TXT_FILE);
@@ -347,7 +347,7 @@ void AudioManager::setSampleVolume(const std::string &tag, float volume) {
  *
  * Sets the volume that the given channel will be played at
  */
-void AudioManager::setChannelVolume(int channel, float volume) {
+void AudioMixer::setChannelVolume(int channel, float volume) {
 	std::abs(volume) > 1.0f ? Mix_Volume(channel, 128) : Mix_Volume(channel, static_cast<int>(128.0f * std::abs(volume) + 0.5f));
 }
 
@@ -358,7 +358,7 @@ void AudioManager::setChannelVolume(int channel, float volume) {
  *
  * Gets the volume of the given channel
  */
-int AudioManager::getChannelVolume(int channel) const {
+int AudioMixer::getChannelVolume(int channel) const {
 	return Mix_Volume(channel, -1);
 }
 
@@ -369,7 +369,7 @@ int AudioManager::getChannelVolume(int channel) const {
  *
  * Stops the given channel
  */
-void AudioManager::stopChannel(int channel) {
+void AudioMixer::stopChannel(int channel) {
 	Mix_HaltChannel(channel);
 }
 
@@ -382,7 +382,7 @@ void AudioManager::stopChannel(int channel) {
  *
  * Stops the given channel
  */
-void AudioManager::stopChannel(int channel, int ticks) {
+void AudioMixer::stopChannel(int channel, int ticks) {
 	Mix_ExpireChannel(channel, ticks);
 }
 
@@ -394,7 +394,7 @@ void AudioManager::stopChannel(int channel, int ticks) {
  * Pauses the given channel
  * only channels that are currently playing can be paused
  */
-void AudioManager::pauseChannel(int channel) {
+void AudioMixer::pauseChannel(int channel) {
 	Mix_Pause(channel);
 }
 
@@ -406,7 +406,7 @@ void AudioManager::pauseChannel(int channel) {
  * Unpause the given channel
  * only channels that are currently paused can be unpaused
  */
-void AudioManager::unpauseChannel(int channel) {
+void AudioMixer::unpauseChannel(int channel) {
 	Mix_Resume(channel);
 }
 
@@ -417,7 +417,7 @@ void AudioManager::unpauseChannel(int channel) {
  *
  * Checks if the given channel is playing
  */
-bool AudioManager::isChannelPlaying(int channel) const {
+bool AudioMixer::isChannelPlaying(int channel) const {
 	return Mix_Playing(channel) && !Mix_Paused(channel);
 }
 
@@ -428,7 +428,7 @@ bool AudioManager::isChannelPlaying(int channel) const {
  *
  * Checks if the given channel is paused
  */
-bool AudioManager::isChannelPaused(int channel) const {
+bool AudioMixer::isChannelPaused(int channel) const {
 	return Mix_Paused(channel);
 }
 
@@ -450,7 +450,7 @@ bool AudioManager::isChannelPaused(int channel) const {
  *
  * Plays an audio sample given by its tag until it has played for either the given number of loops or ticks
  */
-int AudioManager::playSample(const std::string &tag, int channel, int loops, uint32_t ticks) {
+int AudioMixer::playSample(const std::string &tag, int channel, int loops, uint32_t ticks) {
 
 	if(!this->hasBeenInit) {
 		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot play sample!", EnumLogOutput::TXT_FILE);
@@ -473,7 +473,7 @@ int AudioManager::playSample(const std::string &tag, int channel, int loops, uin
  *
  * @return	Pointer to the audio sample wrapper or null if the tag cannot be found
  */
-SDLMixChunkWrapper* AudioManager::getSample(const std::string &tag) {
+SDLMixChunkWrapper* AudioMixer::getSample(const std::string &tag) {
 	auto itr = this->samples.find(tag);
 	return itr == this->samples.end() ? nullptr : itr->second.get();
 }

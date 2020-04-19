@@ -1,5 +1,5 @@
 //============================================================================
-// Name       		: Game.cpp
+// Name       		: Game
 // Author     		: Thomas Hooks
 // Last Modified	: 04/05/2020
 //============================================================================
@@ -10,18 +10,19 @@
 #include <SDL.h>
 
 #include "Game.h"
+
+#include "audiomixer/AudioMixer.h"
+#include "entities/EntityManager.h"
 #include "gamestates/BlankGameState.h"
 #include "gamestates/IGameState.h"
-#include "managers/RendererManager.h"
-#include "managers/EntityManager.h"
-#include "managers/MapManager.h"
-#include "managers/AudioManager.h"
+#include "renderer/Renderer.h"
 #include "world/TileMap.h"
 #include "utilities/GameLogger.h"
 #include "utilities/GameCamera.h"
 #include "utilities/GameTimer.h"
 #include "utilities/GameBuilder.h"
 #include "utilities/wrappers/SDLWindowWrapper.h"
+#include "world/WorldStack.h"
 
 
 
@@ -32,9 +33,9 @@ Game::Game()
 		  tickRate(50) {
 
 	this->logger = std::make_unique<GameLogger>(EnumLogLevel::TRACE);
-	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
-	this->audioManager = std::make_unique<AudioManager>(this->logger.get());
-	this->worldManager = std::make_unique<MapManager>(this->logger.get());
+	this->renderer = std::make_unique<Renderer>(this->logger.get());
+	this->audioManager = std::make_unique<AudioMixer>(this->logger.get());
+	this->worlds = std::make_unique<WorldStack>(this->logger.get());
 	this->entityManager = std::make_unique<EntityManager>(this->logger.get());
 	this->timer = std::make_unique<GameTimer>();
 
@@ -74,9 +75,9 @@ Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32
 		  tickRate(20) {
 
 	this->logger = std::make_unique<GameLogger>(EnumLogLevel::TRACE);
-	this->renderManager = std::make_unique<RendererManager>(this->logger.get());
-	this->audioManager = std::make_unique<AudioManager>(this->logger.get());
-	this->worldManager = std::make_unique<MapManager>(this->logger.get());
+	this->renderer = std::make_unique<Renderer>(this->logger.get());
+	this->audioManager = std::make_unique<AudioMixer>(this->logger.get());
+	this->worlds = std::make_unique<WorldStack>(this->logger.get());
 	this->entityManager = std::make_unique<EntityManager>(this->logger.get());
 	this->timer = std::make_unique<GameTimer>();
 
@@ -144,7 +145,7 @@ void Game::run() {
 	getTimer().start();
 	while(!this->isOver() && !this->isNullState()) {
 
-		TileMap* world = getWorldManager().getWorld();
+		TileMap* world = getWorldStack().getWorld();
 		if(world == nullptr) {
 			getLogger().message(EnumLogLevel::FATAL, "Null Pointer exception: Tried to get a null World!", EnumLogOutput::TXT_FILE);
 			markOver();
@@ -222,22 +223,22 @@ GameLogger& Game::getLogger() {
 
 
 // @return	Gets this game's renderer
-RendererManager& Game::getRenderManager() {
-	return *this->renderManager.get();
+Renderer& Game::getRenderManager() {
+	return *this->renderer.get();
 }
 
 
 
 // @return	Gets this game's audio manager
-AudioManager& Game::getMixer() {
+AudioMixer& Game::getMixer() {
 	return *this->audioManager.get();
 }
 
 
 
 // @return	Gets this game's world manager
-MapManager& Game::getWorldManager() {
-	return *this->worldManager.get();
+WorldStack& Game::getWorldStack() {
+	return *this->worlds.get();
 }
 
 

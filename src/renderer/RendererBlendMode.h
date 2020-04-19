@@ -1,5 +1,5 @@
 //============================================================================
-// Name       		: EnumBlendMode.h
+// Name       		: RendererBlendMode
 // Author     		: Thomas Hooks
 // Last Modified	: 03/06/2020
 //============================================================================
@@ -7,13 +7,13 @@
 
 
 
-#ifndef ENUMBLENDMODE_H_
-#define ENUMBLENDMODE_H_
+#ifndef RENDERERBLENDMODE_H_
+#define RENDERERBLENDMODE_H_
 
 
 
 
-enum struct EnumBlendMode : unsigned char {
+enum struct RendererBlendMode : unsigned char {
 	//This enumeration encapsulates the SDL blend modes
 
 	NONE = 0,
@@ -23,7 +23,7 @@ enum struct EnumBlendMode : unsigned char {
 };
 
 
-#endif /* ENUMBLENDMODE_H_ */
+#endif /* RENDERERBLENDMODE_H_ */
 
 
 

@@ -8,7 +8,8 @@
 
 
 #include "WorldContext.h"
-#include "../../managers/EntityManager.h"
+
+#include "../../entities/EntityManager.h"
 #include "../../entities/PlayerEntity.h"
 #include "../../world/TileMap.h"
 #include "../GameTimer.h"

@@ -65,17 +65,17 @@ protected:
 
 
 	//Gets the World Manager
-	class MapManager& getWorlds();
+	class WorldStack& getWorlds();
 
 
 
 	//Gets the Renderer Manager
-	class RendererManager& getRenderer();
+	class Renderer& getRenderer();
 
 
 
 	//Gets the Audio Manager
-	class AudioManager& getMixer();
+	class AudioMixer& getMixer();
 
 
 

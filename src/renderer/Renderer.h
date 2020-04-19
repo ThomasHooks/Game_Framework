@@ -17,28 +17,28 @@
 #include <map>
 #include <memory>
 
-#include "EnumBlendMode.h"
+#include "RendererBlendMode.h"
 
 
 
 //TODO add SDL2 TTF support
-class RendererManager {
+class Renderer {
 
 public:
 
-	RendererManager(class GameLogger *logger_ptr);
+	Renderer(class GameLogger *logger_ptr);
 
 
 
-	~RendererManager();
+	~Renderer();
 
 
 
-	RendererManager(const RendererManager &other) = delete;
+	Renderer(const Renderer &other) = delete;
 
 
 
-	RendererManager(RendererManager &&other) = delete;
+	Renderer(Renderer &&other) = delete;
 
 
 
@@ -148,7 +148,7 @@ public:
 	 * Sets the given textures blend mode
 	 */
 	bool setTextureBlendMode(const std::string &tag,
-			EnumBlendMode blendMode);
+			RendererBlendMode blendMode);
 
 
 

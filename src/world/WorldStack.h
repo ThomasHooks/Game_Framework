@@ -1,5 +1,5 @@
 //============================================================================
-// Name       		: MapManager.h
+// Name       		: WorldStack
 // Author     		: Thomas Hooks
 // Last Modified	: 03/21/2020
 //============================================================================
@@ -7,8 +7,8 @@
 
 
 
-#ifndef SRC_MAPMANAGER_H_
-#define SRC_MAPMANAGER_H_
+#ifndef SRC_WORLDSTACK_H_
+#define SRC_WORLDSTACK_H_
 
 
 
@@ -20,23 +20,23 @@
 
 
 
-class MapManager {
+class WorldStack {
 
 public:
 
-	MapManager(class GameLogger *log_ptr);
+	WorldStack(class GameLogger *log_ptr);
 
 
 
-	~MapManager();
+	~WorldStack();
 
 
 
-	MapManager(const MapManager &other) = delete;
+	WorldStack(const WorldStack &other) = delete;
 
 
 
-	MapManager(MapManager &&other) = delete;
+	WorldStack(WorldStack &&other) = delete;
 
 
 
@@ -67,7 +67,7 @@ public:
 	 */
 	void draw(const class Position &cameraPos,
 			const struct Dimension &visibleTiles,
-			class RendererManager &renderer);
+			class Renderer &renderer);
 
 
 
@@ -90,7 +90,7 @@ private:
 
 
 
-#endif /* SRC_MAPMANAGER_H_ */
+#endif /* SRC_WORLDSTACK_H_ */
 
 
 

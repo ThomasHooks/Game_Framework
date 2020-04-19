@@ -1,5 +1,5 @@
 //============================================================================
-// Name       		: MapManager.cpp
+// Name       		: WorldStack
 // Author     		: Thomas Hooks
 // Last Modified	: 03/21/2020
 //============================================================================
@@ -13,17 +13,17 @@
 #include <memory>
 #include <string>
 
-#include "MapManager.h"
-#include "../world/TileMap.h"
+#include "../renderer/Renderer.h"
 #include "../utilities/GameLogger.h"
 #include "../utilities/physics/Dimension.h"
 #include "../utilities/physics/Position.h"
-#include "RendererManager.h"
+#include "../world/WorldStack.h"
+#include "../world/TileMap.h"
 
 
 
 
-MapManager::MapManager(class GameLogger *log_ptr)
+WorldStack::WorldStack(class GameLogger *log_ptr)
 	: logger(log_ptr) {
 
 	logger->message(EnumLogLevel::INFO,
@@ -33,7 +33,7 @@ MapManager::MapManager(class GameLogger *log_ptr)
 
 
 
-MapManager::~MapManager() {}
+WorldStack::~WorldStack() {}
 
 
 
@@ -44,14 +44,14 @@ MapManager::~MapManager() {}
  *
  * Adds a new map to the back of the world stack
  */
-void MapManager::pushMap(std::string tileSheetTag, std::string mapFilePath){
+void WorldStack::pushMap(std::string tileSheetTag, std::string mapFilePath){
 	worldStack.emplace_back(std::unique_ptr<TileMap>(new TileMap(logger, tileSheetTag, mapFilePath)));
 }
 
 
 
 //Removes the back world from the stack
-void MapManager::popMap(){
+void WorldStack::popMap(){
 	worldStack.empty() ? logger->message(EnumLogLevel::WARNING, "Tried to free map, but map stack is empty!", EnumLogOutput::TXT_FILE) : worldStack.pop_back();
 }
 
@@ -66,7 +66,7 @@ void MapManager::popMap(){
  *
  * Draws the active map to the screen
  */
-void MapManager::draw(const Position &cameraPos, const Dimension &windowSize, RendererManager &renderer){
+void WorldStack::draw(const Position &cameraPos, const Dimension &windowSize, Renderer &renderer){
 	
 	TileMap* world = this->getWorld();
 	if(world == nullptr) {
@@ -130,7 +130,7 @@ void MapManager::draw(const Position &cameraPos, const Dimension &windowSize, Re
  *
  * Gets the current world
  */
-class TileMap* MapManager::getWorld(){
+class TileMap* WorldStack::getWorld(){
 	return this->worldStack.empty() ? nullptr : this->worldStack.back().get();
 }
 

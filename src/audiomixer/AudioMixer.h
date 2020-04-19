@@ -1,5 +1,5 @@
 //============================================================================
-// Name       		: AudioManager.h
+// Name       		: AudioMixer
 // Author     		: Thomas Hooks
 // Last Modified	: Apr 10, 2020
 //============================================================================
@@ -7,8 +7,8 @@
 
 
 
-#ifndef MANAGERS_AUDIOMANAGER_H_
-#define MANAGERS_AUDIOMANAGER_H_
+#ifndef AUDIOMIXER_H_
+#define AUDIOMIXER_H_
 
 
 #include <string>
@@ -18,15 +18,15 @@
 
 
 //TODO add SDL music
-class AudioManager {
+class AudioMixer {
 
 public:
 
-	AudioManager(class GameLogger *loggerPtr);
+	AudioMixer(class GameLogger *loggerPtr);
 
 
 
-	~AudioManager();
+	~AudioMixer();
 
 
 
@@ -311,7 +311,7 @@ private:
 };
 
 
-#endif /* MANAGERS_AUDIOMANAGER_H_ */
+#endif /* AUDIOMIXER_H_ */
 
 
 

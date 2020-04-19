@@ -8,14 +8,14 @@
 
 
 #include "EntityManager.h"
-#include "../entities/IEntity.hpp"
-#include "Builder.h"
+#include "IEntity.hpp"
+#include "../renderer/Renderer.h"
+#include "../utilities/Builder.hpp"
 #include "../utilities/GameLogger.h"
 #include "../utilities/physics/Collisions.h"
 #include "../utilities/physics/Dimension.h"
 #include "../utilities/physics/Direction.h"
 #include "../utilities/physics/Position.h"
-#include "RendererManager.h"
 #include "../world/TileMap.h"
 #include "../world/ITile.h"
 
@@ -119,7 +119,7 @@ void EntityManager::despawn(){
  *
  * Draws all Entities that are visible on screen
  */
-void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSize, RendererManager &renderer, bool renderAabb){
+void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSize, Renderer &renderer, bool renderAabb){
 
 	std::vector<IEntity*> entitiesOnScreen;
 	//TODO fix 'pop-in', currently entities will 'pop in' along the top-left edges of the screen
