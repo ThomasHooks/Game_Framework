@@ -26,7 +26,7 @@ class Renderer {
 
 public:
 
-	Renderer(class GameLogger *logger_ptr);
+	Renderer(class Logger *logger_ptr);
 
 
 
@@ -315,7 +315,7 @@ private:
 
 	float scale;
 
-	class GameLogger *logger;
+	class Logger *logger;
 
 	struct SDL_Renderer *renderer;
 

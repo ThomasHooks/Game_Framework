@@ -14,9 +14,9 @@
 #include "../Game.h"
 #include "../renderer/Renderer.h"
 #include "../world/TileMap.h"
-#include "../utilities/GameLogger.h"
 #include "../utilities/GameCamera.h"
 #include "../utilities/GameTimer.h"
+#include "../utilities/Logger.h"
 #include "../utilities/physics/Dimension.h"
 #include "../utilities/physics/Position.h"
 #include "../utilities/wrappers/SDLWindowWrapper.h"
@@ -60,7 +60,7 @@ class AudioMixer& IGameState::getMixer() {
 
 
 //Gets the Logger
-class GameLogger& IGameState::getLogger() {
+class Logger& IGameState::getLogger() {
 	return this->game->getLogger();
 }
 

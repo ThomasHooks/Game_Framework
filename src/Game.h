@@ -100,7 +100,7 @@ public:
 
 
 	// @return	Gets this game's logger
-	class GameLogger& getLogger();
+	class Logger& getLogger();
 
 
 
@@ -161,7 +161,7 @@ protected:
 
 private:
 
-	mutable std::unique_ptr<class GameLogger> logger;
+	mutable std::unique_ptr<class Logger> logger;
 
 	std::unique_ptr<class Renderer> renderer;
 

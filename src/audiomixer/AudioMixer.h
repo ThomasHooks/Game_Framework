@@ -22,7 +22,7 @@ class AudioMixer {
 
 public:
 
-	AudioMixer(class GameLogger *loggerPtr);
+	AudioMixer(class Logger *loggerPtr);
 
 
 
@@ -303,7 +303,7 @@ private:
 
 	const int NUMBEROFCHANNELS = 16;
 
-	class GameLogger *logger;
+	class Logger *logger;
 
 	bool hasBeenInit;
 

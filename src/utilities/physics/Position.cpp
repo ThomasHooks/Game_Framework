@@ -8,6 +8,7 @@
 
 
 #include "Position.h"
+#include "EnumSide.h"
 
 
 

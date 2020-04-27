@@ -12,12 +12,13 @@
 #include <fstream>
 
 #include "TileMap.h"
-#include "../utilities/GameLogger.h"
+
+#include "../utilities/Logger.h"
 
 
 
 
-TileMap::TileMap(class GameLogger *loggerIn, const std::string &tagIn, const std::string &filePath)
+TileMap::TileMap(class Logger *loggerIn, const std::string &tagIn, const std::string &filePath)
 	: logger(loggerIn),
 	  tag(tagIn),
 	  sizeMap(),
@@ -29,7 +30,7 @@ TileMap::TileMap(class GameLogger *loggerIn, const std::string &tagIn, const std
 
 
 TileMap::~TileMap() {
-	logger->message(EnumLogLevel::INFO, "World '"+ this->tag + "' has been removed", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "World '"+ this->tag + "' has been removed", Logger::Output::TXT_FILE);
 }
 
 
@@ -176,11 +177,11 @@ ITile* TileMap::getOffsetTile(const Position& posIn, EnumSide direction){
  */
 void TileMap::buildTileMap(const std::string &filePath){
 
-	logger->message(EnumLogLevel::INFO, "Building World '" + this->tag + "' at '" + filePath + "'", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Building World '" + this->tag + "' at '" + filePath + "'", Logger::Output::TXT_FILE);
 
 	std::ifstream mapFile(filePath);
 	if(!mapFile.is_open()){
-		logger->message(EnumLogLevel::ERROR, "Unable to load/find map '" + this->tag + "' at '" + filePath + "'", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::ERROR, "Unable to load/find map '" + this->tag + "' at '" + filePath + "'", Logger::Output::TXT_FILE);
 		return;
 	}
 
@@ -191,7 +192,7 @@ void TileMap::buildTileMap(const std::string &filePath){
 	int mapHeight = 0;
 	mapFile>>mapHeight;
 	this->sizeMap.height = mapHeight;
-	if(mapFile.fail()) logger->message(EnumLogLevel::ERROR, "Unable to read map '" + this->tag + "' at MAPSIZE", EnumLogOutput::TXT_FILE);
+	if(mapFile.fail()) logger->message(Logger::Level::ERROR, "Unable to read map '" + this->tag + "' at MAPSIZE", Logger::Output::TXT_FILE);
 
 	//Read the tile size from the file
 	int tileWidth = 0;
@@ -200,7 +201,7 @@ void TileMap::buildTileMap(const std::string &filePath){
 	int tileHeight = 0;
 	mapFile>>tileHeight;
 	this->sizeTile.height = tileHeight;
-	if(mapFile.fail()) logger->message(EnumLogLevel::ERROR, "Unable to read map '" + this->tag + "' at TILESIZE", EnumLogOutput::TXT_FILE);
+	if(mapFile.fail()) logger->message(Logger::Level::ERROR, "Unable to read map '" + this->tag + "' at TILESIZE", Logger::Output::TXT_FILE);
 
 	//Read the tile and add it to the tile map
 	for(int y = 0; y < sizeMap.height; y++) {
@@ -214,7 +215,7 @@ void TileMap::buildTileMap(const std::string &filePath){
 			mapFile>>index;
 			sprite.width = index;
 			if(mapFile.fail()) {
-				logger->message(EnumLogLevel::ERROR, "Unable to read map '" + this->tag + "' at TILESPRITE", EnumLogOutput::TXT_FILE);
+				logger->message(Logger::Level::ERROR, "Unable to read map '" + this->tag + "' at TILESPRITE", Logger::Output::TXT_FILE);
 				return;
 			}
 
@@ -229,7 +230,7 @@ void TileMap::buildTileMap(const std::string &filePath){
 					solid)});
 		}
 	}
-	logger->message(EnumLogLevel::INFO, "World '" + this->tag + "' has been built", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "World '" + this->tag + "' has been built", Logger::Output::TXT_FILE);
 }
 
 

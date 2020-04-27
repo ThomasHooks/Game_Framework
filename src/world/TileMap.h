@@ -22,7 +22,7 @@ class TileMap {
 
 public:
 
-	TileMap(class GameLogger *loggerIn,
+	TileMap(class Logger *loggerIn,
 			const std::string &tagIn,
 			const std::string &filePath);
 
@@ -146,7 +146,7 @@ protected:
 
 private:
 
-	class GameLogger *logger;
+	class Logger *logger;
 
 	std::string tag;
 

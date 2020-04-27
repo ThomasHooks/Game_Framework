@@ -8,14 +8,14 @@
 
 
 #include "GameCamera.h"
-#include "GameLogger.h"
 #include "../entities/IEntity.hpp"
+#include "Logger.h"
 #include "wrappers/SDLWindowWrapper.h"
 
 
 
 
-GameCamera::GameCamera(GameLogger *loggerPtr, SDLWindowWrapper* windowIn)
+GameCamera::GameCamera(Logger *loggerPtr, SDLWindowWrapper* windowIn)
 	: logger(loggerPtr),
 	  window(windowIn),
 	  posOffset(),
@@ -23,13 +23,13 @@ GameCamera::GameCamera(GameLogger *loggerPtr, SDLWindowWrapper* windowIn)
 	  entity(nullptr),
 	  trackingEntity(false) {
 
-	logger->message(EnumLogLevel::INFO, "Camera has been built", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Camera has been built", Logger::Output::TXT_FILE);
 }
 
 
 
 GameCamera::~GameCamera() {
-	logger->message(EnumLogLevel::INFO, "Camera has been removed", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Camera has been removed", Logger::Output::TXT_FILE);
 }
 
 
@@ -108,9 +108,9 @@ void GameCamera::trackEntity(IEntity *entityIn){
 		this->entity = entityIn;
 		this->trackingEntity = true;
 		this->posTract.move(entityIn->getPos());
-		logger->message(EnumLogLevel::INFO, "Camera is tracking Entity '" + entityIn->getRegistryTag() + "'", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::INFO, "Camera is tracking Entity '" + entityIn->getRegistryTag() + "'", Logger::Output::TXT_FILE);
 	}
-	else logger->message(EnumLogLevel::WARNING, "Null Pointer exception: Camera cannot track Entity!", EnumLogOutput::TXT_FILE);
+	else logger->message(Logger::Level::WARNING, "Null Pointer exception: Camera cannot track Entity!", Logger::Output::TXT_FILE);
 }
 
 
@@ -123,7 +123,7 @@ void GameCamera::trackEntity(IEntity *entityIn){
 void GameCamera::trackPos(const Position &posIn){
 
 	if(this->entity != nullptr) {
-		logger->message(EnumLogLevel::INFO, "Camera has stopped tracking Entity '" + this->entity->getRegistryTag() + "'", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::INFO, "Camera has stopped tracking Entity '" + this->entity->getRegistryTag() + "'", Logger::Output::TXT_FILE);
 		this->entity = nullptr;
 	}
 	this->trackingEntity = false;

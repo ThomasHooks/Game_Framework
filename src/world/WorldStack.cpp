@@ -14,21 +14,22 @@
 #include <string>
 
 #include "../renderer/Renderer.h"
-#include "../utilities/GameLogger.h"
 #include "../utilities/physics/Dimension.h"
 #include "../utilities/physics/Position.h"
 #include "../world/WorldStack.h"
+
+#include "../utilities/Logger.h"
 #include "../world/TileMap.h"
 
 
 
 
-WorldStack::WorldStack(class GameLogger *log_ptr)
+WorldStack::WorldStack(class Logger *log_ptr)
 	: logger(log_ptr) {
 
-	logger->message(EnumLogLevel::INFO,
+	logger->message(Logger::Level::INFO,
 				 "Map Manager has been initialized",
-				 EnumLogOutput::TXT_FILE);
+				 Logger::Output::TXT_FILE);
 }
 
 
@@ -52,7 +53,7 @@ void WorldStack::pushMap(std::string tileSheetTag, std::string mapFilePath){
 
 //Removes the back world from the stack
 void WorldStack::popMap(){
-	worldStack.empty() ? logger->message(EnumLogLevel::WARNING, "Tried to free map, but map stack is empty!", EnumLogOutput::TXT_FILE) : worldStack.pop_back();
+	worldStack.empty() ? logger->message(Logger::Level::WARNING, "Tried to free map, but map stack is empty!", Logger::Output::TXT_FILE) : worldStack.pop_back();
 }
 
 
@@ -70,7 +71,7 @@ void WorldStack::draw(const Position &cameraPos, const Dimension &windowSize, Re
 	
 	TileMap* world = this->getWorld();
 	if(world == nullptr) {
-		logger->message(EnumLogLevel::FATAL, "Null Pointer exception: Tried to render World, but world stack is empty!", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::FATAL, "Null Pointer exception: Tried to render World, but world stack is empty!", Logger::Output::TXT_FILE);
 		return;
 	}
 
@@ -112,9 +113,9 @@ void WorldStack::draw(const Position &cameraPos, const Dimension &windowSize, Re
 			if(tile == nullptr) {
 				//std::string xLocation = std::to_string(xCord);
 				//std::string yLocation = std::to_string(yCord);
-				logger->message(EnumLogLevel::WARNING,
+				logger->message(Logger::Level::WARNING,
 						"Null Pointer exception: Tried to get tile, but tile does not exist",
-						EnumLogOutput::TXT_FILE);
+						Logger::Output::TXT_FILE);
 			}
 			else {
 				renderer.drawSprite(world->getTag(), tile->getPos(), cameraPos, tile->getSprite(), false);

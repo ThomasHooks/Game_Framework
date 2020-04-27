@@ -17,7 +17,7 @@ class GameCamera {
 
 public:
 
-	GameCamera(class GameLogger *loggerPtr, class SDLWindowWrapper* windowIn);
+	GameCamera(class Logger *loggerPtr, class SDLWindowWrapper* windowIn);
 
 
 
@@ -84,7 +84,7 @@ public:
 
 protected:
 
-	class GameLogger *logger;
+	class Logger *logger;
 
 	class SDLWindowWrapper *window;
 

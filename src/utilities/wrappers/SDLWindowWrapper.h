@@ -24,7 +24,7 @@ class SDLWindowWrapper {
 
 public:
 
-	SDLWindowWrapper(class GameLogger* logger_ptr,
+	SDLWindowWrapper(class Logger* logger_ptr,
 			const std::string &title,
 			const Dimension &sizeIn,
 			Uint32 flags);
@@ -87,7 +87,7 @@ private:
 
 	SDL_Window* window;
 
-	class GameLogger *logger;
+	class Logger *logger;
 };
 
 

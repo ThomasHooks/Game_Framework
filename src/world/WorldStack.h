@@ -24,7 +24,7 @@ class WorldStack {
 
 public:
 
-	WorldStack(class GameLogger *log_ptr);
+	WorldStack(class Logger *log_ptr);
 
 
 
@@ -82,7 +82,7 @@ public:
 
 private:
 
-	class GameLogger *logger;
+	class Logger *logger;
 
 	std::vector<std::unique_ptr<class TileMap>> worldStack;
 };

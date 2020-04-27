@@ -12,36 +12,36 @@
 #include "SDL_mixer.h"
 
 #include "AudioMixer.h"
-#include "../utilities/GameLogger.h"
 #include "../utilities/GameCamera.h"
+#include "../utilities/Logger.h"
 #include "../utilities/physics/Position.h"
 #include "../utilities/wrappers/SDLMixChunkWrapper.h"
 
 
 
 
-AudioMixer::AudioMixer(GameLogger *loggerPtr)
+AudioMixer::AudioMixer(Logger *loggerPtr)
 	: logger(loggerPtr),
 	  hasBeenInit(false) {
 
-	logger->message(EnumLogLevel::INFO, "Starting Audio Manager", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Starting Audio Manager", Logger::Output::TXT_FILE);
 }
 
 
 
 AudioMixer::~AudioMixer() {
 
-	logger->message(EnumLogLevel::INFO, "Stopping Audio Manager", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Stopping Audio Manager", Logger::Output::TXT_FILE);
 	deregisterAllSamples();
 
-	logger->message(EnumLogLevel::INFO, "Unloading dynamic mixer libraries", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Unloading dynamic mixer libraries", Logger::Output::TXT_FILE);
 	while(Mix_Init(0)) {
 		Mix_Quit();
 	}
 
-	logger->message(EnumLogLevel::INFO, "Quitting SDL Mixer", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Quitting SDL Mixer", Logger::Output::TXT_FILE);
 	Mix_CloseAudio();
-	logger->message(EnumLogLevel::INFO, "Audio Manager stopped", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Audio Manager stopped", Logger::Output::TXT_FILE);
 }
 
 
@@ -59,13 +59,13 @@ AudioMixer::~AudioMixer() {
 bool AudioMixer::init() {
 
 	if(!this->hasBeenInit) {
-		logger->message(EnumLogLevel::INFO, "Initializing Audio Manager", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::INFO, "Initializing Audio Manager", Logger::Output::TXT_FILE);
 
 		int formats = MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG;
 		int mixerFlag = Mix_Init(formats);
 		if(mixerFlag & formats != formats) {
 			std::string mixerErrorCode = Mix_GetError();
-			logger->message(EnumLogLevel::ERROR, "SDL Mixer failed to initialize! Error Code: " + mixerErrorCode, EnumLogOutput::TXT_FILE);
+			logger->message(Logger::Level::ERROR, "SDL Mixer failed to initialize! Error Code: " + mixerErrorCode, Logger::Output::TXT_FILE);
 			return false;
 		}
 
@@ -74,12 +74,12 @@ bool AudioMixer::init() {
 		mixerFlag = Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
 		if(mixerFlag == -1) {
 			std::string mixerErrorCode = Mix_GetError();
-			logger->message(EnumLogLevel::ERROR, "SDL Mixer failed to initialize! Error Code: " + mixerErrorCode, EnumLogOutput::TXT_FILE);
+			logger->message(Logger::Level::ERROR, "SDL Mixer failed to initialize! Error Code: " + mixerErrorCode, Logger::Output::TXT_FILE);
 			return false;
 		}
 
 		this->hasBeenInit = true;
-		logger->message(EnumLogLevel::INFO, "Audio Manager has been initialized", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::INFO, "Audio Manager has been initialized", Logger::Output::TXT_FILE);
 	}
 	return true;
 }
@@ -99,26 +99,26 @@ bool AudioMixer::init() {
 bool AudioMixer::registerSample(const std::string &tag, const std::string &location) {
 
 	if(!this->hasBeenInit) {
-		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot register samples!", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::ERROR, "Mixer has not been initialized cannot register samples!", Logger::Output::TXT_FILE);
 		return false;
 	}
 
-	logger->message(EnumLogLevel::INFO, "Registering sample '" + tag + "' at '" + location + "'", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Registering sample '" + tag + "' at '" + location + "'", Logger::Output::TXT_FILE);
 	auto itr = this->samples.insert({tag, std::make_unique<SDLMixChunkWrapper>(location)});
 	if(!itr.second) {
 		//Tag isn't unique
-		logger->message(EnumLogLevel::ERROR, "The sample was not registered tag: '" + tag + "' is not unique!", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::ERROR, "The sample was not registered tag: '" + tag + "' is not unique!", Logger::Output::TXT_FILE);
 		return itr.second;
 	}
 	if(itr.first->second->get() == nullptr) {
 		//Failed to load the audio file
 		std::string mixerErrorCode = Mix_GetError();
-		logger->message(EnumLogLevel::ERROR, "Could not load sample '" + tag + "' at '" + location + "' Error Code: " + mixerErrorCode, EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::ERROR, "Could not load sample '" + tag + "' at '" + location + "' Error Code: " + mixerErrorCode, Logger::Output::TXT_FILE);
 		this->samples.erase(tag);
 		return false;
 	}
 
-	logger->message(EnumLogLevel::INFO, "Sample '" + tag + "' has been registered", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Sample '" + tag + "' has been registered", Logger::Output::TXT_FILE);
 	return itr.second;
 }
 
@@ -134,13 +134,13 @@ bool AudioMixer::registerSample(const std::string &tag, const std::string &locat
 bool AudioMixer::deregisterSample(const std::string &tag) {
 
 	if(!this->hasBeenInit) {
-		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot deregister samples!", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::ERROR, "Mixer has not been initialized cannot deregister samples!", Logger::Output::TXT_FILE);
 		return false;
 	}
 
-	logger->message(EnumLogLevel::INFO, "Deregistering sample '" + tag + "'", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Deregistering sample '" + tag + "'", Logger::Output::TXT_FILE);
 	this->samples.erase(tag);
-	logger->message(EnumLogLevel::INFO, "Sample '" + tag +"' has been deregistered", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Sample '" + tag +"' has been deregistered", Logger::Output::TXT_FILE);
 	return true;
 }
 
@@ -150,17 +150,17 @@ bool AudioMixer::deregisterSample(const std::string &tag) {
 void AudioMixer::deregisterAllSamples() {
 
 	if(!this->hasBeenInit) {
-		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot deregister sample!", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::ERROR, "Mixer has not been initialized cannot deregister sample!", Logger::Output::TXT_FILE);
 		return;
 	}
 
-	logger->message(EnumLogLevel::INFO, "Deregistering all samples", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Deregistering all samples", Logger::Output::TXT_FILE);
 	auto itr = this->samples.begin();
 	while(itr != this->samples.end()) {
 		std::string tag = itr->first;
-		logger->message(EnumLogLevel::INFO, "Deregistering sample '" + tag + "'", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::INFO, "Deregistering sample '" + tag + "'", Logger::Output::TXT_FILE);
 		itr = this->samples.erase(itr);
-		logger->message(EnumLogLevel::INFO, "Sample '" + tag + "' has been deregistered", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::INFO, "Sample '" + tag + "' has been deregistered", Logger::Output::TXT_FILE);
 	}
 }
 
@@ -325,13 +325,13 @@ int AudioMixer::playSample(const GameCamera &camera, const Position &origin, con
 void AudioMixer::setSampleVolume(const std::string &tag, float volume) {
 
 	if(!this->hasBeenInit) {
-		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot set volume!", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::ERROR, "Mixer has not been initialized cannot set volume!", Logger::Output::TXT_FILE);
 		return;
 	}
 
 	SDLMixChunkWrapper *sample = getSample(tag);
 	if(sample == nullptr) {
-		logger->message(EnumLogLevel::ERROR, "Cannot set the volume for sample, '" + tag + "' sample cannot be found!", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::ERROR, "Cannot set the volume for sample, '" + tag + "' sample cannot be found!", Logger::Output::TXT_FILE);
 		return;
 	}
 
@@ -453,13 +453,13 @@ bool AudioMixer::isChannelPaused(int channel) const {
 int AudioMixer::playSample(const std::string &tag, int channel, int loops, uint32_t ticks) {
 
 	if(!this->hasBeenInit) {
-		logger->message(EnumLogLevel::ERROR, "Mixer has not been initialized cannot play sample!", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::ERROR, "Mixer has not been initialized cannot play sample!", Logger::Output::TXT_FILE);
 		return -1;
 	}
 
 	SDLMixChunkWrapper *sample = getSample(tag);
 	if(sample == nullptr) {
-		logger->message(EnumLogLevel::ERROR, "Cannot play sample, '" + tag + "' cannot be found!", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::ERROR, "Cannot play sample, '" + tag + "' cannot be found!", Logger::Output::TXT_FILE);
 		return -1;
 	}
 

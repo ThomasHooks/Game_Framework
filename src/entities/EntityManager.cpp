@@ -11,7 +11,7 @@
 #include "IEntity.hpp"
 #include "../renderer/Renderer.h"
 #include "../utilities/Builder.hpp"
-#include "../utilities/GameLogger.h"
+#include "../utilities/Logger.h"
 #include "../utilities/physics/Collisions.h"
 #include "../utilities/physics/Dimension.h"
 #include "../utilities/physics/Direction.h"
@@ -22,16 +22,16 @@
 
 
 
-EntityManager::EntityManager(class GameLogger *loggerptr)
+EntityManager::EntityManager(class Logger *loggerptr)
 	: logger(loggerptr),
 	  entityID(0) {
-	logger->message(EnumLogLevel::INFO, "Entity Manager has been initialized", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Entity Manager has been initialized", Logger::Output::TXT_FILE);
 }
 
 
 
 EntityManager::~EntityManager() {
-	logger->message(EnumLogLevel::INFO, "Entity Manager stopped", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Entity Manager stopped", Logger::Output::TXT_FILE);
 }
 
 
@@ -45,14 +45,14 @@ EntityManager::~EntityManager() {
  */
 void EntityManager::registerEntity(std::string tag, BuilderBase<IEntity>* builder){
 
-	logger->message(EnumLogLevel::INFO, "Registering Entity '" + tag + "'", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Registering Entity '" + tag + "'", Logger::Output::TXT_FILE);
 
 	auto itr = this->entityRegistry.insert({tag, std::unique_ptr<BuilderBase<IEntity>>(builder)});
 	builder = nullptr;
 
 	//insert returns a pair, the first element is an iterator and the second is if the insert was successful
-	itr.second ? logger->message(EnumLogLevel::INFO, "Entity '" + tag + "' has been registered", EnumLogOutput::TXT_FILE) :
-			logger->message(EnumLogLevel::ERROR, "The Entity tag: '" + tag + "' is not unique! The Entity's builder was not registered", EnumLogOutput::TXT_FILE);
+	itr.second ? logger->message(Logger::Level::INFO, "Entity '" + tag + "' has been registered", Logger::Output::TXT_FILE) :
+			logger->message(Logger::Level::ERROR, "The Entity tag: '" + tag + "' is not unique! The Entity's builder was not registered", Logger::Output::TXT_FILE);
 }
 
 
@@ -74,7 +74,7 @@ void EntityManager::registerEntity(std::string tag, BuilderBase<IEntity>* builde
 IEntity* EntityManager::spawn(std::string tag, const Position &pos, EnumSide facing){
 
 	if(!this->entityRegistry.count(tag)) {
-		logger->message(EnumLogLevel::WARNING, "The Entity: '" + tag + "' could not be spawned, tag is missing in registry", EnumLogOutput::TXT_FILE);
+		logger->message(Logger::Level::WARNING, "The Entity: '" + tag + "' could not be spawned, tag is missing in registry", Logger::Output::TXT_FILE);
 		return nullptr;
 	}
 
@@ -94,7 +94,7 @@ IEntity* EntityManager::spawn(std::string tag, const Position &pos, EnumSide fac
  */
 void EntityManager::despawn(){
 
-	logger->message(EnumLogLevel::INFO, "Removing all inactive Entities", EnumLogOutput::TXT_FILE);
+	logger->message(Logger::Level::INFO, "Removing all inactive Entities", Logger::Output::TXT_FILE);
 	auto itr = entityList.begin();
 	while(itr != entityList.end()) {
 		if(!itr->get()->isActive()) {
@@ -274,9 +274,9 @@ void EntityManager::checkTileCollisions(TileMap &worldIn, IEntity &entity){
 			ITile *tile = worldIn.getTile(xCord, yCord);
 			if(tile == nullptr) {
 				//Fail safe if the above somehow does not catch the tile-map being indexed out of
-				logger->message(EnumLogLevel::WARNING,
+				logger->message(Logger::Level::WARNING,
 						"Null Pointer exception: Tried to check Tile for collisions but Tile does not exist",
-						EnumLogOutput::TXT_FILE);
+						Logger::Output::TXT_FILE);
 				return;
 			}
 

@@ -29,7 +29,7 @@ class EntityManager {
 
 public:
 
-	EntityManager(class GameLogger *loggerptr);
+	EntityManager(class Logger *loggerptr);
 
 
 
@@ -175,7 +175,7 @@ protected:
 
 private:
 
-	class GameLogger *logger;
+	class Logger *logger;
 
 	unsigned int entityID;
 

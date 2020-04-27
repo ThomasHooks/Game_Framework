@@ -80,7 +80,7 @@ protected:
 
 
 	//Gets the Logger
-	class GameLogger& getLogger();
+	class Logger& getLogger();
 
 
 

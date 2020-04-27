@@ -13,7 +13,7 @@
 
 #include <string>
 
-#include "GameLogger.h"
+#include "Logger.h"
 #include "physics/Dimension.h"
 
 
@@ -29,7 +29,7 @@ public:
 
 
 
-	GameBuilder& setLoggerLevel(EnumLogLevel levelIn);
+	GameBuilder& setLoggerLevel(Logger::Level levelIn);
 
 
 
@@ -55,7 +55,7 @@ public:
 
 protected:
 
-	EnumLogLevel logLevel;
+	Logger::Level logLevel;
 
 	std::string logFileLocation;
 

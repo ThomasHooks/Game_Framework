@@ -1,44 +1,68 @@
 //============================================================================
-// Name       		: GameLogger.h
+// Name       		: Logger
 // Author     		: Thomas Hooks
-// Last Modified	: 04/02/2020
+// Last Modified	: 04/20/2020
 //============================================================================
 
 
 
 
-#ifndef SRC_GAME_LOGGER_H_
-#define SRC_GAME_LOGGER_H_
+#ifndef LOGGER_H_
+#define LOGGER_H_
 
 
-#include <iostream>
-#include <memory>
-
-#include "EnumLogLevel.h"
-#include "EnumLogOutput.h"
+#include <string>
 
 
-class GameLogger {
+
+
+class Logger {
 
 public:
 
-	GameLogger(EnumLogLevel levelIn);
+	enum struct Level : unsigned char {
+
+		NONE = 0,	//Nothing will be logged
+
+		FATAL,		//Issues that cause the application to abort
+
+		ERROR,		//Issues that interfere with application operation
+
+		WARNING,	//Unusual application operation
+
+		INFO,		//Routine application operation
+
+		TRACE		//Information to perform diagnostics
+	};
 
 
 
-	GameLogger(EnumLogLevel levelIn, std::string fileLocation);
+	enum struct Output : unsigned char {
+
+		CONSOLE = 0,	//Outputs to the console window
+
+		TXT_FILE		//Outputs to the log.txt file
+	};
 
 
 
-	~GameLogger();
+	Logger(Level levelIn);
 
 
 
-	GameLogger(const GameLogger &other) = delete;
+	Logger(Level levelIn, std::string fileLocation);
 
 
 
-	GameLogger(GameLogger &&other) = delete;
+	~Logger();
+
+
+
+	Logger(const Logger &other) = delete;
+
+
+
+	Logger(Logger &&other) = delete;
 
 
 
@@ -51,7 +75,7 @@ public:
 	 *
 	 * This method will log a message if its level is at or below the logging level
 	 */
-	void message(EnumLogLevel levelIn, const std::string &message, EnumLogOutput outputIn);
+	void message(Level levelIn, const std::string &message, Output outputIn);
 
 
 
@@ -60,7 +84,7 @@ public:
 	 *
 	 * Gets the current logging level for this logger
 	 */
-	EnumLogLevel getLogLevel() const;
+	Level getLogLevel() const;
 
 
 
@@ -70,7 +94,7 @@ public:
 	 * Changes the logging level
 	 * Only messages that are at or above the logging level will be displayed
 	 */
-	void setLogLevel(EnumLogLevel levelIn);
+	void setLogLevel(Level levelIn);
 
 
 
@@ -85,7 +109,7 @@ public:
 
 private:
 
-	EnumLogLevel _level;
+	Level _level;
 
 	std::string filePath;
 
@@ -101,7 +125,7 @@ private:
 };
 
 
-#endif /* SRC_GAME_LOGGER_H_ */
+#endif /* LOGGER_H_ */
 
 
 

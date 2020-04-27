@@ -1,43 +1,43 @@
 //============================================================================
-// Name       		: GameLogger.cpp
+// Name       		: Logger
 // Author     		: Thomas Hooks
-// Last Modified	: 04/02/2020
+// Last Modified	: 04/20/2020
 //============================================================================
 
 
 
+
+#include "Logger.h"
 
 #include <iostream>
 #include <fstream>
 #include <chrono>
 #include <ctime>
 
-#include "GameLogger.h"
 
 
 
-
-GameLogger::GameLogger(EnumLogLevel levelIn)
+Logger::Logger(Level levelIn)
 	: _level(levelIn),
 	  filePath("./log.txt") {
 
-	message(EnumLogLevel::INFO, "Logging started", EnumLogOutput::TXT_FILE);
+	message(Level::INFO, "Logging started", Output::TXT_FILE);
 }
 
 
 
-GameLogger::GameLogger(EnumLogLevel levelIn, std::string fileLocation)
+Logger::Logger(Level levelIn, std::string fileLocation)
 	: _level(levelIn),
 	  filePath(fileLocation) {
 
-	message(EnumLogLevel::INFO, "Logging started", EnumLogOutput::TXT_FILE);
+	message(Level::INFO, "Logging started", Output::TXT_FILE);
 }
 
 
 
-GameLogger::~GameLogger() {
+Logger::~Logger() {
 
-	message(EnumLogLevel::INFO, "Logging stopped", EnumLogOutput::TXT_FILE);
+	message(Level::INFO, "Logging stopped", Output::TXT_FILE);
 	writeToFile("\n\n");
 }
 
@@ -52,9 +52,9 @@ GameLogger::~GameLogger() {
  *
  * This method will log a message if its level is at or below the logging level
  */
-void GameLogger::message(EnumLogLevel levelIn, const std::string &message, EnumLogOutput outputIn){
+void Logger::message(Level levelIn, const std::string &message, Output outputIn){
 
-	if(levelIn != EnumLogLevel::NONE && levelIn <= this->_level) {
+	if(levelIn != Level::NONE && levelIn <= this->_level) {
 
 		auto end = std::chrono::system_clock::now();
 		std::time_t end_time = std::chrono::system_clock::to_time_t(end);
@@ -63,11 +63,11 @@ void GameLogger::message(EnumLogLevel levelIn, const std::string &message, EnumL
 
 		switch(outputIn) {
 
-		case EnumLogOutput::CONSOLE:
+		case Output::CONSOLE:
 			std::cout << logLevel[static_cast<int>(levelIn)] << message <<  ": " << timeStamp;
 			break;
 
-		case EnumLogOutput::TXT_FILE:
+		case Output::TXT_FILE:
 			writeToFile(logLevel[static_cast<int>(levelIn)] + message +  ": " + timeStamp);
 			break;
 
@@ -84,7 +84,7 @@ void GameLogger::message(EnumLogLevel levelIn, const std::string &message, EnumL
  *
  * Gets the current logging level for this logger
  */
-EnumLogLevel GameLogger::getLogLevel() const {
+Logger::Level Logger::getLogLevel() const {
 	return this->_level;
 }
 
@@ -96,7 +96,7 @@ EnumLogLevel GameLogger::getLogLevel() const {
  * Changes the logging level
  * Only messages that are at or above the logging level will be displayed
  */
-void GameLogger::setLogLevel(enum EnumLogLevel levelIn){
+void Logger::setLogLevel(enum Level levelIn){
 	this->_level = levelIn;
 }
 
@@ -107,7 +107,7 @@ void GameLogger::setLogLevel(enum EnumLogLevel levelIn){
  *
  * Changes the log file's location
  */
-void GameLogger::setFilePath(const std::string &filePathIn){
+void Logger::setFilePath(const std::string &filePathIn){
 	this->filePath = filePathIn;
 }
 
@@ -119,7 +119,7 @@ void GameLogger::setFilePath(const std::string &filePathIn){
  * Writes a message in the log file set by the user
  * The default log file location is './log.txt'
  */
-void GameLogger::writeToFile(const std::string &message){
+void Logger::writeToFile(const std::string &message){
 
 	std::ofstream logFile;
 	logFile.open(this->filePath, std::ios::out | std::ios::app);

@@ -13,7 +13,7 @@
 
 
 GameBuilder::GameBuilder()
-	: logLevel(EnumLogLevel::TRACE),
+	: logLevel(Logger::Level::TRACE),
 	  logFileLocation("./log.txt"),
 	  windowName(""),
 	  windowSize(640, 480),
@@ -26,7 +26,7 @@ GameBuilder::~GameBuilder() {}
 
 
 
-GameBuilder& GameBuilder::setLoggerLevel(EnumLogLevel levelIn){
+GameBuilder& GameBuilder::setLoggerLevel(Logger::Level levelIn){
 	this->logLevel = levelIn;
 	return *this;
 }
