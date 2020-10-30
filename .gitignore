@@ -24,7 +24,6 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 
@@ -40,3 +39,5 @@ log.txt
 Debug/
 Default/
 Release/
+imt/
+.vs/
