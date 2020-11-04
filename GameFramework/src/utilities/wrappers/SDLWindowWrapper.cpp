@@ -57,11 +57,8 @@ int filterEventCallback(void *userdata, SDL_Event * event)
 
 
 
-SDLWindowWrapper::SDLWindowWrapper(Logger* logger_ptr, const std::string &title, const Dimension &sizeIn, Uint32 flags)
-	: size(sizeIn.width, sizeIn.height),
-	  window(nullptr),
-	  m_winData(title, sizeIn.width, sizeIn.height),
-	  logger(logger_ptr)
+SDLWindowWrapper::SDLWindowWrapper(Logger* logger_ptr, const std::string& title, const Dimension& sizeIn, unsigned int flags)
+	: size(sizeIn.width, sizeIn.height), window(nullptr), m_winData(title, sizeIn.width, sizeIn.height), logger(logger_ptr)
 {
 	logger->message(Logger::Level::INFO, "Initializing Window", Logger::Output::TXT_FILE);
 

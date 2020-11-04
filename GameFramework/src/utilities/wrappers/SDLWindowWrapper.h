@@ -34,10 +34,7 @@ class SDLWindowWrapper
 {
 public:
 
-	SDLWindowWrapper(class Logger* logger_ptr,
-			const std::string &title,
-			const Dimension &sizeIn,
-			unsigned int flags);
+	SDLWindowWrapper(class Logger* logger_ptr, const std::string &title, const Dimension &sizeIn, unsigned int flags);
 
 
 

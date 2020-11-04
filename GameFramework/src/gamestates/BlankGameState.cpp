@@ -3,7 +3,7 @@
 #include "BlankGameState.h"
 #include "../audiomixer/AudioMixer.h"
 #include "../entities/EntityManager.h"
-#include "../Game.h"
+#include "Game.hpp"
 #include "../entities/PlayerEntity.h"
 #include "../renderer/Renderer.h"
 #include "../world/TileMap.h"

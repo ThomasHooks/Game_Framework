@@ -206,7 +206,7 @@
     <ClInclude Include="src\world\WorldStack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game.h">
+    <ClInclude Include="src\Game.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

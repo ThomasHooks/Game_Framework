@@ -197,7 +197,7 @@
     <ClInclude Include="src\events\IEvent.hpp" />
     <ClInclude Include="src\events\KeyboardEvent.hpp" />
     <ClInclude Include="src\events\WindowEvent.hpp" />
-    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Game.hpp" />
     <ClInclude Include="src\gamestates\BlankGameState.h" />
     <ClInclude Include="src\gamestates\IGameState.h" />
     <ClInclude Include="src\renderer\Renderer.h" />

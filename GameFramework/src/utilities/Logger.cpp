@@ -31,7 +31,7 @@ Logger::Logger(Level levelIn, std::string fileLocation)
 Logger::~Logger() {
 
 	message(Level::INFO, "Logging stopped", Output::TXT_FILE);
-	writeToFile("\n\n");
+	//writeToFile("\n\n");
 }
 
 

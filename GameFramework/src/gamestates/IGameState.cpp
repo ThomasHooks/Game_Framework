@@ -11,7 +11,7 @@
 
 #include "../audiomixer/AudioMixer.h"
 #include "../entities/EntityManager.h"
-#include "../Game.h"
+#include "Game.hpp"
 #include "../renderer/Renderer.h"
 #include "../world/TileMap.h"
 #include "../utilities/GameCamera.h"

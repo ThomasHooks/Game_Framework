@@ -106,10 +106,10 @@ private:
 	int subscribe_impl(Callback<EventType> listener)
 	{
 		EventID handlerID = IEvent<EventType>::type();
-		if (handlerID >= this->handlers.size())
-			this->handlers.push_back(std::make_unique<EventDispatcher>());
+		if (handlerID >= m_handlers.size())
+			m_handlers.push_back(std::make_unique<EventDispatcher>());
 
-		int listernerID = this->handlers[handlerID]->subscribe<EventType>(listener);
+		int listernerID = m_handlers[handlerID]->subscribe<EventType>(listener);
 		return listernerID;
 	}
 
@@ -119,10 +119,10 @@ private:
 	void unsubscribe_impl(int listenerID)
 	{
 		EventID handlerID = IEvent<EventType>::type();
-		if (handlerID >= this->handlers.size())
-			this->handlers.push_back(std::make_unique<EventDispatcher>());
+		if (handlerID >= m_handlers.size())
+			m_handlers.push_back(std::make_unique<EventDispatcher>());
 
-		this->handlers[handlerID]->unsubscribe(listenerID);
+		m_handlers[handlerID]->unsubscribe(listenerID);
 	}
 
 
@@ -131,10 +131,10 @@ private:
 	void publish_impl(TArgs... mArgs)
 	{
 		EventID handlerID = IEvent<EventType>::type();
-		if (handlerID >= this->handlers.size())
-			this->handlers.push_back(std::make_unique<EventDispatcher>());
+		if (handlerID >= m_handlers.size())
+			m_handlers.push_back(std::make_unique<EventDispatcher>());
 
-		this->handlers[handlerID]->publish<EventType>((mArgs)...);
+		m_handlers[handlerID]->publish<EventType>((mArgs)...);
 	}
 
 
@@ -144,10 +144,10 @@ private:
 	{
 		//The template is only here to ensure that the specified EventDispatcher actually exists
 		EventID handlerID = IEvent<EventType>::type();
-		if (handlerID >= this->handlers.size())
-			this->handlers.push_back(std::make_unique<EventDispatcher>());
+		if (handlerID >= m_handlers.size())
+			m_handlers.push_back(std::make_unique<EventDispatcher>());
 
-		this->handlers[handlerID]->dispatchAllEvents();
+		m_handlers[handlerID]->dispatchAllEvents();
 	}
 
 
@@ -156,7 +156,7 @@ private:
 
 
 
-	std::vector<std::unique_ptr<EventDispatcher>> handlers;
+	std::vector<std::unique_ptr<EventDispatcher>> m_handlers;
 };
 
 

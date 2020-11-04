@@ -23,7 +23,7 @@ void EventBus::dispatchAllEvents()
 
 void EventBus::dispatchAllEvents_impl()
 {
-	for (auto& itr : this->handlers)
+	for (auto& itr : m_handlers)
 		itr->dispatchAllEvents();
 }
 
