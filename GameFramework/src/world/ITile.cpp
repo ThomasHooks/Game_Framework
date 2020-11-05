@@ -1,54 +1,46 @@
-//============================================================================
-// Name       		: ITile.cpp
-// Author     		: Thomas Hooks
-// Last Modified	: 03/21/2020
-//============================================================================
-
-
-
-
 #include "ITile.h"
 
 
 
 
 ITile::ITile(double x, double y, double w, double h, const Dimension &spriteIn, EnumSide direction, bool opaqueIn, bool solidIn)
-	: pos(x, y),
-	  boundingBox(x, y, x + w, y + h),
-	  opaque(opaqueIn),
-	  solid(solidIn),
-	  pass(direction),
-	  sprite(spriteIn.width, spriteIn.height) {}
+	: pos(x, y), boundingBox(x, y, x + w, y + h), opaque(opaqueIn), solid(solidIn), pass(direction), sprite(spriteIn.width, spriteIn.height) 
+{}
 
 
 
-ITile::~ITile() {}
+ITile::~ITile() 
+{}
 
 
 
 //Gets this Tile's current position in Global-Space
-const Position& ITile::getPos() const {
+const Position& ITile::getPos() const 
+{
 	return this->pos;
 }
 
 
 
 //Gets this Tile's axis aligned bounding box
-const AABB& ITile::getAabb() const {
+const AABB& ITile::getAabb() const 
+{
 	return this->boundingBox;
 }
 
 
 
 //Gets this Tile's current sprite
-const Dimension& ITile::getSprite() const {
+const Dimension& ITile::getSprite() const 
+{
 	return this->sprite;
 }
 
 
 
 //Checks if this Tile has collision
-bool ITile::canCollide() const {
+bool ITile::canCollide() const 
+{
 	return this->solid;
 }
 
@@ -59,14 +51,16 @@ bool ITile::canCollide() const {
  *
  * Sets this Tile collision state
  */
-void ITile::setCollide(bool stateIn) {
+void ITile::setCollide(bool stateIn) 
+{
 	this->solid = stateIn;
 }
 
 
 
 //Checks if this Tile can be rendered
-bool ITile::isOpaque() const {
+bool ITile::isOpaque() const 
+{
 	return this->opaque;
 }
 
@@ -77,7 +71,8 @@ bool ITile::isOpaque() const {
  *
  * Sets if this Tile can be seen
  */
-void ITile::setOpaque(bool stateIn){
+void ITile::setOpaque(bool stateIn)
+{
 	this->opaque = stateIn;
 }
 
@@ -90,7 +85,8 @@ void ITile::setOpaque(bool stateIn){
  *
  * Checks if the given side of the Tile is passable
  */
-bool ITile::isPassable(EnumSide direction) const {
+bool ITile::isPassable(EnumSide direction) const 
+{
 	return this->pass == direction;
 }
 
@@ -101,8 +97,9 @@ bool ITile::isPassable(EnumSide direction) const {
  *
  * Checks if this Tile is impassable
  */
-bool ITile::isImpassable() const{
-	return this->pass == EnumSide::NONE ? true : false;
+bool ITile::isImpassable() const
+{
+	return this->pass == EnumSide::NONE;
 }
 
 

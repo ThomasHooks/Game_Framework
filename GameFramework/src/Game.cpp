@@ -1,4 +1,6 @@
 #include <SDL.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include "Game.hpp"
 #include "events/EventBus.hpp"
@@ -13,7 +15,6 @@
 #include "utilities/GameCamera.h"
 #include "utilities/GameTimer.h"
 #include "utilities/GameBuilder.h"
-#include "utilities/Logger.h"
 #include "utilities/wrappers/SDLWindowWrapper.h"
 #include "world/WorldStack.h"
 
@@ -23,14 +24,19 @@
 Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32_t flags, int MaxFPS)
 		: gameOver(false), hasBeenInit(false), tickRate(20) 
 {
-	this->logger = std::make_unique<Logger>(Logger::Level::TRACE);
-	this->renderer = std::make_unique<Renderer>(this->logger.get());
-	this->audioManager = std::make_unique<AudioMixer>(this->logger.get());
-	this->worlds = std::make_unique<WorldStack>(this->logger.get());
-	this->entityManager = std::make_unique<EntityManager>(this->logger.get());
+	spdlog::set_pattern("%^[%l] %n: %v - %x %T%$");
+	auto fileLogger = spdlog::basic_logger_mt("fileLogger", "logs/log.txt");
+	fileLogger->set_level(spdlog::level::trace);
+	fileLogger->info("Logging started");
+	m_logger = fileLogger;
+
+	this->renderer = std::make_unique<Renderer>();
+	this->audioManager = std::make_unique<AudioMixer>();
+	this->worlds = std::make_unique<WorldStack>();
+	this->entityManager = std::make_unique<EntityManager>();
 	this->timer = std::make_unique<GameTimer>();
 
-	getLogger().message(Logger::Level::INFO, "Initializing SDL Video and Audio", Logger::Output::TXT_FILE);
+	m_logger->info("Initializing SDL Video and Audio");
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	initWindow(titleIn, windowWidth, windowHeight, flags);
@@ -54,15 +60,15 @@ Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32
 			switch (e.action())
 			{
 			case KeyboardEvent::Action::PRESS:
-				this->getLogger().message(Logger::Level::INFO, "Key pressed: " + std::to_string(e.getKeyCode()), Logger::Output::CONSOLE);
+				spdlog::get("fileLogger")->info("KeyboardEvent: keycode {0}, PRESS", e.getKeyCode());
 				break;
 
 			case KeyboardEvent::Action::RELEASE:
-				this->getLogger().message(Logger::Level::INFO, "Key release: " + std::to_string(e.getKeyCode()), Logger::Output::CONSOLE);
+				spdlog::get("fileLogger")->info("KeyboardEvent: keycode {0}, RELEASE", e.getKeyCode());
 				break;
 
 			case KeyboardEvent::Action::REPEAT:
-				this->getLogger().message(Logger::Level::INFO, "Key repeat: " + std::to_string(e.getKeyCode()), Logger::Output::CONSOLE);
+				spdlog::get("fileLogger")->info("KeyboardEvent: keycode {0}, REPEAT", e.getKeyCode());
 				break;
 
 			default:
@@ -79,7 +85,7 @@ Game::Game(const std::string &titleIn, int windowHeight, int windowWidth, uint32
 Game::~Game() 
 {
 	EventBus::unsubscribe<WindowEvent>(m_onWindowEvent);
-	getLogger().message(Logger::Level::INFO, "Terminating SDL", Logger::Output::TXT_FILE);
+	m_logger->info("Terminating SDL");
 	SDL_Quit();
 }
 
@@ -89,9 +95,9 @@ void Game::initWindow(const std::string &titleIn, int widthIn, int heightIn, uin
 {
 	if (!this->hasBeenInit) 
 	{
-		this->windowWrap = std::make_unique<SDLWindowWrapper>(this->logger.get(), titleIn, Dimension(widthIn, heightIn), flags);
+		this->windowWrap = std::make_unique<SDLWindowWrapper>(titleIn, Dimension(widthIn, heightIn), flags);
 		this->getRenderManager().init(this->windowWrap->get());
-		this->cameraWrap = std::make_unique<GameCamera>(this->logger.get(), this->windowWrap.get());
+		this->cameraWrap = std::make_unique<GameCamera>(this->windowWrap.get());
 		this->hasBeenInit = true;
 	}
 }
@@ -102,7 +108,7 @@ void Game::run()
 {
 	if (!hasBeenInit) 
 	{
-		getLogger().message(Logger::Level::FATAL, "Game has not been initialized", Logger::Output::TXT_FILE);
+		m_logger->error("Game has not been initialized");
 		markOver();
 	}
 
@@ -112,7 +118,7 @@ void Game::run()
 		TileMap* world = getWorldStack().getWorld();
 		if(world == nullptr) 
 		{
-			getLogger().message(Logger::Level::FATAL, "Null Pointer exception: Tried to get a null World!", Logger::Output::TXT_FILE);
+			m_logger->error("Null Pointer exception: Tried to get a null World!");
 			markOver();
 		}
 		else 
@@ -138,7 +144,7 @@ void Game::addState(IGameState* stateIn)
 {
 	if(stateIn == nullptr)
 	{
-		logger->message(Logger::Level::ERROR, "Null Pointer exception: Tried to add a null State!", Logger::Output::TXT_FILE);
+		m_logger->error("Null Pointer exception: Tried to add a null State!");
 		return;
 	}
 	this->states.emplace_back(std::unique_ptr<IGameState>(stateIn));
@@ -153,7 +159,7 @@ void Game::removeState()
 {
 	if(this->states.empty()) 
 	{
-		logger->message(Logger::Level::WARNING, "Tried to remove State but there are none!", Logger::Output::TXT_FILE);
+		m_logger->warn("Tried to remove State but there are none!");
 		return;
 	}
 	this->states.pop_back();
@@ -170,7 +176,7 @@ bool Game::isOver() const
 
 void Game::markOver() 
 {
-	logger->message(Logger::Level::INFO, "Quitting Game", Logger::Output::TXT_FILE);
+	m_logger->info("Quitting Game");
 	this->gameOver = true;
 }
 
@@ -184,13 +190,6 @@ bool Game::isKeyPressed(int scancode)
 		return keyState[abs(scancode)];
 	else
 		return false;
-}
-
-
-
-Logger& Game::getLogger() 
-{
-	return *this->logger.get();
 }
 
 
@@ -255,7 +254,7 @@ bool Game::isNullState() const
 {
 	if(this->states.empty()) 
 	{
-		logger->message(Logger::Level::FATAL, "Game is in an unknown state!", Logger::Output::TXT_FILE);
+		m_logger->error("Game is in an unknown state!");
 		return true;
 	}
 	else 

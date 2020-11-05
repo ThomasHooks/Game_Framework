@@ -4,35 +4,33 @@
 
 #include "AudioMixer.h"
 #include "utilities/GameCamera.h"
-#include "../utilities/Logger.h"
-#include "../utilities/physics/Position.h"
-#include "../utilities/wrappers/SDLMixChunkWrapper.h"
+#include "utilities/physics/Position.h"
+#include "utilities/wrappers/SDLMixChunkWrapper.h"
 
 
 
 
-AudioMixer::AudioMixer(Logger *loggerPtr)
-	: logger(loggerPtr),
-	  hasBeenInit(false) {
-
-	logger->message(Logger::Level::INFO, "Starting Audio Manager", Logger::Output::TXT_FILE);
+AudioMixer::AudioMixer()
+	: m_hasBeenInit(false) 
+{
+	m_logger = Loggers::getLog();
+	m_logger->info("Starting Audio Manager");
 }
 
 
 
-AudioMixer::~AudioMixer() {
-
-	logger->message(Logger::Level::INFO, "Stopping Audio Manager", Logger::Output::TXT_FILE);
+AudioMixer::~AudioMixer() 
+{
+	m_logger->info("Stopping Audio Manager");
 	deregisterAllSamples();
 
-	logger->message(Logger::Level::INFO, "Unloading dynamic mixer libraries", Logger::Output::TXT_FILE);
-	while(Mix_Init(0)) {
+	m_logger->info("Unloading dynamic mixer libraries");
+	while(Mix_Init(0)) 
 		Mix_Quit();
-	}
 
-	logger->message(Logger::Level::INFO, "Quitting SDL Mixer", Logger::Output::TXT_FILE);
+	m_logger->info("Quitting SDL Mixer");
 	Mix_CloseAudio();
-	logger->message(Logger::Level::INFO, "Audio Manager stopped", Logger::Output::TXT_FILE);
+	m_logger->info("Audio Manager stopped");
 }
 
 
@@ -47,30 +45,33 @@ AudioMixer::~AudioMixer() {
  *
  * Initializes this Audio Manager
  */
-bool AudioMixer::init() {
-
-	if(!this->hasBeenInit) {
-		logger->message(Logger::Level::INFO, "Initializing Audio Manager", Logger::Output::TXT_FILE);
+bool AudioMixer::init() 
+{
+	if(!m_hasBeenInit) 
+	{
+		m_logger->info("Initializing Audio Manager");
 
 		int formats = MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG;
 		int mixerFlag = Mix_Init(formats);
-		if((mixerFlag & formats) != formats) {
+		if((mixerFlag & formats) != formats) 
+		{
 			std::string mixerErrorCode = Mix_GetError();
-			logger->message(Logger::Level::ERROR, "SDL Mixer failed to initialize! Error Code: " + mixerErrorCode, Logger::Output::TXT_FILE);
+			m_logger->error("SDL Mixer failed to initialize! Error Code: {0}", mixerErrorCode);
 			return false;
 		}
 
 		Mix_AllocateChannels(NUMBEROFCHANNELS);
 
 		mixerFlag = Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
-		if(mixerFlag == -1) {
+		if(mixerFlag == -1) 
+		{
 			std::string mixerErrorCode = Mix_GetError();
-			logger->message(Logger::Level::ERROR, "SDL Mixer failed to initialize! Error Code: " + mixerErrorCode, Logger::Output::TXT_FILE);
+			m_logger->error("SDL Mixer failed to initialize! Error Code: {0}", mixerErrorCode);
 			return false;
 		}
 
-		this->hasBeenInit = true;
-		logger->message(Logger::Level::INFO, "Audio Manager has been initialized", Logger::Output::TXT_FILE);
+		m_hasBeenInit = true;
+		m_logger->info("Audio Manager has been initialized");
 	}
 	return true;
 }
@@ -87,29 +88,32 @@ bool AudioMixer::init() {
  *
  * Register an audio sample to the Audio Manager
  */
-bool AudioMixer::registerSample(const std::string &tag, const std::string &location) {
-
-	if(!this->hasBeenInit) {
-		logger->message(Logger::Level::ERROR, "Mixer has not been initialized cannot register samples!", Logger::Output::TXT_FILE);
+bool AudioMixer::registerSample(const std::string &tag, const std::string &location) 
+{
+	if(!m_hasBeenInit) 
+	{
+		m_logger->error("Mixer has not been initialized cannot register samples!");
 		return false;
 	}
 
-	logger->message(Logger::Level::INFO, "Registering sample '" + tag + "' at '" + location + "'", Logger::Output::TXT_FILE);
-	auto itr = this->samples.insert({tag, std::make_unique<SDLMixChunkWrapper>(location)});
-	if(!itr.second) {
+	m_logger->info("Registering sample '{0}' at {1}", tag, location);
+	auto itr = m_samples.insert({tag, std::make_unique<SDLMixChunkWrapper>(location)});
+	if(!itr.second) 
+	{
 		//Tag isn't unique
-		logger->message(Logger::Level::ERROR, "The sample was not registered tag: '" + tag + "' is not unique!", Logger::Output::TXT_FILE);
+		m_logger->error("The sample was not registered tag: '{0}' is not unique!", tag);
 		return itr.second;
 	}
-	if(itr.first->second->get() == nullptr) {
+	if(itr.first->second->get() == nullptr) 
+	{
 		//Failed to load the audio file
 		std::string mixerErrorCode = Mix_GetError();
-		logger->message(Logger::Level::ERROR, "Could not load sample '" + tag + "' at '" + location + "' Error Code: " + mixerErrorCode, Logger::Output::TXT_FILE);
-		this->samples.erase(tag);
+		m_logger->error("Could not load sample '{0}' at '{1}', Error message: {2}", tag, location, mixerErrorCode);
+		m_samples.erase(tag);
 		return false;
 	}
 
-	logger->message(Logger::Level::INFO, "Sample '" + tag + "' has been registered", Logger::Output::TXT_FILE);
+	m_logger->info("Sample '{0}' has been registered", tag);
 	return itr.second;
 }
 
@@ -122,36 +126,38 @@ bool AudioMixer::registerSample(const std::string &tag, const std::string &locat
  *
  * Deregister the audio sample specified by its tag
  */
-bool AudioMixer::deregisterSample(const std::string &tag) {
-
-	if(!this->hasBeenInit) {
-		logger->message(Logger::Level::ERROR, "Mixer has not been initialized cannot deregister samples!", Logger::Output::TXT_FILE);
+bool AudioMixer::deregisterSample(const std::string &tag) 
+{
+	if(!m_hasBeenInit) 
+	{
+		m_logger->error("Mixer has not been initialized cannot deregister samples!");
 		return false;
 	}
-
-	logger->message(Logger::Level::INFO, "Deregistering sample '" + tag + "'", Logger::Output::TXT_FILE);
-	this->samples.erase(tag);
-	logger->message(Logger::Level::INFO, "Sample '" + tag +"' has been deregistered", Logger::Output::TXT_FILE);
+	m_logger->info("Deregistering sample '{0}'", tag);
+	m_samples.erase(tag);
+	m_logger->info("Sample '{0}' has been deregistered", tag);
 	return true;
 }
 
 
 
 //Deregister all audio samples in the Audio Manager
-void AudioMixer::deregisterAllSamples() {
-
-	if(!this->hasBeenInit) {
-		logger->message(Logger::Level::ERROR, "Mixer has not been initialized cannot deregister sample!", Logger::Output::TXT_FILE);
+void AudioMixer::deregisterAllSamples() 
+{
+	if(!m_hasBeenInit) 
+	{
+		m_logger->error("Mixer has not been initialized cannot deregister sample!");
 		return;
 	}
 
-	logger->message(Logger::Level::INFO, "Deregistering all samples", Logger::Output::TXT_FILE);
-	auto itr = this->samples.begin();
-	while(itr != this->samples.end()) {
+	m_logger->info("Deregistering all samples");
+	auto itr = m_samples.begin();
+	while(itr != m_samples.end()) 
+	{
 		std::string tag = itr->first;
-		logger->message(Logger::Level::INFO, "Deregistering sample '" + tag + "'", Logger::Output::TXT_FILE);
-		itr = this->samples.erase(itr);
-		logger->message(Logger::Level::INFO, "Sample '" + tag + "' has been deregistered", Logger::Output::TXT_FILE);
+		m_logger->info("Deregistering sample '{0}'", tag);
+		itr = m_samples.erase(itr);
+		m_logger->info("Sample '{0}' has been deregistered", tag);
 	}
 }
 
@@ -164,7 +170,8 @@ void AudioMixer::deregisterAllSamples() {
  *
  * Plays an audio sample given by its tag once
  */
-int AudioMixer::playSample(const std::string &tag) {
+int AudioMixer::playSample(const std::string &tag) 
+{
 	return playSample(tag, -1, 0, -1);
 }
 
@@ -181,7 +188,8 @@ int AudioMixer::playSample(const std::string &tag) {
  *
  * Plays an audio sample given by its tag
  */
-int AudioMixer::playSample(const std::string &tag, int loops) {
+int AudioMixer::playSample(const std::string &tag, int loops) 
+{
 	return playSample(tag, -1, loops, -1);
 }
 
@@ -200,10 +208,11 @@ int AudioMixer::playSample(const std::string &tag, int loops) {
  *
  * Plays an audio sample given by its tag
  */
-int AudioMixer::playSample(const std::string &tag, int loops, float volume) {
-
+int AudioMixer::playSample(const std::string &tag, int loops, float volume) 
+{
 	int channel = playSample(tag, -1, loops, -1);
-	if(channel != -1) setChannelVolume(channel, volume);
+	if(channel != -1) 
+		setChannelVolume(channel, volume);
 	return channel;
 }
 
@@ -218,7 +227,8 @@ int AudioMixer::playSample(const std::string &tag, int loops, float volume) {
  *
  * Plays an audio sample given by its tag for a certain amount of time
  */
-int AudioMixer::playSample(const std::string &tag, uint32_t ticks) {
+int AudioMixer::playSample(const std::string &tag, uint32_t ticks) 
+{
 	return playSample(tag, -1, -1, ticks);
 }
 
@@ -235,10 +245,11 @@ int AudioMixer::playSample(const std::string &tag, uint32_t ticks) {
  *
  * Plays an audio sample given by its tag for a certain amount of time
  */
-int AudioMixer::playSample(const std::string &tag, uint32_t ticks, float volume) {
-
+int AudioMixer::playSample(const std::string &tag, uint32_t ticks, float volume) 
+{
 	int channel = playSample(tag, -1, -1, ticks);
-	if(channel != -1) setChannelVolume(channel, volume);
+	if(channel != -1) 
+		setChannelVolume(channel, volume);
 	return channel;
 }
 
@@ -253,10 +264,11 @@ int AudioMixer::playSample(const std::string &tag, uint32_t ticks, float volume)
  *
  * Plays an audio sample given by its tag once at the given volume
  */
-int AudioMixer::playSample(const std::string &tag, float volume) {
-
+int AudioMixer::playSample(const std::string &tag, float volume) 
+{
 	int channel = playSample(tag, -1, 0, -1);
-	if(channel != -1) setChannelVolume(channel, volume);
+	if(channel != -1) 
+		setChannelVolume(channel, volume);
 	return channel;
 }
 
@@ -275,11 +287,11 @@ int AudioMixer::playSample(const std::string &tag, float volume) {
  *
  * Plays an audio sample given by its tag once at the given position and volume
  */
-int AudioMixer::playSample(const GameCamera &camera, const Position &origin, const std::string &tag, float volume) {
-
+int AudioMixer::playSample(const GameCamera &camera, const Position &origin, const std::string &tag, float volume) 
+{
 	int channel = playSample(tag, -1, 0, -1);
-	if(channel != -1) {
-
+	if(channel != -1) 
+	{
 		Position listener(camera.getPos().xPos(), camera.getPos().yPos());
 
 		/*
@@ -298,7 +310,8 @@ int AudioMixer::playSample(const GameCamera &camera, const Position &origin, con
 		//The distance factor ranges from 0(near) to 255(far)
 		double distance = std::sqrt(std::pow(listener.xPos() - origin.xPos(), 2.0) + std::pow(listener.yPos() - origin.yPos(), 2.0));
 		Uint8 distanceFactor = static_cast<Uint8>(std::abs(distance/15.938) + 0.5);
-		if(distanceFactor > 255) distanceFactor = 255;
+		if(distanceFactor > 255) 
+			distanceFactor = 255;
 
 		Mix_SetPosition(channel, angle, distanceFactor);
 		setChannelVolume(channel, volume);
@@ -315,16 +328,18 @@ int AudioMixer::playSample(const GameCamera &camera, const Position &origin, con
  *
  * Sets the volume that the given audio sample will be played at
  */
-void AudioMixer::setSampleVolume(const std::string &tag, float volume) {
-
-	if(!this->hasBeenInit) {
-		logger->message(Logger::Level::ERROR, "Mixer has not been initialized cannot set volume!", Logger::Output::TXT_FILE);
+void AudioMixer::setSampleVolume(const std::string &tag, float volume) 
+{
+	if(!m_hasBeenInit) 
+	{
+		m_logger->error("Mixer has not been initialized cannot set volume!");
 		return;
 	}
 
 	SDLMixChunkWrapper *sample = getSample(tag);
-	if(sample == nullptr) {
-		logger->message(Logger::Level::ERROR, "Cannot set the volume for sample, '" + tag + "' sample cannot be found!", Logger::Output::TXT_FILE);
+	if(sample == nullptr) 
+	{
+		m_logger->error("Cannot set the volume for sample, '{0}' sample cannot be found!", tag);
 		return;
 	}
 
@@ -340,7 +355,8 @@ void AudioMixer::setSampleVolume(const std::string &tag, float volume) {
  *
  * Sets the volume that the given channel will be played at
  */
-void AudioMixer::setChannelVolume(int channel, float volume) {
+void AudioMixer::setChannelVolume(int channel, float volume) 
+{
 	std::abs(volume) > 1.0f ? Mix_Volume(channel, 128) : Mix_Volume(channel, static_cast<int>(128.0f * std::abs(volume) + 0.5f));
 }
 
@@ -351,7 +367,8 @@ void AudioMixer::setChannelVolume(int channel, float volume) {
  *
  * Gets the volume of the given channel
  */
-int AudioMixer::getChannelVolume(int channel) const {
+int AudioMixer::getChannelVolume(int channel) const 
+{
 	return Mix_Volume(channel, -1);
 }
 
@@ -362,7 +379,8 @@ int AudioMixer::getChannelVolume(int channel) const {
  *
  * Stops the given channel
  */
-void AudioMixer::stopChannel(int channel) {
+void AudioMixer::stopChannel(int channel) 
+{
 	Mix_HaltChannel(channel);
 }
 
@@ -375,7 +393,8 @@ void AudioMixer::stopChannel(int channel) {
  *
  * Stops the given channel
  */
-void AudioMixer::stopChannel(int channel, int ticks) {
+void AudioMixer::stopChannel(int channel, int ticks) 
+{
 	Mix_ExpireChannel(channel, ticks);
 }
 
@@ -387,7 +406,8 @@ void AudioMixer::stopChannel(int channel, int ticks) {
  * Pauses the given channel
  * only channels that are currently playing can be paused
  */
-void AudioMixer::pauseChannel(int channel) {
+void AudioMixer::pauseChannel(int channel) 
+{
 	Mix_Pause(channel);
 }
 
@@ -399,7 +419,8 @@ void AudioMixer::pauseChannel(int channel) {
  * Unpause the given channel
  * only channels that are currently paused can be unpaused
  */
-void AudioMixer::unpauseChannel(int channel) {
+void AudioMixer::unpauseChannel(int channel) 
+{
 	Mix_Resume(channel);
 }
 
@@ -410,7 +431,8 @@ void AudioMixer::unpauseChannel(int channel) {
  *
  * Checks if the given channel is playing
  */
-bool AudioMixer::isChannelPlaying(int channel) const {
+bool AudioMixer::isChannelPlaying(int channel) const 
+{
 	return Mix_Playing(channel) && !Mix_Paused(channel);
 }
 
@@ -421,7 +443,8 @@ bool AudioMixer::isChannelPlaying(int channel) const {
  *
  * Checks if the given channel is paused
  */
-bool AudioMixer::isChannelPaused(int channel) const {
+bool AudioMixer::isChannelPaused(int channel) const 
+{
 	return Mix_Paused(channel);
 }
 
@@ -443,16 +466,18 @@ bool AudioMixer::isChannelPaused(int channel) const {
  *
  * Plays an audio sample given by its tag until it has played for either the given number of loops or ticks
  */
-int AudioMixer::playSample(const std::string &tag, int channel, int loops, uint32_t ticks) {
-
-	if(!this->hasBeenInit) {
-		logger->message(Logger::Level::ERROR, "Mixer has not been initialized cannot play sample!", Logger::Output::TXT_FILE);
+int AudioMixer::playSample(const std::string &tag, int channel, int loops, uint32_t ticks) 
+{
+	if(!m_hasBeenInit) 
+	{
+		m_logger->error("Mixer has not been initialized cannot play sample!");
 		return -1;
 	}
 
 	SDLMixChunkWrapper *sample = getSample(tag);
-	if(sample == nullptr) {
-		logger->message(Logger::Level::ERROR, "Cannot play sample, '" + tag + "' cannot be found!", Logger::Output::TXT_FILE);
+	if(sample == nullptr) 
+	{
+		m_logger->error("Cannot play sample, '{0}' cannot be found!", tag);
 		return -1;
 	}
 
@@ -466,9 +491,10 @@ int AudioMixer::playSample(const std::string &tag, int channel, int loops, uint3
  *
  * @return	Pointer to the audio sample wrapper or null if the tag cannot be found
  */
-SDLMixChunkWrapper* AudioMixer::getSample(const std::string &tag) {
-	auto itr = this->samples.find(tag);
-	return itr == this->samples.end() ? nullptr : itr->second.get();
+SDLMixChunkWrapper* AudioMixer::getSample(const std::string &tag) 
+{
+	auto itr = m_samples.find(tag);
+	return itr == m_samples.end() ? nullptr : itr->second.get();
 }
 
 

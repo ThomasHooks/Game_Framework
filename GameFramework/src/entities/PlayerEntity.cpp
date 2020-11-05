@@ -1,17 +1,8 @@
-//============================================================================
-// Name       		: PlayerEntity.cpp
-// Author     		: Thomas Hooks
-// Last Modified	: 03/19/2020
-//============================================================================
-
-
-
-
 #include <iostream>
 
 #include "PlayerEntity.h"
 #include "capabilities/HealthCapability.h"
-#include "../world/TileMap.h"
+#include "world/TileMap.h"
 
 
 

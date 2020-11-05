@@ -1,10 +1,12 @@
-#ifndef GAME_H_
-#define GAME_H_
+#ifndef GAME_HPP_
+#define GAME_HPP_
 
 
 #include <string>
 #include <memory>
 #include <vector>
+
+#include <spdlog/spdlog.h>
 
 
 
@@ -92,13 +94,6 @@ public:
 
 
 	/// <summary>
-	/// Gets this game's logger
-	/// </summary>
-	class Logger& getLogger();
-
-
-
-	/// <summary>
 	/// Gets this game's renderer
 	/// </summary>
 	class Renderer& getRenderManager();
@@ -168,8 +163,6 @@ protected:
 
 private:
 
-	mutable std::unique_ptr<class Logger> logger;
-
 	std::unique_ptr<class Renderer> renderer;
 
 	std::unique_ptr<class AudioMixer> audioManager;
@@ -184,6 +177,8 @@ private:
 
 	std::unique_ptr<class GameCamera> cameraWrap;
 
+	std::shared_ptr<spdlog::logger> m_logger;
+
 	bool gameOver;
 
 	bool hasBeenInit;
@@ -196,7 +191,7 @@ private:
 };
 
 
-#endif /* GAME_H_ */
+#endif
 
 
 

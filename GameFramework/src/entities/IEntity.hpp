@@ -1,12 +1,3 @@
-//============================================================================
-// Name       		: IEntity.h
-// Author     		: Thomas Hooks
-// Last Modified	: 03/23/2020
-//============================================================================
-
-
-
-
 #ifndef IENTITY_HPP_
 #define IENTITY_HPP_
 
@@ -16,18 +7,18 @@
 #include <vector>
 #include <map>
 
-#include "../utilities/physics/AABB.h"
-#include "../utilities/physics/Dimension.h"
-#include "../utilities/physics/EnumSide.h"
-#include "../utilities/physics/Position.h"
+#include "utilities/physics/AABB.h"
+#include "utilities/physics/Dimension.h"
+#include "utilities/physics/EnumSide.h"
+#include "utilities/physics/Position.h"
 #include "capabilities/IEntityCapability.h"
 #include "EnumEntityType.h"
 
 
 
 
-class IEntity {
-
+class IEntity 
+{
 public:
 
 	IEntity();
@@ -45,9 +36,7 @@ public:
 	 *
 	 * This method is called just as an Entity is spawned
 	 */
-	void spwan(const Position &posIn,
-			EnumSide facingIn,
-			unsigned int entityIDIn);
+	void spwan(const Position &posIn, EnumSide facingIn, unsigned int entityIDIn);
 
 
 
@@ -225,7 +214,8 @@ public:
 	 * Gets the given Entity's state
 	 */
 	template<class T>
-	T* getCapability(const std::string &stateTag){
+	T* getCapability(const std::string &stateTag)
+	{
 		return this->states.find(stateTag) != this->states.end() ? this->states[stateTag].get() : nullptr;
 	}
 
@@ -241,10 +231,9 @@ public:
 	 * Adds a new state to the given Entity
 	 */
 	template<class T, typename... TArgs>
-	IEntity& addCapability(std::string tag, TArgs... mArgs){
-
+	IEntity& addCapability(std::string tag, TArgs... mArgs)
+	{
 		this->states.insert({tag, std::make_unique<T>((mArgs)...)});
-
 		return *this;
 	}
 

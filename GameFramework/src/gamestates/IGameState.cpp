@@ -1,12 +1,3 @@
-//============================================================================
-// Name       		: IGameState.cpp
-// Author     		: Thomas Hooks
-// Last Modified	: 04/06/2020
-//============================================================================
-
-
-
-
 #include "IGameState.h"
 
 #include "../audiomixer/AudioMixer.h"
@@ -16,7 +7,7 @@
 #include "../world/TileMap.h"
 #include "../utilities/GameCamera.h"
 #include "../utilities/GameTimer.h"
-#include "../utilities/Logger.h"
+#include "utilities/Loggers.hpp"
 #include "../utilities/physics/Dimension.h"
 #include "../utilities/physics/Position.h"
 #include "../utilities/wrappers/SDLWindowWrapper.h"
@@ -55,13 +46,6 @@ class Renderer& IGameState::getRenderer() {
 //Gets the Audio Manager
 class AudioMixer& IGameState::getMixer() {
 	return this->game->getMixer();
-}
-
-
-
-//Gets the Logger
-class Logger& IGameState::getLogger() {
-	return this->game->getLogger();
 }
 
 

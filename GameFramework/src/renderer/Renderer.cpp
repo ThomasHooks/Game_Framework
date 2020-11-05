@@ -1,37 +1,37 @@
-#include <SDL.h>
-#include "SDL_image.h"
-
 #include <string>
 #include <map>
 #include <memory>
 
+#include <SDL.h>
+#include "SDL_image.h"
+#include <spdlog/spdlog.h>
+
 #include "Renderer.h"
-#include "../utilities/Logger.h"
-#include "../utilities/physics/Dimension.h"
-#include "../utilities/physics/Position.h"
-#include "../utilities/wrappers/SDLTextureWrapper.h"
+#include "utilities/physics/Dimension.h"
+#include "utilities/physics/Position.h"
+#include "utilities/wrappers/SDLTextureWrapper.h"
 
 
 
 
-Renderer::Renderer(class Logger *logger_ptr)
-	: hasBeenInit(false),
-	  scale(1.0f),
-	  logger(logger_ptr),
-	  renderer(nullptr) {}
+Renderer::Renderer()
+	: m_hasBeenInit(false), m_scale(1.0f), m_renderer(nullptr) 
+{
+	m_logger = Loggers::getLog();
+}
 
 
 
-Renderer::~Renderer() {
-
-	logger->message(Logger::Level::INFO, "Stopping Renderer Manager", Logger::Output::TXT_FILE);
-	logger->message(Logger::Level::INFO, "Freeing SDL renderer", Logger::Output::TXT_FILE);
-	SDL_DestroyRenderer(renderer);
-	renderer = nullptr;
-	logger->message(Logger::Level::INFO, "SDL renderer has been freed", Logger::Output::TXT_FILE);
+Renderer::~Renderer() 
+{
+	m_logger->info("Stopping Rendering");
+	m_logger->info("Freeing SDL renderer");
+	SDL_DestroyRenderer(m_renderer);
+	m_renderer = nullptr;
+	m_logger->info("SDL renderer has been freed");
 
 	this->deregisterAllTextures();
-	logger->message(Logger::Level::INFO, "Rendering stopped", Logger::Output::TXT_FILE);
+	m_logger->info("Rendering stopped");
 }
 
 
@@ -41,12 +41,13 @@ Renderer::~Renderer() {
  *
  * Initializes the Renderer Manager and must be called before using any other methods
  */
-void Renderer::init(SDL_Window *windowIn){
-
-	if(!this->hasBeenInit) {
-		this->renderer = SDL_CreateRenderer(windowIn, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-		logger->message(Logger::Level::INFO, "Renderer has been initialized", Logger::Output::TXT_FILE);
-		this->hasBeenInit = true;
+void Renderer::init(SDL_Window *windowIn)
+{
+	if(!m_hasBeenInit) 
+	{
+		m_renderer = SDL_CreateRenderer(windowIn, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+		m_logger->info("Renderer has been initialized");
+		m_hasBeenInit = true;
 	}
 }
 
@@ -63,47 +64,48 @@ void Renderer::init(SDL_Window *windowIn){
  *
  * Register a texture to the renderer manager
  */
-bool Renderer::registerTexture(const std::string &tag, const std::string &fileLocation, Dimension &tileSize){
-
-	if(!this->hasBeenInit) {
-		logger->message(Logger::Level::ERROR, "Cannot register textures, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+bool Renderer::registerTexture(const std::string &tag, const std::string &fileLocation, Dimension &tileSize)
+{
+	if(!m_hasBeenInit) 
+	{
+		m_logger->error("Cannot register textures, Renderer has not been initialized!");
 		return false;
 	}
 
-	logger->message(Logger::Level::INFO, "Registering texture '" + tag + "' at "+ fileLocation, Logger::Output::TXT_FILE);
+	m_logger->info("Registering texture: '{0}' at '{1}'", tag, fileLocation);
 
-	if(textureMap.find(tag) != textureMap.end()) {
-		logger->message(Logger::Level::WARNING, "Unable to register texture, tag: '" + tag +"' is not unique", Logger::Output::TXT_FILE);
+	if(m_textureMap.find(tag) != m_textureMap.end()) 
+	{
+		m_logger->warn("Unable to register texture, tag: '{0}' is not unique", tag);
 		return false;
 	}
 
 	//Tag is unique so it can be registered
 	SDL_Surface *tmpSurface = IMG_Load(fileLocation.c_str());
-	if(tmpSurface == NULL) {
-
+	if(tmpSurface == NULL) 
+	{
 		//Could not find the sprite sheet
 		std::string sdlMessage = IMG_GetError();
-		logger->message(Logger::Level::WARNING, "Cannot find the file '" + fileLocation + "'. SDL: " + sdlMessage, Logger::Output::TXT_FILE);
+		m_logger->warn("Cannot find the file '{0}'. SDL Error: {1}", fileLocation, sdlMessage);
 
 		//Register this tag with the missing texture
 		tmpSurface = IMG_Load("./data/gfx/null.png");
 		Dimension nullSize(16, 16);
-		textureMap.insert({tag,
-			std::unique_ptr<SDLTextureWrapper>(new SDLTextureWrapper(this->renderer, tmpSurface, nullSize))});
+		m_textureMap.insert({tag, std::unique_ptr<SDLTextureWrapper>(new SDLTextureWrapper(m_renderer, tmpSurface, nullSize))});
 
 		SDL_FreeSurface(tmpSurface);
 		tmpSurface = nullptr;
 		return false;
 	}
-	else {
+	else 
+	{
 		//Sprite sheet was found
-		textureMap.insert({tag,
-			std::unique_ptr<SDLTextureWrapper>(new SDLTextureWrapper(this->renderer, tmpSurface, tileSize))});
+		m_textureMap.insert({tag, std::unique_ptr<SDLTextureWrapper>(new SDLTextureWrapper(m_renderer, tmpSurface, tileSize))});
 
 		SDL_FreeSurface(tmpSurface);
 		tmpSurface = nullptr;
 
-		logger->message(Logger::Level::INFO, "File '" + fileLocation + "' has been registered", Logger::Output::TXT_FILE);
+		m_logger->info("Texture file '{0}' has been registered", fileLocation);
 		return true;
 	}
 }
@@ -117,24 +119,26 @@ bool Renderer::registerTexture(const std::string &tag, const std::string &fileLo
  *
  * Deregister the texture specified by the tag argument
  */
-bool Renderer::deregisterTexture(const std::string &tag){
-
-	if(hasBeenInit) {
-
-		if(textureMap.find(tag) == textureMap.end()) {
-			logger->message(Logger::Level::WARNING, "Could not find tag: '" + tag + "' unable to deregister texture", Logger::Output::TXT_FILE);
+bool Renderer::deregisterTexture(const std::string &tag)
+{
+	if(m_hasBeenInit) 
+	{
+		if(m_textureMap.find(tag) == m_textureMap.end()) 
+		{
+			m_logger->warn("Could not find tag: '{0}' unable to deregister texture", tag);
 			return false;
 		}
 
-		logger->message(Logger::Level::INFO, "Deregistering texture '" + tag +"'", Logger::Output::TXT_FILE);
+		m_logger->info("Deregistering texture '{0}'", tag);
 
-		textureMap.erase(tag);
+		m_textureMap.erase(tag);
 
-		logger->message(Logger::Level::INFO, "Texture '" + tag +"' has been deregistered", Logger::Output::TXT_FILE);
+		m_logger->info("Texture '{0}' has been deregistered", tag);
 		return true;
 	}
-	else {
-		logger->message(Logger::Level::ERROR, "Cannot deregister textures, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+	else 
+	{
+		m_logger->error("Cannot deregister textures, Renderer has not been initialized!");
 		return false;
 	}
 }
@@ -142,23 +146,24 @@ bool Renderer::deregisterTexture(const std::string &tag){
 
 
 //Deregister all textures in the Renderer Manager
-void Renderer::deregisterAllTextures(){
-
-	if(this->hasBeenInit) {
-
-		logger->message(Logger::Level::INFO, "Deregistering all textures", Logger::Output::TXT_FILE);
-		auto itr = textureMap.begin();
-		while(itr != textureMap.end()){
-
+void Renderer::deregisterAllTextures()
+{
+	if(m_hasBeenInit) 
+	{
+		m_logger->info("Deregistering all textures");
+		auto itr = m_textureMap.begin();
+		while(itr != m_textureMap.end())
+		{
 			std::string tag = itr->first;
-			logger->message(Logger::Level::INFO, "Deregistering texture '" + tag + "'", Logger::Output::TXT_FILE);
+			m_logger->info("Deregistering texture '{0}'", tag);
 
-			itr = textureMap.erase(itr);
+			itr = m_textureMap.erase(itr);
 
-			logger->message(Logger::Level::INFO, "Texture '" + tag + "' has been deregistered", Logger::Output::TXT_FILE);
+			m_logger->info("Texture '{0}' has been deregistered", tag);
 		}
 	}
-	else logger->message(Logger::Level::ERROR, "Cannot deregister textures, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+	else 
+		m_logger->error("Cannot deregister textures, Renderer has not been initialized!");
 }
 
 
@@ -176,14 +181,16 @@ void Renderer::deregisterAllTextures(){
  *
  * Sets the drawing color
  */
-bool Renderer::setDrawColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha){
-
-	if(this->hasBeenInit) {
-		SDL_SetRenderDrawColor(this->renderer, red, green, blue, alpha);
+bool Renderer::setDrawColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
+{
+	if(m_hasBeenInit) 
+	{
+		SDL_SetRenderDrawColor(m_renderer, red, green, blue, alpha);
 		return true;
 	}
-	else {
-		logger->message(Logger::Level::ERROR, "Cannot set draw color, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+	else 
+	{
+		m_logger->error("Cannot set draw color, Renderer has not been initialized!");
 		return false;
 	}
 }
@@ -203,14 +210,16 @@ bool Renderer::setDrawColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t al
  *
  * Sets the given texture's color
  */
-bool Renderer::setTextureColor(const std::string &tag, uint8_t red, uint8_t green, uint8_t blue){
-
-	if(this->hasBeenInit) {
+bool Renderer::setTextureColor(const std::string &tag, uint8_t red, uint8_t green, uint8_t blue)
+{
+	if(m_hasBeenInit) 
+	{
 		SDL_SetTextureColorMod(this->getTexture(tag), red, green, blue);
 		return true;
 	}
-	else {
-		logger->message(Logger::Level::ERROR, "Cannot set texture color, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+	else 
+	{
+		m_logger->error("Cannot set texture color, Renderer has not been initialized!");
 		return false;
 	}
 }
@@ -226,14 +235,16 @@ bool Renderer::setTextureColor(const std::string &tag, uint8_t red, uint8_t gree
  *
  * Sets the given texture's opacity
  */
-bool Renderer::setTextureAlpha(const std::string &tag, uint8_t alpha){
-
-	if(this->hasBeenInit) {
+bool Renderer::setTextureAlpha(const std::string &tag, uint8_t alpha)
+{
+	if(m_hasBeenInit) 
+	{
 		SDL_SetTextureAlphaMod(this->getTexture(tag), alpha);
 		return true;
 	}
-	else {
-		logger->message(Logger::Level::ERROR, "Cannot set texture alpha, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+	else 
+	{
+		m_logger->error("Cannot set texture alpha, Renderer has not been initialized!");
 		return false;
 	}
 }
@@ -249,15 +260,16 @@ bool Renderer::setTextureAlpha(const std::string &tag, uint8_t alpha){
  *
  * Sets the given textures blend mode
  */
-bool Renderer::setTextureBlendMode(const std::string &tag, RendererBlendMode blendMode){
-
-	if(!this->hasBeenInit) {
-		logger->message(Logger::Level::ERROR, "Cannot set texture blend mode, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+bool Renderer::setTextureBlendMode(const std::string &tag, RendererBlendMode blendMode)
+{
+	if(!m_hasBeenInit) 
+	{
+		m_logger->error("Cannot set texture blend mode, Renderer has not been initialized!");
 		return false;
 	}
 
-	switch(blendMode) {
-
+	switch(blendMode) 
+	{
 	case RendererBlendMode::NONE:
 		SDL_SetTextureBlendMode(this->getTexture(tag), SDL_BLENDMODE_NONE);
 		break;
@@ -285,14 +297,16 @@ bool Renderer::setTextureBlendMode(const std::string &tag, RendererBlendMode ble
  *
  * Clears the renderer and fill it in with the current draw color
  */
-bool Renderer::clear(){
-
-	if(this->hasBeenInit) {
-		SDL_RenderClear(this->renderer);
+bool Renderer::clear()
+{
+	if(m_hasBeenInit) 
+	{
+		SDL_RenderClear(m_renderer);
 		return true;
 	}
-	else {
-		logger->message(Logger::Level::ERROR, "Cannot clear, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+	else 
+	{
+		m_logger->error("Cannot clear, Renderer has not been initialized!");
 		return false;
 	}
 }
@@ -304,14 +318,16 @@ bool Renderer::clear(){
  *
  * Presents what has been drawn to the renderer on the screen
  */
-bool Renderer::present(){
-
-	if(this->hasBeenInit) {
-		SDL_RenderPresent(this->renderer);
+bool Renderer::present()
+{
+	if(m_hasBeenInit) 
+	{
+		SDL_RenderPresent(m_renderer);
 		return true;
 	}
-	else {
-		logger->message(Logger::Level::ERROR, "Cannot present, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+	else 
+	{
+		m_logger->error("Cannot present, Renderer has not been initialized!");
 		return false;
 	}
 }
@@ -323,17 +339,19 @@ bool Renderer::present(){
  *
  * Draws a point at the given coordinates to the renderer
  */
-void Renderer::drawPoint(const Position &pos){
-
-	if(this->hasBeenInit) {
-		int code = SDL_RenderDrawPoint(this->renderer, pos.xPosN(), pos.yPosN());
-		if(code < 0) {
+void Renderer::drawPoint(const Position &pos)
+{
+	if(m_hasBeenInit) 
+	{
+		int code = SDL_RenderDrawPoint(m_renderer, pos.xPosN(), pos.yPosN());
+		if(code < 0) 
+		{
 			std::string sdlMessage = SDL_GetError();
-			logger->message(Logger::Level::ERROR, "SDL Error while trying to draw a point: " + sdlMessage, Logger::Output::CONSOLE);
+			m_logger->error("SDL Error while trying to draw a point: {0}", sdlMessage);
 		}
 	}
-
-	else logger->message(Logger::Level::ERROR, "Cannot draw point, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+	else 
+		m_logger->error("Cannot draw point, Renderer has not been initialized!");
 }
 
 
@@ -345,22 +363,19 @@ void Renderer::drawPoint(const Position &pos){
  *
  * Draws a line to the renderer
  */
-void Renderer::drawLine(const class Position &startPos, const class Position &endPos){
-
-	if(this->hasBeenInit) {
-		int code = SDL_RenderDrawLine(this->renderer,
-				startPos.xPosN(),
-				startPos.yPosN(),
-				endPos.xPosN(),
-				endPos.yPosN());
-
-		if(code < 0) {
+void Renderer::drawLine(const class Position &startPos, const class Position &endPos)
+{
+	if(m_hasBeenInit) 
+	{
+		int code = SDL_RenderDrawLine(m_renderer, startPos.xPosN(), startPos.yPosN(), endPos.xPosN(), endPos.yPosN());
+		if(code < 0) 
+		{
 			std::string sdlMessage = SDL_GetError();
-			logger->message(Logger::Level::ERROR, "SDL Error while trying to draw a line: " + sdlMessage, Logger::Output::CONSOLE);
+			m_logger->error("SDL Error while trying to draw a line: {0}", sdlMessage);
 		}
 	}
-
-	else logger->message(Logger::Level::ERROR, "Cannot draw rectangle, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+	else 
+		m_logger->error("Cannot draw line, Renderer has not been initialized!");
 }
 
 
@@ -374,20 +389,21 @@ void Renderer::drawLine(const class Position &startPos, const class Position &en
  *
  * Draws a rectangle to the renderer
  */
-void Renderer::drawRect(const class Position &pos, const struct Dimension &dim, bool fill){
-
-	if(this->hasBeenInit) {
+void Renderer::drawRect(const class Position &pos, const struct Dimension &dim, bool fill)
+{
+	if(m_hasBeenInit) 
+	{
 		SDL_Rect rect = {pos.xPosN(), pos.yPosN(), dim.width, dim.height};
-
-		int code = fill ? SDL_RenderFillRect(this->renderer, &rect) : SDL_RenderDrawRect(this->renderer, &rect);
-
-		if(code < 0) {
+		int code = fill ? SDL_RenderFillRect(m_renderer, &rect) : SDL_RenderDrawRect(m_renderer, &rect);
+		if(code < 0) 
+		{
 			std::string sdlMessage = SDL_GetError();
-			logger->message(Logger::Level::ERROR, "SDL Error while trying to draw a rectangle: " + sdlMessage, Logger::Output::CONSOLE);
+			m_logger->error("SDL Error while trying to draw a rectangle: {0}", sdlMessage);
 		}
 	}
 
-	else logger->message(Logger::Level::ERROR, "Cannot draw rectangle, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+	else 
+		m_logger->error("Cannot draw rectangle, Renderer has not been initialized!");
 }
 
 
@@ -407,39 +423,37 @@ void Renderer::drawRect(const class Position &pos, const struct Dimension &dim, 
  *
  * Draws a sprite given by tag to the renderer
  */
-void Renderer::drawSprite(const std::string &tag,
-		const class Position &pos,
-		const class Position &cameraOffset,
-		const struct Dimension &spriteLocation,
-		const double angle,
-		const bool flipSprite){
-
-	if(this->hasBeenInit) {
-
+void Renderer::drawSprite(const std::string &tag, const Position &pos, const Position &cameraOffset, const Dimension &spriteLocation, const double angle, const bool flipSprite)
+{
+	if(m_hasBeenInit) 
+	{
 		Dimension spriteSize(this->getTextureTileWidth(tag), this->getTextureTileHeight(tag));
 		//Select the right sprite from the sprite sheet
-		SDL_Rect spriteRect = {spriteLocation.width * spriteSize.width,
-				spriteLocation.height * spriteSize.height,
-				spriteSize.width,
-				spriteSize.height};
+		SDL_Rect spriteRect = {
+			spriteLocation.width * spriteSize.width, 
+			spriteLocation.height * spriteSize.height, 
+			spriteSize.width, 
+			spriteSize.height
+		};
 
 		//calculate the entity's/tile's size and location in the world
-		double width = spriteSize.width * this->scale;
-		double height = spriteSize.height * this->scale;
+		double width = static_cast<double>(spriteSize.width) * m_scale;
+		double height = static_cast<double>(spriteSize.height) * m_scale;
 		double xPos = pos.xPos() - cameraOffset.xPos();
 		double yPos = pos.yPosN() - cameraOffset.yPos();
 
-		SDL_Rect entityRect = {static_cast<int>(xPos + 0.5),
-				static_cast<int>(yPos + 0.5),
-				static_cast<int>(width + 0.5),
-				static_cast<int>(height + 0.5)};
+		SDL_Rect entityRect = {
+			static_cast<int>(xPos + 0.5),
+			static_cast<int>(yPos + 0.5),
+			static_cast<int>(width + 0.5),
+			static_cast<int>(height + 0.5)
+		};
 
 		SDL_RendererFlip flip = flipSprite ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-
-		SDL_RenderCopyEx(this->renderer, this->getTexture(tag), &spriteRect, &entityRect, angle, NULL, flip);
+		SDL_RenderCopyEx(m_renderer, this->getTexture(tag), &spriteRect, &entityRect, angle, NULL, flip);
 	}
-
-	else logger->message(Logger::Level::ERROR, "Cannot render sprite, Renderer has not been initialized!", Logger::Output::TXT_FILE);
+	else
+		m_logger->error("Cannot draw sprite, Renderer has not been initialized!");
 }
 
 
@@ -457,12 +471,8 @@ void Renderer::drawSprite(const std::string &tag,
  *
  * Draws a sprite given by tag to the renderer
  */
-void Renderer::drawSprite(const std::string &tag,
-		const Position &pos,
-		const Position &cameraOffset,
-		const Dimension &spriteLocation,
-		const bool flipSprite){
-
+void Renderer::drawSprite(const std::string &tag, const Position &pos, const Position &cameraOffset, const Dimension &spriteLocation, const bool flipSprite)
+{
 	this->drawSprite(tag, pos, cameraOffset, spriteLocation, 0.0, flipSprite);
 }
 
@@ -473,8 +483,9 @@ void Renderer::drawSprite(const std::string &tag,
  *
  * The new scale cannot be zero or negative, and if scaleIn is either it will default to 1.0
  */
-void Renderer::setScale(float scaleIn){
-	scaleIn <= 0.0f ? this->scale = 1.0f : this->scale = scaleIn;
+void Renderer::setScale(float scaleIn)
+{
+	scaleIn <= 0.0f ? m_scale = 1.0f : m_scale = scaleIn;
 }
 
 
@@ -488,20 +499,18 @@ void Renderer::setScale(float scaleIn){
  *
  * Gets the texture specified by the tag. If it doesn't find the texture it will return a null pointer
  */
-SDL_Texture* Renderer::getTexture(const std::string &tag){
+SDL_Texture* Renderer::getTexture(const std::string &tag)
+{
+	if(!m_hasBeenInit) 
+		return nullptr;
 
-	if(!this->hasBeenInit) return nullptr;
-
-	if(textureMap.find(tag) == textureMap.end()){
-
-		logger->message(Logger::Level::WARNING,
-				"Could not get the texture '" + tag + "'",
-				Logger::Output::TXT_FILE);
-
+	if(m_textureMap.find(tag) == m_textureMap.end())
+	{
+		m_logger->warn("Could not get the texture '{0}'", tag);
 		return nullptr;
 	}
-
-	else return textureMap[tag]->getTexture();
+	else 
+		return m_textureMap[tag]->getTexture();
 }
 
 
@@ -513,17 +522,18 @@ SDL_Texture* Renderer::getTexture(const std::string &tag){
  *
  * Gets the tile width of the texture specified by the tag. If it doesn't find the texture it will return 0
  */
-int Renderer::getTextureTileWidth(const std::string &tag){
+int Renderer::getTextureTileWidth(const std::string &tag)
+{
+	if(!this->m_hasBeenInit) 
+		return 0;
 
-	if(!this->hasBeenInit) return 0;
-
-	if(textureMap.find(tag) == textureMap.end()){
-
-		logger->message(Logger::Level::WARNING, "Could not get the texture '" + tag + "' width", Logger::Output::TXT_FILE);
+	if(m_textureMap.find(tag) == m_textureMap.end())
+	{
+		m_logger->warn("Could not get the texture '{0}' width", tag);
 		return 0;
 	}
-
-	else return textureMap[tag]->getTileSize().width;
+	else 
+		return m_textureMap[tag]->getTileSize().width;
 }
 
 
@@ -535,17 +545,18 @@ int Renderer::getTextureTileWidth(const std::string &tag){
  *
  * Gets the tile height of the texture specified by the tag. If it doesn't find the texture it will return 0
  */
-int Renderer::getTextureTileHeight(const std::string &tag){
+int Renderer::getTextureTileHeight(const std::string &tag)
+{
+	if(!m_hasBeenInit) 
+		return 0;
 
-	if(!this->hasBeenInit) return 0;
-
-	if(textureMap.find(tag) == textureMap.end()){
-
-		logger->message(Logger::Level::WARNING, "Could not get the texture '" + tag + "' height", Logger::Output::TXT_FILE);
+	if(m_textureMap.find(tag) == m_textureMap.end())
+	{
+		m_logger->warn("Could not get the texture '{0}' height", tag);
 		return 0;
 	}
-
-	else return textureMap[tag]->getTileSize().height;
+	else 
+		return m_textureMap[tag]->getTileSize().height;
 }
 
 
@@ -558,8 +569,9 @@ int Renderer::getTextureTileHeight(const std::string &tag){
  * Gets a copy of  tile dimensions of the texture specified by the tag
  * if it doesn't find the texture it will return a size of (0, 0)
  */
-Dimension Renderer::getTextureSize(const std::string &tag){
-	return !this->hasBeenInit ? Dimension() : Dimension(this->getTextureTileWidth(tag), this->getTextureTileHeight(tag));
+Dimension Renderer::getTextureSize(const std::string &tag)
+{
+	return !m_hasBeenInit ? Dimension() : Dimension(this->getTextureTileWidth(tag), this->getTextureTileHeight(tag));
 }
 
 

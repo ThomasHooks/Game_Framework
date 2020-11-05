@@ -1,12 +1,3 @@
-//============================================================================
-// Name       		: EntityManager.h
-// Author     		: Thomas Hooks
-// Last Modified	: 03/25/2020
-//============================================================================
-
-
-
-
 #ifndef ENTITYMANAGER_H_
 #define ENTITYMANAGER_H_
 
@@ -19,17 +10,18 @@
 #include <memory>
 #include <string>
 
-#include "../utilities/Builder.hpp"
-#include "../utilities/physics/EnumSide.h"
+#include "utilities/Loggers.hpp"
+#include "utilities/Builder.hpp"
+#include "utilities/physics/EnumSide.h"
 
 
 
 
-class EntityManager {
-
+class EntityManager 
+{
 public:
 
-	EntityManager(class Logger *loggerptr);
+	EntityManager();
 
 
 
@@ -70,9 +62,7 @@ public:
 	 * Spawns an Entity at the given coordinates.
 	 * Do Not delete the pointer that is returned
 	 */
-	class IEntity* spawn(std::string tag,
-			const class Position &pos,
-			EnumSide facing);
+	class IEntity* spawn(std::string tag, const class Position &pos, EnumSide facing);
 
 
 
@@ -98,10 +88,7 @@ public:
 	 *
 	 * Draws all Entities that are visible in the Window
 	 */
-	void drawAll(const class Position &cameraPos,
-			const struct Dimension &windowSize,
-			class Renderer &renderer,
-			bool renderAabb);
+	void drawAll(const class Position &cameraPos, const struct Dimension &windowSize, class Renderer &renderer, bool renderAabb);
 
 
 
@@ -116,10 +103,7 @@ public:
 	 *
 	 * Updates all Entities that are on screen
 	 */
-	void tickAll(const class Position &cameraPos,
-			const struct Dimension &windowSize,
-			class TileMap &worldIn,
-			float deltaTime);
+	void tickAll(const class Position &cameraPos, const struct Dimension &windowSize, class TileMap &worldIn, float deltaTime);
 
 
 
@@ -132,8 +116,7 @@ public:
 	 * Adds a list of Entities in the given area to the
 	 * vector that is passed in
 	 */
-	void getEntities(std::vector<class IEntity*> &vectorIn,
-			const class AABB &area);
+	void getEntities(std::vector<class IEntity*> &vectorIn, const class AABB &area);
 
 
 
@@ -152,8 +135,7 @@ protected:
 	 * Checks if the given Entity is colliding with any entity in the array
 	 * and if it is colliding the Entity's position will be changed
 	 */
-	void checkEntityCollisions(std::vector<class IEntity*> &entities,
-			class IEntity &entity);
+	void checkEntityCollisions(std::vector<class IEntity*> &entities, class IEntity &entity);
 
 
 
@@ -168,21 +150,19 @@ protected:
 	 * Entity vs Tile collision is done by creating a "collision loop"
 	 * around the Entity
 	 */
-	void checkTileCollisions(class TileMap &worldIn,
-			class IEntity &entity);
+	void checkTileCollisions(class TileMap &worldIn, class IEntity &entity);
 
 
 
 private:
 
-	class Logger *logger;
+	unsigned int m_entityID;
 
-	unsigned int entityID;
+	std::list<std::unique_ptr<class IEntity>> m_entityList;
 
-	std::list<std::unique_ptr<class IEntity>> entityList;
+	std::map<std::string, std::unique_ptr<BuilderBase<class IEntity>>> m_entityRegistry;
 
-	std::map<std::string,
-		std::unique_ptr<BuilderBase<class IEntity>>> entityRegistry;
+	std::shared_ptr<spdlog::logger> m_logger;
 };
 
 

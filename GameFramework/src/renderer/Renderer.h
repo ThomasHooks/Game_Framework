@@ -1,16 +1,5 @@
-//============================================================================
-// Name       		: RendererManager.h
-// Author     		: Thomas Hooks
-// Last Modified	: 04/04/2020
-//============================================================================
-
-
-
-
 #ifndef RENDERERMANAGER_H_
 #define RENDERERMANAGER_H_
-
-
 
 
 #include <string>
@@ -18,6 +7,7 @@
 #include <memory>
 
 #include "RendererBlendMode.h"
+#include "utilities/Loggers.hpp"
 
 
 
@@ -26,7 +16,7 @@ class Renderer {
 
 public:
 
-	Renderer(class Logger *logger_ptr);
+	Renderer();
 
 
 
@@ -311,15 +301,15 @@ protected:
 
 private:
 
-	bool hasBeenInit;
+	bool m_hasBeenInit;
 
-	float scale;
+	float m_scale;
 
-	class Logger *logger;
+	struct SDL_Renderer *m_renderer;
 
-	struct SDL_Renderer *renderer;
+	std::map<std::string, std::unique_ptr<class SDLTextureWrapper>> m_textureMap;
 
-	std::map<std::string, std::unique_ptr<class SDLTextureWrapper>> textureMap;
+	std::shared_ptr<spdlog::logger> m_logger;
 };
 
 

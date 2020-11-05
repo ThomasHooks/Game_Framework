@@ -1,20 +1,10 @@
-//============================================================================
-// Name       		: GameBuilder.cpp
-// Author     		: Thomas Hooks
-// Last Modified	: Mar 31, 2020
-//============================================================================
-
-
-
-
 #include "GameBuilder.h"
 
 
 
 
 GameBuilder::GameBuilder()
-	: logLevel(Logger::Level::TRACE),
-	  logFileLocation("./log.txt"),
+	: logFileLocation("./log.txt"),
 	  windowName(""),
 	  windowSize(640, 480),
 	  windowFlags(0),
@@ -26,10 +16,10 @@ GameBuilder::~GameBuilder() {}
 
 
 
-GameBuilder& GameBuilder::setLoggerLevel(Logger::Level levelIn){
-	this->logLevel = levelIn;
-	return *this;
-}
+//GameBuilder& GameBuilder::setLoggerLevel(Logger::Level levelIn){
+//	this->logLevel = levelIn;
+//	return *this;
+//}
 
 
 

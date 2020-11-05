@@ -1,24 +1,17 @@
-//============================================================================
-// Name       		: GameBuilder.h
-// Author     		: Thomas Hooks
-// Last Modified	: Mar 31, 2020
-//============================================================================
-
-
-
-
 #ifndef GAMEBUILDER_H_
 #define GAMEBUILDER_H_
 
 
 #include <string>
 
-#include "Logger.h"
+#include "utilities/Loggers.hpp"
 #include "physics/Dimension.h"
 
 
-class GameBuilder {
 
+
+class GameBuilder 
+{
 public:
 
 	GameBuilder();
@@ -29,7 +22,7 @@ public:
 
 
 
-	GameBuilder& setLoggerLevel(Logger::Level levelIn);
+	//GameBuilder& setLoggerLevel(Logger::Level levelIn);
 
 
 
@@ -54,8 +47,6 @@ public:
 
 
 protected:
-
-	Logger::Level logLevel;
 
 	std::string logFileLocation;
 

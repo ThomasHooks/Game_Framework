@@ -79,11 +79,6 @@ protected:
 
 
 
-	//Gets the Logger
-	class Logger& getLogger();
-
-
-
 	//Gets the Timer
 	class GameTimer& getTimer();
 

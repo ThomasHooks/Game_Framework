@@ -7,8 +7,9 @@
 
 #include <SDL.h>
 
-#include "../physics/Dimension.h"
-#include "../physics/Position.h"
+#include "utilities/Loggers.hpp"
+#include "utilities/physics/Dimension.h"
+#include "utilities/physics/Position.h"
 
 
 
@@ -16,7 +17,8 @@
 struct WindowData
 {
 	WindowData(const std::string& titleIn = "Name of Game", unsigned int widthIn = 640, unsigned int heightIn = 480)
-		: title(titleIn), width(widthIn), height(heightIn) {};
+		: title(titleIn), width(widthIn), height(heightIn) 
+	{};
 
 	std::string title;
 	unsigned int width, height;
@@ -34,7 +36,7 @@ class SDLWindowWrapper
 {
 public:
 
-	SDLWindowWrapper(class Logger* logger_ptr, const std::string &title, const Dimension &sizeIn, unsigned int flags);
+	SDLWindowWrapper(const std::string &title, const Dimension &sizeIn, unsigned int flags);
 
 
 
@@ -89,7 +91,7 @@ private:
 
 	WindowData m_winData;
 
-	class Logger *logger;
+	std::shared_ptr<spdlog::logger> m_logger;
 };
 
 

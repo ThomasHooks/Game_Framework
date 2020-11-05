@@ -4,7 +4,6 @@
 #include "events/EventBus.hpp"
 #include "events/WindowEvent.hpp"
 #include "events/KeyboardEvent.hpp"
-#include "utilities/Logger.h"
 
 
 
@@ -57,10 +56,11 @@ int filterEventCallback(void *userdata, SDL_Event * event)
 
 
 
-SDLWindowWrapper::SDLWindowWrapper(Logger* logger_ptr, const std::string& title, const Dimension& sizeIn, unsigned int flags)
-	: size(sizeIn.width, sizeIn.height), window(nullptr), m_winData(title, sizeIn.width, sizeIn.height), logger(logger_ptr)
+SDLWindowWrapper::SDLWindowWrapper(const std::string& title, const Dimension& sizeIn, unsigned int flags)
+	: size(sizeIn.width, sizeIn.height), window(nullptr), m_winData(title, sizeIn.width, sizeIn.height)
 {
-	logger->message(Logger::Level::INFO, "Initializing Window", Logger::Output::TXT_FILE);
+	m_logger = Loggers::getLog();
+	m_logger->info("Initializing Window");
 
 	window = SDL_CreateWindow(title.c_str(),
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -71,17 +71,17 @@ SDLWindowWrapper::SDLWindowWrapper(Logger* logger_ptr, const std::string& title,
 
 	SDL_SetEventFilter(filterEventCallback, &m_winData);
 
-	logger->message(Logger::Level::INFO, "Window has been initialized", Logger::Output::TXT_FILE);
+	m_logger->info("Window has been initialized");
 }
 
 
 
 SDLWindowWrapper::~SDLWindowWrapper()
 {
-	logger->message(Logger::Level::INFO, "Closing Window", Logger::Output::TXT_FILE);
+	m_logger->info("Closing Window");
 	SDL_DestroyWindow(window);
 	window = nullptr;
-	logger->message(Logger::Level::INFO, "Window has been closed ", Logger::Output::TXT_FILE);
+	m_logger->info("Window has been closed ");
 }
 
 

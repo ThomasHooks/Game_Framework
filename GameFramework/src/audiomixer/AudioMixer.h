@@ -7,13 +7,16 @@
 #include <unordered_map>
 #include <memory>
 
+#include "utilities/Loggers.hpp"
+
+
 
 //TODO add SDL music
-class AudioMixer {
-
+class AudioMixer 
+{
 public:
 
-	AudioMixer(class Logger *loggerPtr);
+	AudioMixer();
 
 
 
@@ -294,11 +297,11 @@ private:
 
 	const int NUMBEROFCHANNELS = 16;
 
-	class Logger *logger;
+	bool m_hasBeenInit;
 
-	bool hasBeenInit;
+	std::unordered_map<std::string, std::unique_ptr<class SDLMixChunkWrapper>> m_samples;
 
-	std::unordered_map<std::string, std::unique_ptr<class SDLMixChunkWrapper>> samples;
+	std::shared_ptr<spdlog::logger> m_logger;
 };
 
 

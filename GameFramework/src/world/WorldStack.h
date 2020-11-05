@@ -1,12 +1,3 @@
-//============================================================================
-// Name       		: WorldStack
-// Author     		: Thomas Hooks
-// Last Modified	: 03/21/2020
-//============================================================================
-
-
-
-
 #ifndef SRC_WORLDSTACK_H_
 #define SRC_WORLDSTACK_H_
 
@@ -17,14 +8,16 @@
 #include <memory>
 #include <string>
 
+#include <utilities/Loggers.hpp>
 
 
 
-class WorldStack {
 
+class WorldStack 
+{
 public:
 
-	WorldStack(class Logger *log_ptr);
+	WorldStack();
 
 
 
@@ -82,19 +75,13 @@ public:
 
 private:
 
-	class Logger *logger;
+	std::vector<std::unique_ptr<class TileMap>> m_worldStack;
 
-	std::vector<std::unique_ptr<class TileMap>> worldStack;
+	std::shared_ptr<spdlog::logger> m_logger;
 };
 
 
-
-
 #endif /* SRC_WORLDSTACK_H_ */
-
-
-
-
 
 
 

@@ -2,14 +2,17 @@
 #define GAMECAMERA_H_
 
 
-#include "physics/Position.h"
+#include "utilities/physics/Position.h"
+#include "utilities/Loggers.hpp"
 
 
-class GameCamera {
 
+
+class GameCamera 
+{
 public:
 
-	GameCamera(class Logger *loggerPtr, class SDLWindowWrapper* windowIn);
+	GameCamera(class SDLWindowWrapper* windowIn);
 
 
 
@@ -76,13 +79,13 @@ public:
 
 protected:
 
-	class Logger *logger;
-
 	class SDLWindowWrapper *window;
 
 
 
 private:
+
+	std::shared_ptr<spdlog::logger> m_logger;
 
 	Position posOffset;
 

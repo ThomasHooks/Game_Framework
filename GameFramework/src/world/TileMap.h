@@ -1,14 +1,7 @@
-//============================================================================
-// Name       		: TileMap.h
-// Author     		: Thomas Hooks
-// Last Modified	: 03/22/2020
-//============================================================================
-
-
-
-
 #ifndef TILEMAP_H_
 #define TILEMAP_H_
+
+
 
 
 #include <string>
@@ -16,15 +9,16 @@
 #include <memory>
 
 #include "ITile.h"
+#include "utilities/Loggers.hpp"
 
 
-class TileMap {
 
+
+class TileMap 
+{
 public:
 
-	TileMap(class Logger *loggerIn,
-			const std::string &tagIn,
-			const std::string &filePath);
+	TileMap(const std::string &tagIn, const std::string &filePath);
 
 
 
@@ -146,15 +140,15 @@ protected:
 
 private:
 
-	class Logger *logger;
+	std::string m_tag;
 
-	std::string tag;
+	Dimension m_sizeMap;
 
-	Dimension sizeMap;
+	Dimension m_sizeTile;
 
-	Dimension sizeTile;
+	std::map<std::pair<int, int>, ITile> m_tileMap;
 
-	std::map<std::pair<int, int>, ITile> tileMap;
+	std::shared_ptr<spdlog::logger> m_logger;
 };
 
 

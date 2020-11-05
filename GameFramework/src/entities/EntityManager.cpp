@@ -1,37 +1,29 @@
-//============================================================================
-// Name       		: EntityManager.cpp
-// Author     		: Thomas Hooks
-// Last Modified	: 03/25/2020
-//============================================================================
-
-
-
-
 #include "EntityManager.h"
 #include "IEntity.hpp"
-#include "../renderer/Renderer.h"
-#include "../utilities/Builder.hpp"
-#include "../utilities/Logger.h"
-#include "../utilities/physics/Collisions.h"
-#include "../utilities/physics/Dimension.h"
-#include "../utilities/physics/Direction.h"
-#include "../utilities/physics/Position.h"
-#include "../world/TileMap.h"
-#include "../world/ITile.h"
+#include "renderer/Renderer.h"
+#include "utilities/Builder.hpp"
+#include "utilities/physics/Collisions.h"
+#include "utilities/physics/Dimension.h"
+#include "utilities/physics/Direction.h"
+#include "utilities/physics/Position.h"
+#include "world/TileMap.h"
+#include "world/ITile.h"
 
 
 
 
-EntityManager::EntityManager(class Logger *loggerptr)
-	: logger(loggerptr),
-	  entityID(0) {
-	logger->message(Logger::Level::INFO, "Entity Manager has been initialized", Logger::Output::TXT_FILE);
+EntityManager::EntityManager()
+	: m_entityID(0) 
+{
+	m_logger = Loggers::getLog();
+	m_logger->info("Entity Manager has been initialized");
 }
 
 
 
-EntityManager::~EntityManager() {
-	logger->message(Logger::Level::INFO, "Entity Manager stopped", Logger::Output::TXT_FILE);
+EntityManager::~EntityManager() 
+{
+	m_logger->info("Entity Manager stopped");
 }
 
 
@@ -43,16 +35,18 @@ EntityManager::~EntityManager() {
  *
  * Registers the given Entity's builder with the Entity Manager
  */
-void EntityManager::registerEntity(std::string tag, BuilderBase<IEntity>* builder){
+void EntityManager::registerEntity(std::string tag, BuilderBase<IEntity>* builder)
+{
+	m_logger->info("Registering Entity '{0}'", tag);
 
-	logger->message(Logger::Level::INFO, "Registering Entity '" + tag + "'", Logger::Output::TXT_FILE);
-
-	auto itr = this->entityRegistry.insert({tag, std::unique_ptr<BuilderBase<IEntity>>(builder)});
+	auto itr = m_entityRegistry.insert({ tag, std::unique_ptr<BuilderBase<IEntity>>(builder) });
 	builder = nullptr;
 
 	//insert returns a pair, the first element is an iterator and the second is if the insert was successful
-	itr.second ? logger->message(Logger::Level::INFO, "Entity '" + tag + "' has been registered", Logger::Output::TXT_FILE) :
-			logger->message(Logger::Level::ERROR, "The Entity tag: '" + tag + "' is not unique! The Entity's builder was not registered", Logger::Output::TXT_FILE);
+	if (itr.second)
+		m_logger->info("Entity '{0}' has been registered", tag);
+	else
+		m_logger->error("The Entity tag: '{0}' is not unique! The Entity's builder was not registered", tag);
 }
 
 
@@ -71,15 +65,16 @@ void EntityManager::registerEntity(std::string tag, BuilderBase<IEntity>* builde
  * Spawns an Entity at the given coordinates.
  * Do Not delete the pointer that is returned
  */
-IEntity* EntityManager::spawn(std::string tag, const Position &pos, EnumSide facing){
-
-	if(!this->entityRegistry.count(tag)) {
-		logger->message(Logger::Level::WARNING, "The Entity: '" + tag + "' could not be spawned, tag is missing in registry", Logger::Output::TXT_FILE);
+IEntity* EntityManager::spawn(std::string tag, const Position &pos, EnumSide facing)
+{
+	if (!m_entityRegistry.count(tag)) 
+	{
+		m_logger->warn("The Entity: '{0}' could not be spawned, tag is missing in registry", tag);
 		return nullptr;
 	}
 
-	IEntity *entity = this->entityRegistry[tag]->build();
-	this->entityList.emplace_back(std::unique_ptr<IEntity>(entity));
+	IEntity *entity = m_entityRegistry[tag]->build();
+	m_entityList.emplace_back(std::unique_ptr<IEntity>(entity));
 	entity->spwan(pos, EnumSide::RIGHT, getNextEntityID());
 	return entity;
 }
@@ -92,16 +87,19 @@ IEntity* EntityManager::spawn(std::string tag, const Position &pos, EnumSide fac
  * This will check all Entities even those that are not on screen
  * it is recommended that this method is not called each tick
  */
-void EntityManager::despawn(){
-
-	logger->message(Logger::Level::INFO, "Removing all inactive Entities", Logger::Output::TXT_FILE);
-	auto itr = entityList.begin();
-	while(itr != entityList.end()) {
-		if(!itr->get()->isActive()) {
+void EntityManager::despawn()
+{
+	m_logger->info("Removing all inactive Entities");
+	auto itr = m_entityList.begin();
+	while (itr != m_entityList.end()) 
+	{
+		if (!itr->get()->isActive()) 
+		{
 			itr->get()->onDespwan();
-			itr = entityList.erase(itr);
+			itr = m_entityList.erase(itr);
 		}
-		else itr++;
+		else 
+			itr++;
 	}
 }
 
@@ -119,14 +117,17 @@ void EntityManager::despawn(){
  *
  * Draws all Entities that are visible on screen
  */
-void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSize, Renderer &renderer, bool renderAabb){
-
+void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSize, Renderer &renderer, bool renderAabb)
+{
 	std::vector<IEntity*> entitiesOnScreen;
 	//TODO fix 'pop-in', currently entities will 'pop in' along the top-left edges of the screen
 	this->getEntities(entitiesOnScreen, AABB(cameraPos.xPos(), cameraPos.yPos(), cameraPos.xPos() + windowSize.width, cameraPos.yPos() + windowSize.height));
-	for(auto &itr : entitiesOnScreen) {
-		if(renderAabb) {
-			switch(itr->getType()) {
+	for (auto &itr : entitiesOnScreen) 
+	{
+		if (renderAabb) 
+		{
+			switch (itr->getType()) 
+			{
 			case EnumEntityType::AGGRESSIVE:
 				renderer.setDrawColor(255, 0, 0, 255);
 				break;
@@ -166,16 +167,18 @@ void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSi
  *
  * Updates all Entities that are currently on screen
  */
-void EntityManager::tickAll(const Position &cameraPos, const Dimension &windowSize, TileMap &worldIn, float deltaTime){
-
-	//logger->message(Level::INFO, "Ticking all Entities on screen", Output::TXT_FILE);
+void EntityManager::tickAll(const Position &cameraPos, const Dimension &windowSize, TileMap &worldIn, float deltaTime)
+{
 	std::vector<IEntity*> entitiesOnScreen;
 	this->getEntities(entitiesOnScreen, AABB(cameraPos.xPos(), cameraPos.yPos(), cameraPos.xPos() + windowSize.width, cameraPos.yPos() + windowSize.height));
 
-	for(auto &itr : entitiesOnScreen) {
-		if(itr->isActive()) {
+	for (auto &itr : entitiesOnScreen) 
+	{
+		if (itr->isActive()) 
+		{
 			itr->tick(worldIn, deltaTime);
-			if(itr->canCollide()){
+			if (itr->canCollide())
+			{
 				this->checkEntityCollisions(entitiesOnScreen, *itr);
 				this->checkTileCollisions(worldIn, *itr);
 			}
@@ -192,20 +195,21 @@ void EntityManager::tickAll(const Position &cameraPos, const Dimension &windowSi
  *
  * Adds a list of Entities in the given area to the vector that is passed in
  */
-void EntityManager::getEntities(std::vector<IEntity*> &vectorIn, const AABB &area){
-
-	for(auto &itr : this->entityList) {
-		if(Collision::RectVsPt(area, itr->getPos())) {
+void EntityManager::getEntities(std::vector<IEntity*> &vectorIn, const AABB &area)
+{
+	for (auto &itr : m_entityList) 
+	{
+		if (Collision::RectVsPt(area, itr->getPos())) 
 			vectorIn.emplace_back(itr.get());
-		}
 	}
 }
 
 
 
 //Gets the next Entity ID and increments to the next ID
-unsigned int EntityManager::getNextEntityID(){
-	return this->entityID++;
+unsigned int EntityManager::getNextEntityID()
+{
+	return m_entityID++;
 }
 
 
@@ -218,15 +222,16 @@ unsigned int EntityManager::getNextEntityID(){
  * Checks if the given Entity is colliding with any entity in the array
  * and if it is colliding the Entity's position will be changed
  */
-void EntityManager::checkEntityCollisions(std::vector<IEntity*> &entities, IEntity &entity){
-
-	for(auto &itr : entities) {
-		if(itr->getID() != entity.getID() && itr->isActive() && itr->canCollide()) {
+void EntityManager::checkEntityCollisions(std::vector<IEntity*> &entities, IEntity &entity)
+{
+	for (auto &itr : entities) 
+	{
+		if (itr->getID() != entity.getID() && itr->isActive() && itr->canCollide()) 
+		{
 			//Make sure that the Entity is not being checked against itself
 			EnumSide side = Collision::RectEdge(entity.getAabb(), itr->getAabb());
-			if(side != EnumSide::NONE) {
+			if (side != EnumSide::NONE)
 				entity.onEntityColision(*itr, side);
-			}
 		}
 	}
 }
@@ -243,51 +248,61 @@ void EntityManager::checkEntityCollisions(std::vector<IEntity*> &entities, IEnti
  *
  * Entity vs Tile collision is done by creating a "collision loop" around the Entity
  */
-void EntityManager::checkTileCollisions(TileMap &worldIn, IEntity &entity){
-
+void EntityManager::checkTileCollisions(TileMap &worldIn, IEntity &entity)
+{
 	const Dimension topLeftTile(-1, -1);
 
 	/*
 	 * The bottom-right tile is determined by the Entity's size
 	 * this is done so that if an Entity is bigger than one tile the collision loop will grow to fully enclose the Entity
 	 */
-	Dimension bottomRightTile(1 + static_cast<int>(entity.getAabb().width()/worldIn.tileWidth() + 0.5),
-			1 + static_cast<int>(entity.getAabb().height()/worldIn.tileHeight() + 0.5));
+	Dimension bottomRightTile(
+		1 + static_cast<int>(entity.getAabb().width()/worldIn.tileWidth() + 0.5), 
+		1 + static_cast<int>(entity.getAabb().height()/worldIn.tileHeight() + 0.5)
+	);
 
 	//This translates the entity's position into the tile-map unit coordinate system aka "Tile-Space"
-	Dimension entityTile(static_cast<int>(entity.getAabb().getPos().xPos()/worldIn.tileWidth() + 0.5),
-			static_cast<int>(entity.getAabb().getPos().yPos()/worldIn.tileHeight() + 0.5));
+	Dimension entityTile(
+		static_cast<int>(entity.getAabb().getPos().xPos()/worldIn.tileWidth() + 0.5), 
+		static_cast<int>(entity.getAabb().getPos().yPos()/worldIn.tileHeight() + 0.5)
+	);
 
 	//Check if the entity collides with any of the tiles around it
 	//TODO Improve performance by skipping the corner tiles as they can never be collided with
-	for(int y = topLeftTile.height; y <= bottomRightTile.height; y++) {
+	for (int y = topLeftTile.height; y <= bottomRightTile.height; y++) 
+	{
 		int yCord = y + entityTile.height;
 
 		//Skip if the y coordinate is outside of the tile-map
-		if((yCord < 0) || (yCord > worldIn.height())) continue;
-		for(int x = topLeftTile.width; x <= bottomRightTile.width; x++) {
+		if ((yCord < 0) || (yCord > worldIn.height())) 
+			continue;
+		for (int x = topLeftTile.width; x <= bottomRightTile.width; x++) 
+		{
 			int xCord = x + entityTile.width;
 
 			//Skip if the x coordinate is outside of the tile-map
-			if((xCord < 0) || (xCord > worldIn.width())) continue;
+			if ((xCord < 0) || (xCord > worldIn.width())) 
+				continue;
 
 			ITile *tile = worldIn.getTile(xCord, yCord);
-			if(tile == nullptr) {
+			if (tile == nullptr) 
+			{
 				//Fail safe if the above somehow does not catch the tile-map being indexed out of
-				logger->message(Logger::Level::WARNING,
-						"Null Pointer exception: Tried to check Tile for collisions but Tile does not exist",
-						Logger::Output::TXT_FILE);
+				m_logger->warn("Null Pointer exception: Tried to check Tile for collisions but Tile does not exist");
 				return;
 			}
 
-			if(tile->canCollide()) {
+			if (tile->canCollide()) 
+			{
 				EnumSide side = Collision::RectEdge(tile->getAabb(), entity.getAabb());
 
-				if(side != EnumSide::NONE) {
+				if (side != EnumSide::NONE) 
+				{
 					//Check if the side collided with is an "internal edge", if it is an internal edge ignore it
 					//Internal edges when collided with can cause "sticky" behavior
 					ITile *tile2 = worldIn.getOffsetTile(tile->getPos(), side);
-					if(tile2 != nullptr && !tile2->canCollide()) entity.onTileColision(*tile, side);
+					if (tile2 != nullptr && !tile2->canCollide()) 
+						entity.onTileColision(*tile, side);
 				}
 			}
 		}

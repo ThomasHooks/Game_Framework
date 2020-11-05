@@ -1,33 +1,21 @@
-//============================================================================
-// Name       		: ITile.h
-// Author     		: Thomas Hooks
-// Last Modified	: 03/21/2020
-//============================================================================
-
-
-
-
 #ifndef ITILE_H_
 #define ITILE_H_
 
 
-#include "../utilities/physics/AABB.h"
-#include "../utilities/physics/Dimension.h"
-#include "../utilities/physics/Position.h"
 
 
-class ITile {
+#include "utilities/physics/AABB.h"
+#include "utilities/physics/Dimension.h"
+#include "utilities/physics/Position.h"
 
+
+
+
+class ITile 
+{
 public:
 
-	ITile(double x,
-			double y,
-			double w,
-			double h,
-			const Dimension &spriteIn,
-			EnumSide direction,
-			bool opaqueIn,
-			bool solidIn);
+	ITile(double x, double y, double w, double h, const Dimension &spriteIn, EnumSide direction, bool opaqueIn, bool solidIn);
 
 
 

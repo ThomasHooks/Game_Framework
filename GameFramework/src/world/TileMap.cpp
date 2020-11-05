@@ -1,36 +1,24 @@
-//============================================================================
-// Name       		: TileMap.h
-// Author     		: Thomas Hooks
-// Last Modified	: 03/22/2020
-//============================================================================
-
-
-
-
 #include <iostream>
 #include <sstream>
 #include <fstream>
 
-#include "TileMap.h"
-
-#include "../utilities/Logger.h"
+#include "world/TileMap.h"
 
 
 
 
-TileMap::TileMap(class Logger *loggerIn, const std::string &tagIn, const std::string &filePath)
-	: logger(loggerIn),
-	  tag(tagIn),
-	  sizeMap(),
-	  sizeTile() {
-
+TileMap::TileMap(const std::string &tagIn, const std::string &filePath)
+	: m_tag(tagIn), m_sizeMap(), m_sizeTile() 
+{
+	m_logger = Loggers::getLog();
 	this->buildTileMap(filePath);
 }
 
 
 
-TileMap::~TileMap() {
-	logger->message(Logger::Level::INFO, "World '"+ this->tag + "' has been removed", Logger::Output::TXT_FILE);
+TileMap::~TileMap() 
+{
+	m_logger->info("World '{0}' has been removed", m_tag);
 }
 
 
@@ -40,8 +28,9 @@ TileMap::~TileMap() {
  *
  * Gets the TileMaps size in tile-space
  */
-const Dimension& TileMap::size()const {
-	return this->sizeMap;
+const Dimension& TileMap::size() const 
+{
+	return m_sizeMap;
 }
 
 
@@ -51,8 +40,9 @@ const Dimension& TileMap::size()const {
  *
  * Gets the TileMaps width in tile-space
  */
-int TileMap::width() const {
-	return this->sizeMap.width;
+int TileMap::width() const 
+{
+	return m_sizeMap.width;
 }
 
 
@@ -62,36 +52,41 @@ int TileMap::width() const {
  *
  * Gets the TileMaps height in tile-space
  */
-int TileMap::height() const {
-	return this->sizeMap.height;
+int TileMap::height() const 
+{
+	return m_sizeMap.height;
 }
 
 
 
 //Gets the TileMaps tile size
-const Dimension& TileMap::tileSize() const {
-	return this->sizeTile;
+const Dimension& TileMap::tileSize() const 
+{
+	return m_sizeTile;
 }
 
 
 
 //Gets the TileMaps tile width
-int TileMap::tileWidth() const {
-	return this->sizeTile.width;
+int TileMap::tileWidth() const 
+{
+	return m_sizeTile.width;
 }
 
 
 
 //Gets the TileMaps tile height
-int TileMap::tileHeight() const {
-	return this->sizeTile.height;
+int TileMap::tileHeight() const 
+{
+	return m_sizeTile.height;
 }
 
 
 
 //Gets the TileMap's tag
-const std::string& TileMap::getTag() const {
-	return this->tag;
+const std::string& TileMap::getTag() const 
+{
+	return m_tag;
 }
 
 
@@ -103,7 +98,8 @@ const std::string& TileMap::getTag() const {
  *
  * @return	The Tile at that location or null if the Tile does not exist
  */
-ITile* TileMap::getTile(const Position& posIn) {
+ITile* TileMap::getTile(const Position& posIn) 
+{
 	return this->getTile(posIn.xPos(), posIn.yPos());
 }
 
@@ -116,11 +112,12 @@ ITile* TileMap::getTile(const Position& posIn) {
  *
  * @return	The Tile at that location or null if the Tile does not exist
  */
-ITile* TileMap::getTile(int x, int y) {
-
-	if(x < 0 || x > this->width() || y < 0 || y > this->height()) return nullptr;
-	auto itr = this->tileMap.find({x, y});
-	return itr == this->tileMap.end() ? nullptr : &itr->second;
+ITile* TileMap::getTile(int x, int y) 
+{
+	if (x < 0 || x > this->width() || y < 0 || y > this->height()) 
+		return nullptr;
+	auto itr = m_tileMap.find({x, y});
+	return itr == m_tileMap.end() ? nullptr : &itr->second;
 }
 
 
@@ -132,7 +129,8 @@ ITile* TileMap::getTile(int x, int y) {
  *
  * @return	The Tile at that location or null if the Tile does not exist
  */
-ITile* TileMap::getTile(double x, double y) {
+ITile* TileMap::getTile(double x, double y) 
+{
 	return this->getTile(static_cast<int>(x/this->tileWidth() + 0.5), static_cast<int>(y/this->tileHeight() + 0.5));
 }
 
@@ -147,10 +145,10 @@ ITile* TileMap::getTile(double x, double y) {
  *
  * @return	The Tile offset from that location or null if the Tile does not exist
  */
-ITile* TileMap::getOffsetTile(const Position& posIn, EnumSide direction){
-
-	switch(direction){
-
+ITile* TileMap::getOffsetTile(const Position& posIn, EnumSide direction)
+{
+	switch (direction)
+	{
 	case EnumSide::UP:
 		return this->getTile(posIn.xPos(), posIn.yPos() - this->tileHeight());
 
@@ -175,37 +173,42 @@ ITile* TileMap::getOffsetTile(const Position& posIn, EnumSide direction){
  *
  * Creates a tile map using the given filePath
  */
-void TileMap::buildTileMap(const std::string &filePath){
-
-	logger->message(Logger::Level::INFO, "Building World '" + this->tag + "' at '" + filePath + "'", Logger::Output::TXT_FILE);
+void TileMap::buildTileMap(const std::string &filePath)
+{
+	m_logger->info("Building World '{0}' at ''", m_tag, filePath);
 
 	std::ifstream mapFile(filePath);
-	if(!mapFile.is_open()){
-		logger->message(Logger::Level::ERROR, "Unable to load/find map '" + this->tag + "' at '" + filePath + "'", Logger::Output::TXT_FILE);
+	if (!mapFile.is_open())
+	{
+		m_logger->error("Unable to load/find map '{0}' at '{1}'", m_tag, filePath);
 		return;
 	}
 
 	//Read the map size from the file
 	int mapWidth = 0;
 	mapFile>>mapWidth;
-	this->sizeMap.width = mapWidth;
+	m_sizeMap.width = mapWidth;
 	int mapHeight = 0;
 	mapFile>>mapHeight;
-	this->sizeMap.height = mapHeight;
-	if(mapFile.fail()) logger->message(Logger::Level::ERROR, "Unable to read map '" + this->tag + "' at MAPSIZE", Logger::Output::TXT_FILE);
+	m_sizeMap.height = mapHeight;
+	if (mapFile.fail()) 
+		m_logger->error("Unable to read map '{0}' at '{1}' in element 'MAPSIZE'", m_tag, filePath);
 
 	//Read the tile size from the file
 	int tileWidth = 0;
 	mapFile>>tileWidth;
-	this->sizeTile.width = tileWidth;
+	m_sizeTile.width = tileWidth;
 	int tileHeight = 0;
 	mapFile>>tileHeight;
-	this->sizeTile.height = tileHeight;
-	if(mapFile.fail()) logger->message(Logger::Level::ERROR, "Unable to read map '" + this->tag + "' at TILESIZE", Logger::Output::TXT_FILE);
+	m_sizeTile.height = tileHeight;
+	if (mapFile.fail()) 
+		m_logger->error("Unable to read map '{0}' at '{1}' in element 'TILESIZE'", m_tag, filePath);
 
 	//Read the tile and add it to the tile map
-	for(int y = 0; y < sizeMap.height; y++) {
-		for(int x = 0; x < sizeMap.width; x++) {
+	for (int y = 0; y < m_sizeMap.height; y++) 
+	{
+		for (int x = 0; x < m_sizeMap.width; x++) 
+		{
 			bool opaque = true;
 			bool solid = false;
 			EnumSide pass = EnumSide::NONE;
@@ -214,23 +217,21 @@ void TileMap::buildTileMap(const std::string &filePath){
 			int index = 0;
 			mapFile>>index;
 			sprite.width = index;
-			if(mapFile.fail()) {
-				logger->message(Logger::Level::ERROR, "Unable to read map '" + this->tag + "' at TILESPRITE", Logger::Output::TXT_FILE);
+			if (mapFile.fail()) 
+			{
+				m_logger->error("Unable to read map '{0}' at '{1}' in element 'TILESPRITE'", m_tag, filePath);
 				return;
 			}
 
-			if(sprite.width > 1) solid = true;
-			this->tileMap.insert({{x, y}, ITile(x * sizeTile.width,
-					y * sizeTile.height,
-					sizeTile.width,
-					sizeTile.height,
-					sprite,
-					pass,
-					opaque,
-					solid)});
+			if (sprite.width > 1) 
+				solid = true;
+			m_tileMap.insert({
+				{ x, y }, 
+				ITile(x * static_cast<double>(m_sizeTile.width), y * static_cast<double>(m_sizeTile.height), m_sizeTile.width, m_sizeTile.height, sprite, pass, opaque, solid)
+			});
 		}
 	}
-	logger->message(Logger::Level::INFO, "World '" + this->tag + "' has been built", Logger::Output::TXT_FILE);
+	m_logger->info("World '{0}' has been built", m_tag);
 }
 
 

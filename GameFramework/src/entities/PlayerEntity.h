@@ -1,12 +1,3 @@
-//============================================================================
-// Name       		: PlayerEntity.h
-// Author     		: Thomas Hooks
-// Last Modified	: 03/19/2020
-//============================================================================
-
-
-
-
 #ifndef PLAYERENTITY_H_
 #define PLAYERENTITY_H_
 
@@ -14,8 +5,10 @@
 #include "IEntity.hpp"
 
 
-class PlayerEntity : public IEntity {
 
+
+class PlayerEntity : public IEntity 
+{
 public:
 
 	PlayerEntity();

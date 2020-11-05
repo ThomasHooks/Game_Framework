@@ -1,33 +1,16 @@
-//============================================================================
-// Name       		: IEntity.cpp
-// Author     		: Thomas Hooks
-// Last Modified	: 03/23/2020
-//============================================================================
-
-
-
-
 #include "IEntity.hpp"
 
 
 
 
 IEntity::IEntity()
-	: tag("null"),
-	  entityID(0),
-	  active(true),
-	  solid(true),
-	  pos(),
-	  lastPos(),
-	  vel(),
-	  hitBox(),
-	  sprite(),
-	  type(EnumEntityType::PASSIVE),
-	  facing(EnumSide::RIGHT) {}
+	: tag("null"), entityID(0), active(true), solid(true), pos(), lastPos(), vel(), hitBox(), sprite(), type(EnumEntityType::PASSIVE), facing(EnumSide::RIGHT) 
+{}
 
 
 
-IEntity::~IEntity() {}
+IEntity::~IEntity() 
+{}
 
 
 
