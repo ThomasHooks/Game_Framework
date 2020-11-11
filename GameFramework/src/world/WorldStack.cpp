@@ -4,8 +4,7 @@
 #include <string>
 
 #include "renderer/Renderer.h"
-#include "utilities/physics/Dimension.h"
-#include "utilities/physics/Position.h"
+#include "utilities/physics/TilePos.h"
 #include "world/WorldStack.h"
 #include "world/TileMap.h"
 
@@ -20,18 +19,6 @@ WorldStack::WorldStack()
 
 
 
-WorldStack::~WorldStack() 
-{}
-
-
-
-/*
- * @param	tileSheetTag The map's/sprite sheet's tag
- *
- * @param	mapFilePath The location of the map's sprite sheet
- *
- * Adds a new map to the back of the world stack
- */
 void WorldStack::pushMap(std::string tileSheetTag, std::string mapFilePath)
 {
 	m_worldStack.emplace_back(std::unique_ptr<TileMap>(new TileMap(tileSheetTag, mapFilePath)));
@@ -39,7 +26,6 @@ void WorldStack::pushMap(std::string tileSheetTag, std::string mapFilePath)
 
 
 
-//Removes the back world from the stack
 void WorldStack::popMap()
 {
 	if (m_worldStack.empty())
@@ -50,16 +36,7 @@ void WorldStack::popMap()
 
 
 
-/*
- * @param	cameraPos The position of the camera
- *
- * @param	windowSize Size of the window
- *
- * @param	renderer Reference to the Renderer Manager
- *
- * Draws the active map to the screen
- */
-void WorldStack::draw(const Position &cameraPos, const Dimension &windowSize, Renderer &renderer)
+void WorldStack::draw(const TilePos& cameraPos, const Pos2N& windowSize, Renderer& renderer)
 {
 	TileMap* world = this->getWorld();
 	if (world == nullptr) 
@@ -69,10 +46,10 @@ void WorldStack::draw(const Position &cameraPos, const Dimension &windowSize, Re
 	}
 
 	//Calculate the top-left visible tile
-	Dimension tileSize(world->tileWidth(), world->tileHeight());
-	Dimension numberOfVisibleTiles(windowSize.width/tileSize.width + 1, windowSize.height/tileSize.height);
-	double offsetX = cameraPos.xPos()/tileSize.width;
-	double offsetY = cameraPos.yPos()/tileSize.height;
+	Pos2N tileSize(world->tileWidth(), world->tileHeight());
+	Pos2N numberOfVisibleTiles(windowSize.w/tileSize.w + 1, windowSize.h/tileSize.h);
+	double offsetX = cameraPos.x()/tileSize.w;
+	double offsetY = cameraPos.y()/tileSize.h;
 	
 	//Keep the camera inside the World boundaries
 	if (offsetX < 0) 
@@ -81,20 +58,20 @@ void WorldStack::draw(const Position &cameraPos, const Dimension &windowSize, Re
 	if (offsetY < 0) 
 		offsetY = 0;
 
-	if (offsetX > world->width() - numberOfVisibleTiles.width)
-		offsetX = world->width() - numberOfVisibleTiles.width;
+	if (offsetX > static_cast<double>(world->width()) - static_cast<double>(numberOfVisibleTiles.w))
+		offsetX = static_cast<double>(world->width()) - static_cast<double>(numberOfVisibleTiles.w);
 
-	if (offsetY > world->height() - numberOfVisibleTiles.height)
-		offsetY = world->height() - numberOfVisibleTiles.height;
+	if (offsetY > static_cast<double>(world->height()) - static_cast<double>(numberOfVisibleTiles.h))
+		offsetY = static_cast<double>(world->height()) - static_cast<double>(numberOfVisibleTiles.h);
 
-	Position tileOffset(offsetX, offsetY);
+	Pos2D tileOffset(offsetX, offsetY);
 	//Over rendering is done to prevent artifacts along the edge of the screen
-	for (int y = -1; y < numberOfVisibleTiles.height; y++) 
+	for (int y = -1; y < numberOfVisibleTiles.h; y++) 
 	{
-		for (int x = -1; x < numberOfVisibleTiles.width; x++) 
+		for (int x = -1; x < numberOfVisibleTiles.w; x++) 
 		{
-			int xCord = x + tileOffset.xPosN();
-			int yCord = y + tileOffset.yPosN();
+			int xCord = x + static_cast<int>(tileOffset.x + 0.5);
+			int yCord = y + static_cast<int>(tileOffset.y + 0.5);
 			/*
 			 * This is to prevent the map from being indexed out of
 			 * also doing this can cause some tiles to be rendered more than once
@@ -112,7 +89,7 @@ void WorldStack::draw(const Position &cameraPos, const Dimension &windowSize, Re
 			ITile *tile = world->getTile(xCord, yCord);
 
 			if (tile == nullptr) 
-				m_logger->warn("Null Pointer exception: Tried to get tile at ({0}, {1}), but tile does not exist", tile->getPos().xPosN(), tile->getPos().yPosN());
+				m_logger->warn("Null Pointer exception: Tried to get tile in WorldStack::draw, but tile does not exist");
 			else
 				renderer.drawSprite(world->getTag(), tile->getPos(), cameraPos, tile->getSprite(), false);
 		}
@@ -121,11 +98,6 @@ void WorldStack::draw(const Position &cameraPos, const Dimension &windowSize, Re
 
 
 
-/*
- * @return	The current world or null if there are no maps
- *
- * Gets the current world
- */
 class TileMap* WorldStack::getWorld()
 {
 	return m_worldStack.empty() ? nullptr : m_worldStack.back().get();

@@ -8,9 +8,10 @@
 #include <map>
 
 #include "utilities/physics/AABB.h"
-#include "utilities/physics/Dimension.h"
+#include "utilities/math/Pos2.hpp"
+#include "utilities/math/Pos3.hpp"
 #include "utilities/physics/EnumSide.h"
-#include "utilities/physics/Position.h"
+#include "utilities/physics/TilePos.h"
 #include "capabilities/IEntityCapability.h"
 #include "EnumEntityType.h"
 
@@ -29,14 +30,13 @@ public:
 
 
 
-	/*
-	 * @param	posIn Coordinates the Entity is to be spawned
-	 *
-	 * @param	facingIn The direction the Entity is to be facing
-	 *
-	 * This method is called just as an Entity is spawned
-	 */
-	void spwan(const Position &posIn, EnumSide facingIn, unsigned int entityIDIn);
+	/// <summary>
+	/// This method is called just as an Entity is spawned
+	/// </summary>
+	/// <param name="posIn">Coordinates the Entity is to be spawned</param>
+	/// <param name="facingIn">The direction the Entity is to be facing</param>
+	/// <param name="entityIDIn">This Entity's ID tag</param>
+	void spwan(const TilePos& posIn, EnumSide facingIn, unsigned int entityIDIn);
 
 
 
@@ -61,7 +61,7 @@ public:
 	 *
 	 * This method is called each tick
 	 */
-	virtual void tick(const class TileMap &world, float deltaTime) = 0;
+	virtual void tick(const class TileMap& world, float deltaTime) = 0;
 
 
 
@@ -72,7 +72,7 @@ public:
 	 *
 	 * This method is called when the Entity collides with another Entity
 	 */
-	virtual void onEntityColision(IEntity &other, EnumSide side) = 0;
+	virtual void onEntityColision(IEntity& other, EnumSide side) = 0;
 
 
 
@@ -83,7 +83,7 @@ public:
 	 *
 	 * This method is called when the Entity collides with a Tile
 	 */
-	virtual void onTileColision(class ITile &tileIn, EnumSide side) = 0;
+	virtual void onTileColision(class ITile& tileIn, EnumSide side) = 0;
 
 
 
@@ -138,7 +138,7 @@ public:
 
 
 	//Gets the sprite's location in the sprite sheet
-	const Dimension& getSprite() const;
+	const Pos2N& getSprite() const { return m_sprite; }
 
 
 
@@ -148,7 +148,7 @@ public:
 
 
 	//Gets the Entity's position
-	const Position& getPos() const;
+	const TilePos& getPos() const { return m_pos; }
 
 
 
@@ -162,7 +162,7 @@ public:
 	 *
 	 * Moves the Entity to a new position
 	 */
-	void teleport(const Position &pos);
+	void teleport(const TilePos& pos);
 
 
 
@@ -200,7 +200,7 @@ public:
 	 *
 	 * Updates the velocity of the Entity
 	 */
-	void updateVel(const Position &accel, float frict, float deltaTime);
+	void updateVel(const Pos2D& accel, float frict, float deltaTime);
 
 
 
@@ -247,7 +247,7 @@ protected:
 
 
 	//Used to update an Entity's sprite
-	void setSprite(const Dimension &spriteIn);
+	void setSprite(const Pos2N& spriteIn);
 
 
 
@@ -287,12 +287,12 @@ protected:
 
 
 	//Gets the Entity's last position
-	Position& getLastPos();
+	TilePos& getLastPos() { return m_lastPos; }
 
 
 
 	//Gets the Entity's velocity
-	Position& getVel();
+	Pos2D& getVel() { return m_vel; }
 
 
 
@@ -306,13 +306,15 @@ private:
 
 	bool solid;
 
-	Position pos;
-	Position lastPos;
-	Position vel;
+	TilePos m_pos;
+
+	TilePos m_lastPos;
+
+	Pos2D m_vel;
 
 	AABB hitBox;
 
-	Dimension sprite;
+	Pos2N m_sprite;
 
 	EnumEntityType type;
 

@@ -7,8 +7,6 @@
 #include <spdlog/spdlog.h>
 
 #include "Renderer.h"
-#include "utilities/physics/Dimension.h"
-#include "utilities/physics/Position.h"
 #include "utilities/wrappers/SDLTextureWrapper.h"
 
 
@@ -36,11 +34,6 @@ Renderer::~Renderer()
 
 
 
-/*
- * @param	windowIn A pointer to the current window
- *
- * Initializes the Renderer Manager and must be called before using any other methods
- */
 void Renderer::init(SDL_Window *windowIn)
 {
 	if(!m_hasBeenInit) 
@@ -53,18 +46,7 @@ void Renderer::init(SDL_Window *windowIn)
 
 
 
-/*
- * @param	tag The ID of the texture
- *
- * @param	fileLocation The location of the texture file
- *
- * @param	tileSize The dimensions of tiles in the texture
- *
- * @return	True if the texture was successfully registered
- *
- * Register a texture to the renderer manager
- */
-bool Renderer::registerTexture(const std::string &tag, const std::string &fileLocation, Dimension &tileSize)
+bool Renderer::registerTexture(const std::string& tag, const std::string& fileLocation, const Pos2N& tileSize)
 {
 	if(!m_hasBeenInit) 
 	{
@@ -90,7 +72,7 @@ bool Renderer::registerTexture(const std::string &tag, const std::string &fileLo
 
 		//Register this tag with the missing texture
 		tmpSurface = IMG_Load("./data/gfx/null.png");
-		Dimension nullSize(16, 16);
+		Pos2N nullSize(16, 16);
 		m_textureMap.insert({tag, std::unique_ptr<SDLTextureWrapper>(new SDLTextureWrapper(m_renderer, tmpSurface, nullSize))});
 
 		SDL_FreeSurface(tmpSurface);
@@ -100,7 +82,7 @@ bool Renderer::registerTexture(const std::string &tag, const std::string &fileLo
 	else 
 	{
 		//Sprite sheet was found
-		m_textureMap.insert({tag, std::unique_ptr<SDLTextureWrapper>(new SDLTextureWrapper(m_renderer, tmpSurface, tileSize))});
+		m_textureMap.insert({ tag, std::unique_ptr<SDLTextureWrapper>(new SDLTextureWrapper(m_renderer, tmpSurface, tileSize)) });
 
 		SDL_FreeSurface(tmpSurface);
 		tmpSurface = nullptr;
@@ -112,13 +94,6 @@ bool Renderer::registerTexture(const std::string &tag, const std::string &fileLo
 
 
 
-/*
- * @param	tag The ID of the texture to be deregistered
- *
- * @return	True if tag was successfully deregistered
- *
- * Deregister the texture specified by the tag argument
- */
 bool Renderer::deregisterTexture(const std::string &tag)
 {
 	if(m_hasBeenInit) 
@@ -145,7 +120,6 @@ bool Renderer::deregisterTexture(const std::string &tag)
 
 
 
-//Deregister all textures in the Renderer Manager
 void Renderer::deregisterAllTextures()
 {
 	if(m_hasBeenInit) 
@@ -168,19 +142,6 @@ void Renderer::deregisterAllTextures()
 
 
 
-/*
- * @param	red The amount of red in the new color
- *
- * @param	green The amount of green in the new color
- *
- * @param	blue The amount of blue in the new color
- *
- * @param	alpha The new opacity
- *
- * @return	True if the draw color was successfully changed
- *
- * Sets the drawing color
- */
 bool Renderer::setDrawColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
 {
 	if(m_hasBeenInit) 
@@ -197,19 +158,6 @@ bool Renderer::setDrawColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t al
 
 
 
-/*
- * @param	tag The ID of the texture
- *
- * @param	red The amount of red in the new color
- *
- * @param	green The amount of green in the new color
- *
- * @param	blue The amount of blue in the new color
- *
- * @return	True if the textures color was successfully changed
- *
- * Sets the given texture's color
- */
 bool Renderer::setTextureColor(const std::string &tag, uint8_t red, uint8_t green, uint8_t blue)
 {
 	if(m_hasBeenInit) 
@@ -226,15 +174,6 @@ bool Renderer::setTextureColor(const std::string &tag, uint8_t red, uint8_t gree
 
 
 
-/*
- * @param	tag The ID of the texture
- *
- * @param	alpha The new opacity for the texture
- *
- * @return	True if the textures opacity was successfully changed
- *
- * Sets the given texture's opacity
- */
 bool Renderer::setTextureAlpha(const std::string &tag, uint8_t alpha)
 {
 	if(m_hasBeenInit) 
@@ -251,15 +190,6 @@ bool Renderer::setTextureAlpha(const std::string &tag, uint8_t alpha)
 
 
 
-/*
- * @param	tag The ID of the texture
- *
- * @param	blendMode The new blending mode
- *
- * @return	True if the textures blend mode was successfully changed
- *
- * Sets the given textures blend mode
- */
 bool Renderer::setTextureBlendMode(const std::string &tag, RendererBlendMode blendMode)
 {
 	if(!m_hasBeenInit) 
@@ -292,11 +222,6 @@ bool Renderer::setTextureBlendMode(const std::string &tag, RendererBlendMode ble
 
 
 
-/*
- * @return	True if the renderer was cleared
- *
- * Clears the renderer and fill it in with the current draw color
- */
 bool Renderer::clear()
 {
 	if(m_hasBeenInit) 
@@ -313,11 +238,6 @@ bool Renderer::clear()
 
 
 
-/*
- * @return	True if the renderer was presented
- *
- * Presents what has been drawn to the renderer on the screen
- */
 bool Renderer::present()
 {
 	if(m_hasBeenInit) 
@@ -334,16 +254,11 @@ bool Renderer::present()
 
 
 
-/*
- * @param	pos The coordinates of the Point
- *
- * Draws a point at the given coordinates to the renderer
- */
-void Renderer::drawPoint(const Position &pos)
+void Renderer::drawPoint(const Pos2D& pos)
 {
 	if(m_hasBeenInit) 
 	{
-		int code = SDL_RenderDrawPoint(m_renderer, pos.xPosN(), pos.yPosN());
+		int code = SDL_RenderDrawPoint(m_renderer, static_cast<int>(pos.x + 0.5), static_cast<int>(pos.y + 0.5));
 		if(code < 0) 
 		{
 			std::string sdlMessage = SDL_GetError();
@@ -356,18 +271,16 @@ void Renderer::drawPoint(const Position &pos)
 
 
 
-/*
- * @param	startPos The coordinates of the starting point of the Line
- *
- * @param	endPos The coordinates of the ending point of the Line
- *
- * Draws a line to the renderer
- */
-void Renderer::drawLine(const class Position &startPos, const class Position &endPos)
+void Renderer::drawLine(const Pos2D& startPos, const Pos2D& endPos)
 {
 	if(m_hasBeenInit) 
 	{
-		int code = SDL_RenderDrawLine(m_renderer, startPos.xPosN(), startPos.yPosN(), endPos.xPosN(), endPos.yPosN());
+		int code = SDL_RenderDrawLine(m_renderer, 
+			static_cast<int>(startPos.x + 0.5), 
+			static_cast<int>(startPos.y + 0.5), 
+			static_cast<int>(endPos.x + 0.5), 
+			static_cast<int>(endPos.y + 0.5)
+		);
 		if(code < 0) 
 		{
 			std::string sdlMessage = SDL_GetError();
@@ -380,20 +293,11 @@ void Renderer::drawLine(const class Position &startPos, const class Position &en
 
 
 
-/*
- * @param	pos The coordinates of the rectangle
- *
- * @param	dim The dimensions of the rectangle
- *
- * @param	fill Flag to draw a filled in rectangle
- *
- * Draws a rectangle to the renderer
- */
-void Renderer::drawRect(const class Position &pos, const struct Dimension &dim, bool fill)
+void Renderer::drawRect(const Pos2D& pos, const Pos2N& dim, bool fill)
 {
 	if(m_hasBeenInit) 
 	{
-		SDL_Rect rect = {pos.xPosN(), pos.yPosN(), dim.width, dim.height};
+		SDL_Rect rect = { static_cast<int>(pos.x + 0.5), static_cast<int>(pos.y + 0.5), dim.w, dim.h };
 		int code = fill ? SDL_RenderFillRect(m_renderer, &rect) : SDL_RenderDrawRect(m_renderer, &rect);
 		if(code < 0) 
 		{
@@ -408,39 +312,24 @@ void Renderer::drawRect(const class Position &pos, const struct Dimension &dim, 
 
 
 
-/*
- * @param	tag The tag ID of the entity/tile
- *
- * @param	pos The coordinates of the entity/tile
- *
- * @param	cameraOffset The coordinates of the camera
- *
- * @param	spriteLocation The location of the sprite in the sprite sheet
- *
- * @param	angle The location of the sprite in the sprite sheet
- *
- * @param	flipSprite If the sprite should be flipped
- *
- * Draws a sprite given by tag to the renderer
- */
-void Renderer::drawSprite(const std::string &tag, const Position &pos, const Position &cameraOffset, const Dimension &spriteLocation, const double angle, const bool flipSprite)
+void Renderer::drawSprite(const std::string& tag, const TilePos& pos, const TilePos& cameraOffset, const Pos2N& spriteLocation, const double angle, const bool flipSprite)
 {
 	if(m_hasBeenInit) 
 	{
-		Dimension spriteSize(this->getTextureTileWidth(tag), this->getTextureTileHeight(tag));
+		Pos2N spriteSize(this->getTextureTileWidth(tag), this->getTextureTileHeight(tag));
 		//Select the right sprite from the sprite sheet
 		SDL_Rect spriteRect = {
-			spriteLocation.width * spriteSize.width, 
-			spriteLocation.height * spriteSize.height, 
-			spriteSize.width, 
-			spriteSize.height
+			spriteLocation.u * spriteSize.w, 
+			spriteLocation.v * spriteSize.h, 
+			spriteSize.w, 
+			spriteSize.h
 		};
 
 		//calculate the entity's/tile's size and location in the world
-		double width = static_cast<double>(spriteSize.width) * m_scale;
-		double height = static_cast<double>(spriteSize.height) * m_scale;
-		double xPos = pos.xPos() - cameraOffset.xPos();
-		double yPos = pos.yPosN() - cameraOffset.yPos();
+		double width = static_cast<double>(spriteSize.w) * m_scale;
+		double height = static_cast<double>(spriteSize.h) * m_scale;
+		double xPos = pos.x() - cameraOffset.x();
+		double yPos = pos.y() - cameraOffset.y();
 
 		SDL_Rect entityRect = {
 			static_cast<int>(xPos + 0.5),
@@ -458,31 +347,13 @@ void Renderer::drawSprite(const std::string &tag, const Position &pos, const Pos
 
 
 
-/*
- * @param	tag The tag ID of the entity/tile
- *
- * @param	pos The coordinates of the entity/tile
- *
- * @param	cameraOffset The coordinates of the camera
- *
- * @param	spriteLocation The location of the sprite in the sprite sheet
- *
- * @param	flipSprite If the sprite should be flipped
- *
- * Draws a sprite given by tag to the renderer
- */
-void Renderer::drawSprite(const std::string &tag, const Position &pos, const Position &cameraOffset, const Dimension &spriteLocation, const bool flipSprite)
+void Renderer::drawSprite(const std::string& tag, const TilePos& pos, const TilePos& cameraOffset, const Pos2N& spriteLocation, const bool flipSprite)
 {
 	this->drawSprite(tag, pos, cameraOffset, spriteLocation, 0.0, flipSprite);
 }
 
 
 
-/*
- * @param	scaleIn The new scale for all rendering
- *
- * The new scale cannot be zero or negative, and if scaleIn is either it will default to 1.0
- */
 void Renderer::setScale(float scaleIn)
 {
 	scaleIn <= 0.0f ? m_scale = 1.0f : m_scale = scaleIn;
@@ -490,15 +361,6 @@ void Renderer::setScale(float scaleIn)
 
 
 
-/*
- * @nullable
- *
- * @param	tag The ID of the texture
- *
- * @return	Pointer to the texture, or null if the tag is not found
- *
- * Gets the texture specified by the tag. If it doesn't find the texture it will return a null pointer
- */
 SDL_Texture* Renderer::getTexture(const std::string &tag)
 {
 	if(!m_hasBeenInit) 
@@ -515,13 +377,6 @@ SDL_Texture* Renderer::getTexture(const std::string &tag)
 
 
 
-/*
- * @param	tag The ID of the texture
- *
- * @return	The tile width of the textures, or 0 if not found
- *
- * Gets the tile width of the texture specified by the tag. If it doesn't find the texture it will return 0
- */
 int Renderer::getTextureTileWidth(const std::string &tag)
 {
 	if(!this->m_hasBeenInit) 
@@ -533,18 +388,11 @@ int Renderer::getTextureTileWidth(const std::string &tag)
 		return 0;
 	}
 	else 
-		return m_textureMap[tag]->getTileSize().width;
+		return m_textureMap[tag]->getTileSize().w;
 }
 
 
 
-/*
- * @param	tag The ID of the texture
- *
- * @return	The tile height of the textures, or 0 if not found
- *
- * Gets the tile height of the texture specified by the tag. If it doesn't find the texture it will return 0
- */
 int Renderer::getTextureTileHeight(const std::string &tag)
 {
 	if(!m_hasBeenInit) 
@@ -556,22 +404,14 @@ int Renderer::getTextureTileHeight(const std::string &tag)
 		return 0;
 	}
 	else 
-		return m_textureMap[tag]->getTileSize().height;
+		return m_textureMap[tag]->getTileSize().h;
 }
 
 
 
-/*
- * @param	tag The ID of the texture
- *
- * @return	The dimensions of the texture
- *
- * Gets a copy of  tile dimensions of the texture specified by the tag
- * if it doesn't find the texture it will return a size of (0, 0)
- */
-Dimension Renderer::getTextureSize(const std::string &tag)
+Pos2N Renderer::getTextureSize(const std::string &tag)
 {
-	return !m_hasBeenInit ? Dimension() : Dimension(this->getTextureTileWidth(tag), this->getTextureTileHeight(tag));
+	return !m_hasBeenInit ? Pos2N() : Pos2N(this->getTextureTileWidth(tag), this->getTextureTileHeight(tag));
 }
 
 

@@ -1,37 +1,23 @@
-//============================================================================
-// Name       		: AABB.h
-// Author     		: Thomas Hooks
-// Last Modified	: 03/19/2020
-//============================================================================
-
-
-
-
 #ifndef AABB_H_
 #define AABB_H_
 
 
-#include "EnumSide.h"
-#include "Position.h"
+#include "utilities/physics/EnumSide.h"
+#include "utilities/math/Pos2.hpp"
+#include "utilities/math/Pos3.hpp"
 
 
-class AABB {
 
+
+class AABB 
+{
 public:
 
 	AABB();
 
 
-	/*
-	 * @param	x1, y1 The coordinates of the top-left point
-	 *
-	 * @param	x2, y2 The coordinates of the bottom-right point
-	 */
+
 	AABB(double x1, double y1, double x2, double y2);
-
-
-
-	~AABB();
 
 
 
@@ -46,7 +32,7 @@ public:
 
 
 	//Gets the Axis Aligned Bounding Box's height
-	double height(void) const;
+	double height() const;
 
 
 
@@ -60,7 +46,7 @@ public:
 	 *
 	 * Gets the center position of the Axis Aligned Bounding Box
 	 */
-	Position getCenter() const;
+	Pos2D getCenter() const;
 
 
 
@@ -69,7 +55,7 @@ public:
 	 *
 	 * Gets the top-left corner of the Axis Aligned Bounding Box
 	 */
-	Position getPos() const;
+	const Pos2D& getPos() const;
 
 
 
@@ -119,7 +105,7 @@ public:
 	 *
 	 * Moves the Axis Aligned Bounding Box by the given amount
 	 */
-	void offset(const Position &posIn);
+	void offset(const Pos3D& posIn);
 
 
 
@@ -140,12 +126,13 @@ public:
 
 private:
 
-	Position pos1;
-	Position pos2;
+	Pos2D m_pos1;
+
+	Pos2D m_pos2;
 };
 
 
-#endif /* AABB_H_ */
+#endif
 
 
 

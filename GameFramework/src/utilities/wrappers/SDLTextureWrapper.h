@@ -1,40 +1,40 @@
-//============================================================================
-// Name       		: SDLTextureWrapper.h
-// Author     		: Thomas Hooks
-// Last Modified	: 03/06/2020
-//============================================================================
-
-
-
-
 #ifndef SDLTEXTUREWRAPPER_H_
 #define SDLTEXTUREWRAPPER_H_
 
+#include "utilities/math/Pos2.hpp"
 
-#include "../physics/Dimension.h"
 
 
-class SDLTextureWrapper {
 
+class SDLTextureWrapper 
+{
 public:
 
-	SDLTextureWrapper(struct SDL_Renderer *rendererIn,
-			struct SDL_Surface *surfaceIn,
-			Dimension &sizeIn);
+	SDLTextureWrapper(struct SDL_Renderer* rendererIn, struct SDL_Surface* surfaceIn, const Pos2N &sizeIn);
+
+
 
 	~SDLTextureWrapper();
 
+
+
 	struct SDL_Texture* getTexture() const;
-	const Dimension& getTileSize() const;
+
+
+
+	const Pos2N& getTileSize() const;
+
+
 
 private:
 
-	Dimension tileSize;
-	struct SDL_Texture* texture;
+	Pos2N m_tileSize;
+
+	struct SDL_Texture* m_texture;
 };
 
 
-#endif /* SDLTEXTUREWRAPPER_H_ */
+#endif
 
 
 

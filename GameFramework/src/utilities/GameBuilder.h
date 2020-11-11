@@ -5,7 +5,7 @@
 #include <string>
 
 #include "utilities/Loggers.hpp"
-#include "physics/Dimension.h"
+#include "utilities/math/Pos2.hpp"
 
 
 
@@ -18,23 +18,15 @@ public:
 
 
 
-	~GameBuilder();
+	GameBuilder& setLogFile(const std::string& location);
 
 
 
-	//GameBuilder& setLoggerLevel(Logger::Level levelIn);
+	GameBuilder& setWindowName(const std::string& nameIn);
 
 
 
-	GameBuilder& setLogFile(const std::string &location);
-
-
-
-	GameBuilder& setWindowName(const std::string &nameIn);
-
-
-
-	GameBuilder& setWindowSize(const Dimension &size);
+	GameBuilder& setWindowSize(const Pos2N& size);
 
 
 
@@ -50,9 +42,11 @@ protected:
 
 	std::string logFileLocation;
 
+	spdlog::level::level_enum level = spdlog::level::trace;
+
 	std::string windowName;
 
-	Dimension windowSize;
+	Pos2N windowSize;
 
 	uint32_t windowFlags;
 
@@ -62,7 +56,7 @@ protected:
 };
 
 
-#endif /* GAMEBUILDER_H_ */
+#endif
 
 
 

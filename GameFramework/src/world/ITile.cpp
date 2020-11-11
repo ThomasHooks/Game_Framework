@@ -3,45 +3,15 @@
 
 
 
-ITile::ITile(double x, double y, double w, double h, const Dimension &spriteIn, EnumSide direction, bool opaqueIn, bool solidIn)
-	: pos(x, y), boundingBox(x, y, x + w, y + h), opaque(opaqueIn), solid(solidIn), pass(direction), sprite(spriteIn.width, spriteIn.height) 
+ITile::ITile(double x, double y, double w, double h, const Pos2N& spriteIn, EnumSide direction, bool opaqueIn, bool solidIn)
+	: m_pos(x, y), m_boundingBox(x, y, x + w, y + h), m_isOpaque(opaqueIn), m_isSolid(solidIn), m_passable(direction), m_sprite(spriteIn.u, spriteIn.v) 
 {}
 
 
 
-ITile::~ITile() 
-{}
-
-
-
-//Gets this Tile's current position in Global-Space
-const Position& ITile::getPos() const 
-{
-	return this->pos;
-}
-
-
-
-//Gets this Tile's axis aligned bounding box
-const AABB& ITile::getAabb() const 
-{
-	return this->boundingBox;
-}
-
-
-
-//Gets this Tile's current sprite
-const Dimension& ITile::getSprite() const 
-{
-	return this->sprite;
-}
-
-
-
-//Checks if this Tile has collision
 bool ITile::canCollide() const 
 {
-	return this->solid;
+	return m_isSolid;
 }
 
 
@@ -53,7 +23,7 @@ bool ITile::canCollide() const
  */
 void ITile::setCollide(bool stateIn) 
 {
-	this->solid = stateIn;
+	m_isSolid = stateIn;
 }
 
 
@@ -61,7 +31,7 @@ void ITile::setCollide(bool stateIn)
 //Checks if this Tile can be rendered
 bool ITile::isOpaque() const 
 {
-	return this->opaque;
+	return m_isOpaque;
 }
 
 
@@ -73,7 +43,7 @@ bool ITile::isOpaque() const
  */
 void ITile::setOpaque(bool stateIn)
 {
-	this->opaque = stateIn;
+	m_isOpaque = stateIn;
 }
 
 
@@ -87,7 +57,7 @@ void ITile::setOpaque(bool stateIn)
  */
 bool ITile::isPassable(EnumSide direction) const 
 {
-	return this->pass == direction;
+	return m_passable == direction;
 }
 
 
@@ -99,7 +69,7 @@ bool ITile::isPassable(EnumSide direction) const
  */
 bool ITile::isImpassable() const
 {
-	return this->pass == EnumSide::NONE;
+	return m_passable == EnumSide::NONE;
 }
 
 

@@ -30,110 +30,112 @@ public:
 
 
 
-	/*
-	 * @return	Size of the world
-	 *
-	 * Gets the TileMaps size in tile-space
-	 */
-	const Dimension& size() const;
+	/// <returns></returns>
+	/// /// <summary>
+	/// Gets this TileMaps size in tile-space
+	/// </summary>
+	/// <returns></returns>
+	const Pos2N& size() const;
 
 
 
-	/*
-	 * @return	Width of the TileMap
-	 *
-	 * Gets the TileMaps width in tile-space
-	 */
+	/// <summary>
+	 /// Gets this TileMaps width in tile-space
+	 /// </summary>
+	 /// <returns></returns>
 	int width() const;
 
 
 
-	/*
-	 * @return	Height of the TileMap
-	 *
-	 * Gets the TileMaps height in tile-space
-	 */
+	/// <summary>
+	/// Gets this TileMaps height in tile-space
+	/// </summary>
+	/// <returns></returns>
 	int height() const;
 
 
 
-	/*
-	 * @return	Size of the world
-	 *
-	 * Gets the TileMaps size in tile-space
-	 */
-	const Dimension& tileSize() const;
+	/// <summary>
+	 /// Gets this TileMaps Tile size
+	 /// </summary>
+	 /// <returns></returns>
+	const Pos2N& tileSize() const;
 
 
 
-	//Gets the TileMaps tile width
+	/// <summary>
+	/// Gets this TileMaps tile width
+	/// </summary>
+	/// <returns></returns>
 	int tileWidth() const;
 
 
 
-	//Gets the TileMaps tile height
+	/// <summary>
+	/// Gets this TileMaps tile height
+	/// </summary>
+	/// <returns></returns>
 	int tileHeight() const;
 
 
 
-	//Gets the TileMap's tag
+	/// <summary>
+	/// Gets this TileMap's ID tag
+	/// </summary>
+	/// <returns></returns>
 	const std::string& getTag() const;
 
 
 
-	/*
-	 * @nullable
-	 *
-	 * @param	posIn The coordinates of the Tile
-	 *
-	 * @return	The Tile at that location or null if the Tile does not exist
-	 */
-	ITile* getTile(const Position& posIn);
+	/// <summary>
+	 /// <para>nullable</para>
+	 /// Gets the Tile at the specified location or null if that Tile does not exist
+	 /// </summary>
+	 /// <param name="posIn">Specifies the coordinates to be offset by one tile</param>
+	 /// <returns></returns>
+	ITile* getTile(const TilePos& posIn);
 
 
 
-	/*
-	 * @nullable
-	 *
-	 * @param	x, y The tile-space coordinates of the Tile
-	 *
-	 * @return	The Tile at that location or null if the Tile does not exist
-	 */
+	/// <summary>
+	/// <para>nullable</para>
+	/// Gets the Tile at the specified location or null if that Tile does not exist
+	/// </summary>
+	/// <param name="x">Specifies the X coordinate</param>
+	/// <param name="y">Specifies the Y coordinate</param>
+	/// <returns></returns>
 	ITile* getTile(int x, int y);
 
 
 
-	/*
-	 * @nullable
-	 *
-	 * @param	x, y The coordinates of the Tile
-	 *
-	 * @return	The Tile at that location or null if the Tile does not exist
-	 */
+	/// <summary>
+	/// <para>nullable</para>
+	/// Gets the Tile at the specified location or null if that Tile does not exist
+	/// </summary>
+	/// <param name="x">Specifies the X coordinate</param>
+	/// <param name="y">Specifies the Y coordinate</param>
+	/// <returns></returns>
 	ITile* getTile(double x, double y);
 
 
 
-	/*
-	 * @nullable
-	 *
-	 * @param	posIn The coordinates to be offset by one tile
-	 *
-	 * @param	direction The offset direction
-	 *
-	 * @return	The Tile offset from that location or null if the Tile does not exist
-	 */
-	ITile* getOffsetTile(const Position& posIn, EnumSide direction);
+	/// <summary>
+	/// <para>nullable</para>
+	/// Gets the Tile that is offset from the specified location or null if that Tile does not exist
+	/// </summary>
+	/// <param name="posIn">Specifies the coordinates to be offset by one tile</param>
+	/// <param name="direction">Specifies the offset direction</param>
+	/// <returns></returns>
+	ITile* getOffsetTile(const TilePos& posIn, EnumSide direction);
 
 
 
 protected:
 
-	/*
-	 * @param	filePath Path to the tile map file
-	 *
-	 * Creates a tile map using the given filePath
-	 */
+	/// <summary>
+	/// Creates a tile map using the given filePath
+	/// </summary>
+	/// <param name="filePath">Path to the tile map file</param>
 	void buildTileMap(const std::string &filePath);
 
 
@@ -142,9 +144,9 @@ private:
 
 	std::string m_tag;
 
-	Dimension m_sizeMap;
+	Pos2N m_sizeMap;
 
-	Dimension m_sizeTile;
+	Pos2N m_sizeTile;
 
 	std::map<std::pair<int, int>, ITile> m_tileMap;
 
@@ -152,7 +154,7 @@ private:
 };
 
 
-#endif /* TILEMAP_H_ */
+#endif
 
 
 

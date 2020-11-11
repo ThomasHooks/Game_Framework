@@ -8,10 +8,6 @@
 
 
 
-/*
- * @return	If 1 the event will be added to SDL's internal queue. If it returns 0, then the event will be dropped from
- * 			SDL's queue, but the internal state will still be updated.
- */
 int filterEventCallback(void *userdata, SDL_Event * event)
 {
 	WindowData* data = (WindowData*)userdata;
@@ -56,18 +52,14 @@ int filterEventCallback(void *userdata, SDL_Event * event)
 
 
 
-SDLWindowWrapper::SDLWindowWrapper(const std::string& title, const Dimension& sizeIn, unsigned int flags)
-	: size(sizeIn.width, sizeIn.height), window(nullptr), m_winData(title, sizeIn.width, sizeIn.height)
+SDLWindowWrapper::SDLWindowWrapper(const std::string& title, const Pos2N& sizeIn, unsigned int flags)
+	: m_size(sizeIn.w, sizeIn.h), m_window(nullptr), m_winData(title, sizeIn.w, sizeIn.h)
 {
 	m_logger = Loggers::getLog();
 	m_logger->info("Initializing Window");
 
-	window = SDL_CreateWindow(title.c_str(),
-			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			size.width,
-			size.height,
-			flags);
-	m_winData.window = window;
+	m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_size.w, m_size.h, flags);
+	m_winData.window = m_window;
 
 	SDL_SetEventFilter(filterEventCallback, &m_winData);
 
@@ -79,52 +71,37 @@ SDLWindowWrapper::SDLWindowWrapper(const std::string& title, const Dimension& si
 SDLWindowWrapper::~SDLWindowWrapper()
 {
 	m_logger->info("Closing Window");
-	SDL_DestroyWindow(window);
-	window = nullptr;
+	SDL_DestroyWindow(m_window);
+	m_window = nullptr;
 	m_logger->info("Window has been closed ");
 }
 
 
 
-/*
- * @return	The Window's width or '0' if the window has not been Initialized
- */
 int SDLWindowWrapper::width() const
 {
-	return this->window != nullptr ? this->size.width : 0;
+	return m_window != nullptr ? m_size.w : 0;
 }
 
 
 
-/*
- * @return	The Windows height or '0' if the window has not been Initialized
- */
 int SDLWindowWrapper::height() const
 {
-	return this->window != nullptr ? this->size.height : 0;
+	return m_window != nullptr ? m_size.h : 0;
 }
 
 
 
-/*
- * @return	Checks if this Window is open
- */
 bool SDLWindowWrapper::isOpen() const
 {
-	return this->window != nullptr;
+	return m_window != nullptr;
 }
 
 
 
-/*
- * @nullable
- * Exposes the SDL_Window inside of this wrapper
- *
- * @return	The SDL_Window pointer inside of this wrapper
- */
 SDL_Window* SDLWindowWrapper::get()
 {
-	return this->window;
+	return m_window;
 }
 
 

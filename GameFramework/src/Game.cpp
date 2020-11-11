@@ -95,7 +95,7 @@ void Game::initWindow(const std::string &titleIn, int widthIn, int heightIn, uin
 {
 	if (!this->hasBeenInit) 
 	{
-		this->windowWrap = std::make_unique<SDLWindowWrapper>(titleIn, Dimension(widthIn, heightIn), flags);
+		this->windowWrap = std::make_unique<SDLWindowWrapper>(titleIn, Pos2N(widthIn, heightIn), flags);
 		this->getRenderManager().init(this->windowWrap->get());
 		this->cameraWrap = std::make_unique<GameCamera>(this->windowWrap.get());
 		this->hasBeenInit = true;
@@ -123,7 +123,7 @@ void Game::run()
 		}
 		else 
 		{
-			Dimension worldSize(world->width() * world->tileWidth(), world->height() * world->tileHeight());
+			Pos2N worldSize(world->width() * world->tileWidth(), world->height() * world->tileHeight());
 			getCamera()->updatePos(worldSize, true);
 			getState().render(*getCamera());
 			getState().onInputEvent();

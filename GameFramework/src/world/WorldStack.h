@@ -9,6 +9,7 @@
 #include <string>
 
 #include <utilities/Loggers.hpp>
+#include "utilities/math/Pos2.hpp"
 
 
 
@@ -21,10 +22,6 @@ public:
 
 
 
-	~WorldStack();
-
-
-
 	WorldStack(const WorldStack &other) = delete;
 
 
@@ -33,42 +30,36 @@ public:
 
 
 
-	/*
-	 * @param	tileSheetTag The map's/sprite sheet's tag
-	 *
-	 * @param	mapFilePath The location of the map's sprite sheet
-	 *
-	 * Adds a new map to the back of the stack
-	 */
+	/// <summary>
+	/// Adds a new map to the back of the stack
+	/// </summary>
+	/// <param name="tileSheetTag">The map's/sprite sheet's tag</param>
+	/// <param name="mapFilePath">The location of the map's sprite sheet</param>
 	void pushMap(std::string tileSheetTag, std::string mapFilePath);
 
 
 
-	//Removes the back map from the stack
+	/// <summary>
+	/// Removes the back map from the stack
+	/// </summary>
 	void popMap();
 
 
 
-	/*
-	 * @param	cameraPos The position of the camera
-	 *
-	 * @param	windowSize Size of the window
-	 *
-	 * @param	renderer Reference to the Renderer Manager
-	 *
-	 * Draws the active map to the screen
-	 */
-	void draw(const class Position &cameraPos,
-			const struct Dimension &visibleTiles,
-			class Renderer &renderer);
+	/// <summary>
+	/// Draws the active map to the screen
+	/// </summary>
+	/// <param name="cameraPos">The position of the camera</param>
+	/// <param name="visibleTiles">Size of the window</param>
+	/// <param name="renderer">Reference to the Renderer</param>
+	void draw(const class TilePos& cameraPos, const Pos2N& windowSize, class Renderer& renderer);
 
 
 
-	/*
-	 * @return	The current world or null if there are no maps
-	 *
-	 * Gets the current world
-	 */
+	/// <summary>
+	/// <para>nullable</para>
+	/// Gets the current world
+	/// </summary>
 	class TileMap* getWorld();
 
 
@@ -81,7 +72,7 @@ private:
 };
 
 
-#endif /* SRC_WORLDSTACK_H_ */
+#endif
 
 
 

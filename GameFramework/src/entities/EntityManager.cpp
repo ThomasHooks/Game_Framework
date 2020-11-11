@@ -3,9 +3,9 @@
 #include "renderer/Renderer.h"
 #include "utilities/Builder.hpp"
 #include "utilities/physics/Collisions.h"
-#include "utilities/physics/Dimension.h"
+#include "utilities/math/Pos2.hpp"
 #include "utilities/physics/Direction.h"
-#include "utilities/physics/Position.h"
+#include "utilities/physics/TilePos.h"
 #include "world/TileMap.h"
 #include "world/ITile.h"
 
@@ -65,7 +65,7 @@ void EntityManager::registerEntity(std::string tag, BuilderBase<IEntity>* builde
  * Spawns an Entity at the given coordinates.
  * Do Not delete the pointer that is returned
  */
-IEntity* EntityManager::spawn(std::string tag, const Position &pos, EnumSide facing)
+IEntity* EntityManager::spawn(std::string tag, const Pos2D& pos, EnumSide facing)
 {
 	if (!m_entityRegistry.count(tag)) 
 	{
@@ -117,11 +117,11 @@ void EntityManager::despawn()
  *
  * Draws all Entities that are visible on screen
  */
-void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSize, Renderer &renderer, bool renderAabb)
+void EntityManager::drawAll(const TilePos& cameraPos, const Pos2N& windowSize, Renderer& renderer, bool renderAabb)
 {
 	std::vector<IEntity*> entitiesOnScreen;
 	//TODO fix 'pop-in', currently entities will 'pop in' along the top-left edges of the screen
-	this->getEntities(entitiesOnScreen, AABB(cameraPos.xPos(), cameraPos.yPos(), cameraPos.xPos() + windowSize.width, cameraPos.yPos() + windowSize.height));
+	this->getEntities(entitiesOnScreen, AABB(cameraPos.x(), cameraPos.y(), cameraPos.x() + windowSize.w, cameraPos.y() + windowSize.h));
 	for (auto &itr : entitiesOnScreen) 
 	{
 		if (renderAabb) 
@@ -148,7 +148,8 @@ void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSi
 				renderer.setDrawColor(255, 255, 255, 255);
 				break;
 			}
-			renderer.drawRect(itr->getAabb().getPos() - cameraPos, Dimension(itr->getAabb().widthN(), itr->getAabb().heightN()), false);
+			Pos2D posRect(itr->getAabb().getPos().x - cameraPos.x(), itr->getAabb().getPos().y - cameraPos.y());
+			renderer.drawRect(posRect, Pos2N(itr->getAabb().widthN(), itr->getAabb().heightN()), false);
 		}
 		renderer.drawSprite(itr->getRegistryTag(), itr->getPos(), cameraPos, itr->getSprite(), false);
 	}
@@ -167,10 +168,10 @@ void EntityManager::drawAll(const Position &cameraPos, const Dimension &windowSi
  *
  * Updates all Entities that are currently on screen
  */
-void EntityManager::tickAll(const Position &cameraPos, const Dimension &windowSize, TileMap &worldIn, float deltaTime)
+void EntityManager::tickAll(const TilePos& cameraPos, const Pos2N& windowSize, TileMap& worldIn, float deltaTime)
 {
 	std::vector<IEntity*> entitiesOnScreen;
-	this->getEntities(entitiesOnScreen, AABB(cameraPos.xPos(), cameraPos.yPos(), cameraPos.xPos() + windowSize.width, cameraPos.yPos() + windowSize.height));
+	this->getEntities(entitiesOnScreen, AABB(cameraPos.x(), cameraPos.y(), cameraPos.x() + windowSize.w, cameraPos.y() + windowSize.h));
 
 	for (auto &itr : entitiesOnScreen) 
 	{
@@ -250,35 +251,35 @@ void EntityManager::checkEntityCollisions(std::vector<IEntity*> &entities, IEnti
  */
 void EntityManager::checkTileCollisions(TileMap &worldIn, IEntity &entity)
 {
-	const Dimension topLeftTile(-1, -1);
+	const Pos2N topLeftTile(-1, -1);
 
 	/*
 	 * The bottom-right tile is determined by the Entity's size
 	 * this is done so that if an Entity is bigger than one tile the collision loop will grow to fully enclose the Entity
 	 */
-	Dimension bottomRightTile(
+	Pos2N bottomRightTile(
 		1 + static_cast<int>(entity.getAabb().width()/worldIn.tileWidth() + 0.5), 
 		1 + static_cast<int>(entity.getAabb().height()/worldIn.tileHeight() + 0.5)
 	);
 
 	//This translates the entity's position into the tile-map unit coordinate system aka "Tile-Space"
-	Dimension entityTile(
-		static_cast<int>(entity.getAabb().getPos().xPos()/worldIn.tileWidth() + 0.5), 
-		static_cast<int>(entity.getAabb().getPos().yPos()/worldIn.tileHeight() + 0.5)
+	Pos2N entityTile(
+		static_cast<int>(entity.getAabb().getPos().x/worldIn.tileWidth() + 0.5), 
+		static_cast<int>(entity.getAabb().getPos().y/worldIn.tileHeight() + 0.5)
 	);
 
 	//Check if the entity collides with any of the tiles around it
 	//TODO Improve performance by skipping the corner tiles as they can never be collided with
-	for (int y = topLeftTile.height; y <= bottomRightTile.height; y++) 
+	for (int y = topLeftTile.y; y <= bottomRightTile.y; y++) 
 	{
-		int yCord = y + entityTile.height;
+		int yCord = y + entityTile.y;
 
 		//Skip if the y coordinate is outside of the tile-map
 		if ((yCord < 0) || (yCord > worldIn.height())) 
 			continue;
-		for (int x = topLeftTile.width; x <= bottomRightTile.width; x++) 
+		for (int x = topLeftTile.x; x <= bottomRightTile.x; x++) 
 		{
-			int xCord = x + entityTile.width;
+			int xCord = x + entityTile.x;
 
 			//Skip if the x coordinate is outside of the tile-map
 			if ((xCord < 0) || (xCord > worldIn.width())) 

@@ -2,7 +2,8 @@
 #define GAMECAMERA_H_
 
 
-#include "utilities/physics/Position.h"
+#include "utilities/physics/TilePos.h"
+#include "utilities/math/Pos2.hpp"
 #include "utilities/Loggers.hpp"
 
 
@@ -25,7 +26,7 @@ public:
 	 *
 	 * Gets the current position of the camera
 	 */
-	const Position& getPos() const;
+	const TilePos& getPos() const { return m_posOffset; }
 
 
 
@@ -55,7 +56,7 @@ public:
 	 * Updates the camera's position in the Global-Space coordinate system
 	 * This should be called every game tick
 	 */
-	void updatePos(const struct Dimension &worldSize, bool keepInsideWindow);
+	void updatePos(const Pos2N &worldSize, bool keepInsideWindow);
 
 
 
@@ -73,13 +74,13 @@ public:
 	 *
 	 * Sets the camera to track the given position
 	 */
-	void trackPos(const Position &posIn);
+	void trackPos(const TilePos& posIn);
 
 
 
 protected:
 
-	class SDLWindowWrapper *window;
+	class SDLWindowWrapper *m_window;
 
 
 
@@ -87,17 +88,17 @@ private:
 
 	std::shared_ptr<spdlog::logger> m_logger;
 
-	Position posOffset;
+	TilePos m_posOffset;
 
-	Position posTract;
+	TilePos m_posTract;
 
-	class IEntity *entity;
+	class IEntity *m_entityPtr;
 
-	bool trackingEntity;
+	bool m_isTrackingEntity = false;
 };
 
 
-#endif /* GAMECAMERA_H_ */
+#endif
 
 
 

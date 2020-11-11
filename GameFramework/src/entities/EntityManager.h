@@ -2,8 +2,6 @@
 #define ENTITYMANAGER_H_
 
 
-
-
 #include <vector>
 #include <list>
 #include <map>
@@ -62,7 +60,7 @@ public:
 	 * Spawns an Entity at the given coordinates.
 	 * Do Not delete the pointer that is returned
 	 */
-	class IEntity* spawn(std::string tag, const class Position &pos, EnumSide facing);
+	class IEntity* spawn(std::string tag, const struct Pos2D& pos, EnumSide facing);
 
 
 
@@ -88,7 +86,7 @@ public:
 	 *
 	 * Draws all Entities that are visible in the Window
 	 */
-	void drawAll(const class Position &cameraPos, const struct Dimension &windowSize, class Renderer &renderer, bool renderAabb);
+	void drawAll(const class TilePos& cameraPos, const struct Pos2N& windowSize, class Renderer& renderer, bool renderAabb);
 
 
 
@@ -103,7 +101,7 @@ public:
 	 *
 	 * Updates all Entities that are on screen
 	 */
-	void tickAll(const class Position &cameraPos, const struct Dimension &windowSize, class TileMap &worldIn, float deltaTime);
+	void tickAll(const class TilePos& cameraPos, const struct Pos2N& windowSize, class TileMap& worldIn, float deltaTime);
 
 
 
@@ -166,7 +164,7 @@ private:
 };
 
 
-#endif /* ENTITYMANAGER_H_ */
+#endif
 
 
 

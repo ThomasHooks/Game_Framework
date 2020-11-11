@@ -48,7 +48,7 @@ public:
 	 *
 	 * Register an audio sample to the Audio Manager
 	 */
-	bool registerSample(const std::string &tag, const std::string &location);
+	bool registerSample(const std::string& tag, const std::string& location);
 
 
 
@@ -59,7 +59,7 @@ public:
 	 *
 	 * Deregister the audio sample specified by its tag
 	 */
-	bool deregisterSample(const std::string &tag);
+	bool deregisterSample(const std::string& tag);
 
 
 
@@ -75,7 +75,7 @@ public:
 	 *
 	 * Plays an audio sample given by its tag once
 	 */
-	int playSample(const std::string &tag);
+	int playSample(const std::string& tag);
 
 
 
@@ -90,7 +90,7 @@ public:
 	 *
 	 * Plays an audio sample given by its tag
 	 */
-	int playSample(const std::string &tag, int loops);
+	int playSample(const std::string& tag, int loops);
 
 
 
@@ -107,7 +107,7 @@ public:
 	 *
 	 * Plays an audio sample given by its tag
 	 */
-	int playSample(const std::string &tag, int loops, float volume);
+	int playSample(const std::string& tag, int loops, float volume);
 
 
 
@@ -120,7 +120,7 @@ public:
 	 *
 	 * Plays an audio sample given by its tag for a certain amount of time
 	 */
-	int playSample(const std::string &tag, uint32_t ticks);
+	int playSample(const std::string& tag, uint32_t ticks);
 
 
 
@@ -135,7 +135,7 @@ public:
 	 *
 	 * Plays an audio sample given by its tag for a certain amount of time
 	 */
-	int playSample(const std::string &tag, uint32_t ticks, float volume);
+	int playSample(const std::string& tag, uint32_t ticks, float volume);
 
 
 
@@ -148,7 +148,7 @@ public:
 	 *
 	 * Plays an audio sample given by its tag once at the given volume
 	 */
-	int playSample(const std::string &tag, float volume);
+	int playSample(const std::string& tag, float volume);
 
 
 
@@ -165,10 +165,7 @@ public:
 	 *
 	 * Plays an audio sample given by its tag once at the given position and volume
 	 */
-	int playSample(const class GameCamera &camera,
-			const class Position &origin,
-			const std::string &tag,
-			float volume);
+	int playSample(const class GameCamera& camera, const class TilePos& origin, const std::string& tag, float volume);
 
 
 
@@ -179,7 +176,7 @@ public:
 	 *
 	 * Sets the volume that the given audio sample will be played at
 	 */
-	void setSampleVolume(const std::string &tag, float volume);
+	void setSampleVolume(const std::string& tag, float volume);
 
 
 
@@ -280,7 +277,7 @@ protected:
 	 *
 	 * Plays an audio sample given by its tag until it has played for either the given number of loops or ticks
 	 */
-	int playSample(const std::string &tag, int channel, int loops, uint32_t ticks);
+	int playSample(const std::string& tag, int channel, int loops, uint32_t ticks);
 
 
 
@@ -289,7 +286,7 @@ protected:
 	 *
 	 * @return	Pointer to the audio sample wrapper or null if the tag cannot be found
 	 */
-	class SDLMixChunkWrapper* getSample(const std::string &tag);
+	class SDLMixChunkWrapper* getSample(const std::string& tag);
 
 
 
@@ -305,7 +302,7 @@ private:
 };
 
 
-#endif /* AUDIOMIXER_H_ */
+#endif
 
 
 

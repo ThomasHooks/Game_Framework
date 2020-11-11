@@ -5,8 +5,8 @@
 
 
 #include "utilities/physics/AABB.h"
-#include "utilities/physics/Dimension.h"
-#include "utilities/physics/Position.h"
+#include "utilities/math/Pos2.hpp"
+#include "utilities/physics/TilePos.h"
 
 
 
@@ -15,26 +15,22 @@ class ITile
 {
 public:
 
-	ITile(double x, double y, double w, double h, const Dimension &spriteIn, EnumSide direction, bool opaqueIn, bool solidIn);
-
-
-
-	~ITile();
+	ITile(double x, double y, double w, double h, const Pos2N& spriteIn, EnumSide direction, bool opaqueIn, bool solidIn);
 
 
 
 	//Gets this Tile's current position in Global-Space
-	const Position& getPos() const;
+	const TilePos& getPos() const { return m_pos; }
 
 
 
 	//Gets this Tile's axis aligned bounding box
-	const AABB& getAabb() const;
+	const AABB& getAabb() const { return m_boundingBox; }
 
 
 
 	//Gets this Tile's current sprite
-	const Dimension& getSprite() const;
+	const Pos2N& getSprite() const { return m_sprite; }
 
 
 
@@ -88,21 +84,21 @@ public:
 
 private:
 
-	Position pos;
+	TilePos m_pos;
 
-	AABB boundingBox;
+	AABB m_boundingBox;
 
-	bool opaque;
+	bool m_isOpaque;
 
-	bool solid;
+	bool m_isSolid;
 
-	EnumSide pass;
+	EnumSide m_passable;
 
-	Dimension sprite;
+	Pos2N m_sprite;
 };
 
 
-#endif /* ITILE_H_ */
+#endif
 
 
 

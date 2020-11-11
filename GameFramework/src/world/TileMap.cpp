@@ -3,6 +3,8 @@
 #include <fstream>
 
 #include "world/TileMap.h"
+#include "utilities/math/Pos2.hpp"
+#include "utilities/physics/TilePos.h"
 
 
 
@@ -23,67 +25,48 @@ TileMap::~TileMap()
 
 
 
-/*
- * @return	Size of the world
- *
- * Gets the TileMaps size in tile-space
- */
-const Dimension& TileMap::size() const 
+const Pos2N& TileMap::size() const 
 {
 	return m_sizeMap;
 }
 
 
 
-/*
- * @return	Width of the TileMap
- *
- * Gets the TileMaps width in tile-space
- */
 int TileMap::width() const 
 {
-	return m_sizeMap.width;
+	return m_sizeMap.w;
 }
 
 
 
-/*
- * @return	Height of the TileMap
- *
- * Gets the TileMaps height in tile-space
- */
 int TileMap::height() const 
 {
-	return m_sizeMap.height;
+	return m_sizeMap.h;
 }
 
 
 
-//Gets the TileMaps tile size
-const Dimension& TileMap::tileSize() const 
+const Pos2N& TileMap::tileSize() const 
 {
 	return m_sizeTile;
 }
 
 
 
-//Gets the TileMaps tile width
 int TileMap::tileWidth() const 
 {
-	return m_sizeTile.width;
+	return m_sizeTile.w;
 }
 
 
 
-//Gets the TileMaps tile height
 int TileMap::tileHeight() const 
 {
-	return m_sizeTile.height;
+	return m_sizeTile.h;
 }
 
 
 
-//Gets the TileMap's tag
 const std::string& TileMap::getTag() const 
 {
 	return m_tag;
@@ -91,27 +74,13 @@ const std::string& TileMap::getTag() const
 
 
 
-/*
- * @nullable
- *
- * @param	posIn The coordinates of the Tile
- *
- * @return	The Tile at that location or null if the Tile does not exist
- */
-ITile* TileMap::getTile(const Position& posIn) 
+ITile* TileMap::getTile(const TilePos& posIn)
 {
-	return this->getTile(posIn.xPos(), posIn.yPos());
+	return this->getTile(posIn.x(), posIn.y());
 }
 
 
 
-/*
- * @nullable
- *
- * @param	x, y The tile-space coordinates of the Tile
- *
- * @return	The Tile at that location or null if the Tile does not exist
- */
 ITile* TileMap::getTile(int x, int y) 
 {
 	if (x < 0 || x > this->width() || y < 0 || y > this->height()) 
@@ -122,13 +91,6 @@ ITile* TileMap::getTile(int x, int y)
 
 
 
-/*
- * @nullable
- *
- * @param	x, y The coordinates of the Tile
- *
- * @return	The Tile at that location or null if the Tile does not exist
- */
 ITile* TileMap::getTile(double x, double y) 
 {
 	return this->getTile(static_cast<int>(x/this->tileWidth() + 0.5), static_cast<int>(y/this->tileHeight() + 0.5));
@@ -136,30 +98,21 @@ ITile* TileMap::getTile(double x, double y)
 
 
 
-/*
- * @nullable
- *
- * @param	posIn The coordinates to be offset by one tile
- *
- * @param	direction The offset direction
- *
- * @return	The Tile offset from that location or null if the Tile does not exist
- */
-ITile* TileMap::getOffsetTile(const Position& posIn, EnumSide direction)
+ITile* TileMap::getOffsetTile(const TilePos& posIn, EnumSide direction)
 {
 	switch (direction)
 	{
 	case EnumSide::UP:
-		return this->getTile(posIn.xPos(), posIn.yPos() - this->tileHeight());
+		return this->getTile(posIn.x(), posIn.y() - this->tileHeight());
 
 	case EnumSide::RIGHT:
-		return this->getTile(posIn.xPos() + this->tileWidth(), posIn.yPos());
+		return this->getTile(posIn.x() + this->tileWidth(), posIn.y());
 
 	case EnumSide::DOWN:
-		return this->getTile(posIn.xPos(), posIn.yPos() + this->tileHeight());
+		return this->getTile(posIn.x(), posIn.y() + this->tileHeight());
 
 	case EnumSide::LEFT:
-		return this->getTile(posIn.xPos() - this->tileWidth(), posIn.yPos());
+		return this->getTile(posIn.x() - this->tileWidth(), posIn.y());
 
 	default:
 		return nullptr;
@@ -168,11 +121,6 @@ ITile* TileMap::getOffsetTile(const Position& posIn, EnumSide direction)
 
 
 
-/*
- * @param	filePath Path to the tile map file
- *
- * Creates a tile map using the given filePath
- */
 void TileMap::buildTileMap(const std::string &filePath)
 {
 	m_logger->info("Building World '{0}' at ''", m_tag, filePath);
@@ -187,47 +135,47 @@ void TileMap::buildTileMap(const std::string &filePath)
 	//Read the map size from the file
 	int mapWidth = 0;
 	mapFile>>mapWidth;
-	m_sizeMap.width = mapWidth;
+	m_sizeMap.w = mapWidth;
 	int mapHeight = 0;
 	mapFile>>mapHeight;
-	m_sizeMap.height = mapHeight;
+	m_sizeMap.h = mapHeight;
 	if (mapFile.fail()) 
 		m_logger->error("Unable to read map '{0}' at '{1}' in element 'MAPSIZE'", m_tag, filePath);
 
 	//Read the tile size from the file
 	int tileWidth = 0;
 	mapFile>>tileWidth;
-	m_sizeTile.width = tileWidth;
+	m_sizeTile.w = tileWidth;
 	int tileHeight = 0;
 	mapFile>>tileHeight;
-	m_sizeTile.height = tileHeight;
+	m_sizeTile.h = tileHeight;
 	if (mapFile.fail()) 
 		m_logger->error("Unable to read map '{0}' at '{1}' in element 'TILESIZE'", m_tag, filePath);
 
 	//Read the tile and add it to the tile map
-	for (int y = 0; y < m_sizeMap.height; y++) 
+	for (int y = 0; y < m_sizeMap.h; y++) 
 	{
-		for (int x = 0; x < m_sizeMap.width; x++) 
+		for (int x = 0; x < m_sizeMap.w; x++) 
 		{
 			bool opaque = true;
 			bool solid = false;
 			EnumSide pass = EnumSide::NONE;
-			Dimension sprite(0, 0);
+			Pos2N sprite(0, 0);
 
 			int index = 0;
 			mapFile>>index;
-			sprite.width = index;
+			sprite.w = index;
 			if (mapFile.fail()) 
 			{
 				m_logger->error("Unable to read map '{0}' at '{1}' in element 'TILESPRITE'", m_tag, filePath);
 				return;
 			}
 
-			if (sprite.width > 1) 
+			if (sprite.w > 1) 
 				solid = true;
 			m_tileMap.insert({
 				{ x, y }, 
-				ITile(x * static_cast<double>(m_sizeTile.width), y * static_cast<double>(m_sizeTile.height), m_sizeTile.width, m_sizeTile.height, sprite, pass, opaque, solid)
+				ITile(x * static_cast<double>(m_sizeTile.w), y * static_cast<double>(m_sizeTile.h), m_sizeTile.w, m_sizeTile.h, sprite, pass, opaque, solid)
 			});
 		}
 	}

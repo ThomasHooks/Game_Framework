@@ -4,7 +4,8 @@
 
 #include "AudioMixer.h"
 #include "utilities/GameCamera.h"
-#include "utilities/physics/Position.h"
+#include "utilities/physics/TilePos.h"
+#include "utilities/math/Pos2.hpp"
 #include "utilities/wrappers/SDLMixChunkWrapper.h"
 
 
@@ -287,12 +288,12 @@ int AudioMixer::playSample(const std::string &tag, float volume)
  *
  * Plays an audio sample given by its tag once at the given position and volume
  */
-int AudioMixer::playSample(const GameCamera &camera, const Position &origin, const std::string &tag, float volume) 
+int AudioMixer::playSample(const GameCamera& camera, const TilePos& origin, const std::string& tag, float volume) 
 {
 	int channel = playSample(tag, -1, 0, -1);
 	if(channel != -1) 
 	{
-		Position listener(camera.getPos().xPos(), camera.getPos().yPos());
+		Pos2D listener(camera.getPos().x(), camera.getPos().y());
 
 		/*
 		 * The angle ranges from 0 degrees to 360 degrees
@@ -302,13 +303,13 @@ int AudioMixer::playSample(const GameCamera &camera, const Position &origin, con
 		 * 270 = directly to the left
 		 */
 		const double pi = 3.14159;
-		double theta = std::atan2(listener.yPos() - origin.yPos(), listener.xPos() - origin.xPos()) * (180.0 / pi);
+		double theta = std::atan2(listener.y - origin.y(), listener.x - origin.x()) * (180.0 / pi);
 		Sint16 angle = static_cast<Sint16>(theta + 90.5 - 180.0);
 		if (angle < 0)
 			angle += 360;
 
 		//The distance factor ranges from 0(near) to 255(far)
-		double distance = std::sqrt(std::pow(listener.xPos() - origin.xPos(), 2.0) + std::pow(listener.yPos() - origin.yPos(), 2.0));
+		double distance = std::sqrt(std::pow(listener.x - origin.x(), 2.0) + std::pow(listener.y - origin.y(), 2.0));
 		Uint8 distanceFactor = static_cast<Uint8>(std::abs(distance/15.938) + 0.5);
 		if(distanceFactor > 255) 
 			distanceFactor = 255;

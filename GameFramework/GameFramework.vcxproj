@@ -166,14 +166,20 @@
     <ClCompile Include="src\gamestates\IGameState.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
+    <ClCompile Include="src\renderer\SpriteLocation.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="src\utilities\GameBuilder.cpp" />
     <ClCompile Include="src\utilities\GameCamera.cpp" />
     <ClCompile Include="src\utilities\GameTimer.cpp" />
     <ClCompile Include="src\utilities\physics\AABB.cpp" />
     <ClCompile Include="src\utilities\physics\Collisions.cpp" />
-    <ClCompile Include="src\utilities\physics\Dimension.cpp" />
     <ClCompile Include="src\utilities\physics\Direction.cpp" />
-    <ClCompile Include="src\utilities\physics\Position.cpp" />
+    <ClCompile Include="src\utilities\physics\TilePos.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="src\utilities\wrappers\SDLMixChunkWrapper.cpp" />
     <ClCompile Include="src\utilities\wrappers\SDLMixMusWrapper.cpp" />
     <ClCompile Include="src\utilities\wrappers\SDLTextureWrapper.cpp" />
@@ -201,17 +207,31 @@
     <ClInclude Include="src\gamestates\IGameState.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\RendererBlendMode.h" />
+    <ClInclude Include="src\renderer\SpriteLocation.hpp">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="src\utilities\Builder.hpp" />
     <ClInclude Include="src\utilities\GameBuilder.h" />
     <ClInclude Include="src\utilities\GameCamera.h" />
     <ClInclude Include="src\utilities\GameTimer.h" />
     <ClInclude Include="src\utilities\Loggers.hpp" />
+    <ClInclude Include="src\utilities\math\Pos2.hpp">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="src\utilities\math\Pos3.hpp">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="src\utilities\physics\AABB.h" />
     <ClInclude Include="src\utilities\physics\Collisions.h" />
-    <ClInclude Include="src\utilities\physics\Dimension.h" />
     <ClInclude Include="src\utilities\physics\Direction.h" />
     <ClInclude Include="src\utilities\physics\EnumSide.h" />
-    <ClInclude Include="src\utilities\physics\Position.h" />
+    <ClInclude Include="src\utilities\physics\TilePos.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="src\utilities\wrappers\SDLMixChunkWrapper.h" />
     <ClInclude Include="src\utilities\wrappers\SDLMixMusWrapper.h" />
     <ClInclude Include="src\utilities\wrappers\SDLTextureWrapper.h" />

@@ -8,8 +8,7 @@
 #include <SDL.h>
 
 #include "utilities/Loggers.hpp"
-#include "utilities/physics/Dimension.h"
-#include "utilities/physics/Position.h"
+#include "utilities/math/Pos2.hpp"
 
 
 
@@ -36,7 +35,7 @@ class SDLWindowWrapper
 {
 public:
 
-	SDLWindowWrapper(const std::string &title, const Dimension &sizeIn, unsigned int flags);
+	SDLWindowWrapper(const std::string &title, const Pos2N &sizeIn, unsigned int flags);
 
 
 
@@ -52,42 +51,44 @@ public:
 
 
 
-	/*
-	 * @return	The Window's width or '0' if the window has not been Initialized
-	 */
+	/// <summary>
+	/// Gets the Window's width or '0' if the window has not been initialized
+	/// </summary>
+	/// <returns></returns>
 	int width() const;
 
 
 
-	/*
-	 * @return	The Windows height or '0' if the window has not been Initialized
-	 */
+	/// <summary>
+	/// Gets the Window's height or '0' if the window has not been initialized
+	/// </summary>
+	/// <returns></returns>
 	int height() const;
 
 
 
-	/*
-	 * @return	Checks if this Window is open
-	 */
+	/// <summary>
+	/// Checks if this Window is open
+	/// </summary>
+	/// <returns></returns>
 	bool isOpen() const;
 
 
 
-	/*
-	 * @nullable
-	 * Exposes the SDL_Window inside of this wrapper
-	 *
-	 * @return	The SDL_Window pointer inside of this wrapper
-	 */
+	/// <summary>
+	/// <para>nullable</para>
+	/// Exposes the SDL_Window inside of this wrapper
+	/// </summary>
+	/// <returns>A SDL_Window pointer or null if the window has not been initialized</returns>
 	SDL_Window* get();
 
 
 
 private:
 
-	Dimension size;
+	Pos2N m_size;
 
-	SDL_Window* window;
+	SDL_Window* m_window;
 
 	WindowData m_winData;
 
@@ -95,7 +96,7 @@ private:
 };
 
 
-#endif /* SDLWINDOWWRAPPER_H_ */
+#endif
 
 
 

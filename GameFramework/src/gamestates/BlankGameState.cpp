@@ -9,8 +9,9 @@
 #include "../world/TileMap.h"
 #include "../utilities/GameCamera.h"
 #include "../utilities/GameTimer.h"
-#include "../utilities/physics/Dimension.h"
-#include "../utilities/physics/Position.h"
+#include "utilities/math/Pos2.hpp"
+#include "utilities/math/Pos3.hpp"
+#include "../utilities/physics/TilePos.h"
 #include "../utilities/wrappers/SDLWindowWrapper.h"
 #include "../world/WorldStack.h"
 
@@ -23,7 +24,7 @@ BlankGameState::BlankGameState(class Game *Game, int StateID)
 	//----All of this should be removed later----
 	getWorlds().pushMap("tiletest","data/map/test.map");
 
-	Dimension tileDim(16, 16);
+	Pos2N tileDim(16, 16);
 	getRenderer().registerTexture("mario", "./data/gfx/Mario.png", tileDim);
 	getRenderer().registerTexture("tiletest", "./data/gfx/tile_test.png", tileDim);
 	getRenderer().setScale(2.0f);
@@ -32,7 +33,7 @@ BlankGameState::BlankGameState(class Game *Game, int StateID)
 	getMixer().setSampleVolume("hit01", 0.75f);
 
 	getEntities().registerEntity("mario", new EntityBuilder<PlayerEntity>());
-	this->player = getEntities().spawn("mario", Position(128.0, 224.0), EnumSide::RIGHT);
+	this->player = getEntities().spawn("mario", Pos2D(128.0, 224.0), EnumSide::RIGHT);
 	this->game->getCamera()->trackEntity(player);
 	//----All of this should be removed later----
 }
@@ -67,7 +68,7 @@ void BlankGameState::onInputEvent() {
 				break;
 
 			case SDLK_SPACE:
-				getMixer().playSample(*this->game->getCamera(), Position(1000.0, 320.0), "hit01", 0.25f);
+				getMixer().playSample(*this->game->getCamera(), Pos2D(1000.0, 320.0), "hit01", 0.25f);
 				break;
 			}
 		}
@@ -82,20 +83,20 @@ void BlankGameState::onInputEvent() {
 	//----All of this should be removed later----
 	const Uint8*state = SDL_GetKeyboardState(NULL);
 	if(state[SDL_SCANCODE_W]) {
-		player->updateVel(Position(0.0, -576.0), 0.93f, getTimer().getDelta());
+		player->updateVel(Pos2D(0.0, -576.0), 0.93f, getTimer().getDelta());
 	}
 	else if(state[SDL_SCANCODE_S]) {
-		player->updateVel(Position(0.0, 576.0), 0.93f, getTimer().getDelta());
+		player->updateVel(Pos2D(0.0, 576.0), 0.93f, getTimer().getDelta());
 	}
 
 	if(state[SDL_SCANCODE_A]) {
-		player->updateVel(Position(-288.0, 0.0), 0.93f, getTimer().getDelta());
+		player->updateVel(Pos2D(-288.0, 0.0), 0.93f, getTimer().getDelta());
 	}
 	else if(state[SDL_SCANCODE_D]) {
-		player->updateVel(Position(288.0, 0.0), 0.93f, getTimer().getDelta());
+		player->updateVel(Pos2D(288.0, 0.0), 0.93f, getTimer().getDelta());
 	}
 	if (state[SDL_SCANCODE_SPACE])
-		getMixer().playSample(*this->game->getCamera(), Position(500.0, 320.0), "hit01", 0.25f);
+		getMixer().playSample(*this->game->getCamera(), Pos2D(500.0, 320.0), "hit01", 0.25f);
 	//----All of this should be removed later----
 }
 
@@ -113,7 +114,7 @@ void BlankGameState::onInputEvent() {
 void BlankGameState::tick(const GameCamera &camera, TileMap &worldIn, float deltaTime) {
 
 	//----All of this should be removed later----
-	Dimension windowSize(camera.width(), camera.height());
+	Pos2N windowSize(camera.width(), camera.height());
 	this->getEntities().tickAll(camera.getPos(), windowSize, worldIn, deltaTime);
 	//----All of this should be removed later----
 }
@@ -131,7 +132,7 @@ void BlankGameState::render(const GameCamera &camera) {
 	getRenderer().clear();
 
 	//----All of this should be removed later----
-	Dimension windowSize(camera.width(), camera.height());
+	Pos2N windowSize(camera.width(), camera.height());
 	getWorlds().draw(camera.getPos(), windowSize, getRenderer());
 	getEntities().drawAll(camera.getPos(), windowSize, getRenderer(), true);
 	//----All of this should be removed later----
