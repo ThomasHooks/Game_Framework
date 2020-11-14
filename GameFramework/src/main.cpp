@@ -1,34 +1,40 @@
 #include <SDL.h>
 
 #include "Game.hpp"
-//#include "ExampleState.h"
+#include "layers/ExampleLayer.hpp"
 
 
 
 //This is an example of how the main function can be set up
+//Also make sure to add main's arguments as they are required by SDL
 int main(int argc, char** argv) 
 {
-	const int Window_Height = 480;
-	const int Window_Width = 640;
-	const int Max_FPS = 60;
-
-	//See "https://wiki.libsdl.org/SDL_WindowFlags" for more window flags
+	//See "https://wiki.libsdl.org/SDL_WindowFlags" for SDL window flags
 	//To add multiple flags use the bitwise or operator
-	//when SDL_WindowFlags = 0 no flags are set
-	const Uint32 SDL_WindowFlags = 0;
-	Game gameTest("Name of Game", Window_Height, Window_Width, SDL_WindowFlags, Max_FPS);
+	//when windowFlags = 0 no flags are set
+	const unsigned int windowFlags = 0;
+	const int windowWidth = 640;
+	const int windowHeight = 480;
 
+	GameBuilder builder;
+	builder
+		.setWindow("Name of Game", windowWidth, windowHeight, windowFlags)
+		.setTickRate(20)
+		.setLogger("logs/log.txt", spdlog::level::trace);
 
-	//If the default constructor was used call the init method
-	//gameTest.initWindow("Name of Game", Window_Height, Window_Width, SDL_WindowFlags, Max_FPS);
+	Game gameTest(builder);
 
-	//Push the introduction game state here before loop
-	//gameTest.addState(new ExampleState(&gameTest, 0));
+	//Add all Game Layers before calling run
+	gameTest.addLayer<ExampleLayer>(gameTest);
 
 	gameTest.run();
 
 	return EXIT_SUCCESS;
 }
+
+
+
+
 
 
 

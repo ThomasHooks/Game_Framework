@@ -12,7 +12,7 @@ SDLTextureWrapper::SDLTextureWrapper(SDL_Renderer* rendererIn, SDL_Surface* surf
 	: m_tileSize(sizeIn.w, sizeIn.h) 
 {
 	m_texture = SDL_CreateTextureFromSurface(rendererIn, surfaceIn);
-	if (m_texture)
+	if (!m_texture)
 		Loggers::getLog()->error("Failed to create texture from SDL Surface: {0}", SDL_GetError());
 }
 

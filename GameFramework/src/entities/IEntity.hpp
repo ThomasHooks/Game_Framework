@@ -22,10 +22,6 @@ class IEntity
 {
 public:
 
-	IEntity();
-
-
-
 	virtual ~IEntity();
 
 
@@ -240,6 +236,10 @@ public:
 
 
 protected:
+
+	IEntity();
+
+
 
 	//Used to set the Entity's registration tag
 	void setRegistryTag(const std::string &tagIn);

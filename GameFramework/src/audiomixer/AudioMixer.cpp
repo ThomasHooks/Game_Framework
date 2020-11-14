@@ -57,7 +57,7 @@ bool AudioMixer::init()
 		if((mixerFlag & formats) != formats) 
 		{
 			std::string mixerErrorCode = Mix_GetError();
-			m_logger->error("SDL Mixer failed to initialize! Error Code: {0}", mixerErrorCode);
+			m_logger->critical("SDL Mixer failed to initialize! Error Code: {0}", mixerErrorCode);
 			return false;
 		}
 
@@ -67,7 +67,7 @@ bool AudioMixer::init()
 		if(mixerFlag == -1) 
 		{
 			std::string mixerErrorCode = Mix_GetError();
-			m_logger->error("SDL Mixer failed to initialize! Error Code: {0}", mixerErrorCode);
+			m_logger->critical("SDL Mixer failed to initialize! Error Code: {0}", mixerErrorCode);
 			return false;
 		}
 

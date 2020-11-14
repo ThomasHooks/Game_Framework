@@ -20,7 +20,7 @@ public:
 	WorldContext(class TileMap *worldIn,
 			class EntityManager *entites_ptr,
 			class IEntity *playerIn,
-			class GameTimer* timer);
+			class Timer* timer);
 
 
 
@@ -55,15 +55,6 @@ public:
 
 
 
-	/*
-	 * @return	The amount of time since the last tick
-	 *
-	 * Gets the amount of time since the last tick
-	 */
-	float getDeltaTime();
-
-
-
 protected:
 
 	class TileMap *world;
@@ -72,7 +63,7 @@ protected:
 
 	class IEntity *player;
 
-	class GameTimer* timer;
+	class Timer* timer;
 };
 
 

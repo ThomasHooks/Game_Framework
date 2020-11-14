@@ -12,7 +12,6 @@
 #include "../../entities/EntityManager.h"
 #include "../../entities/PlayerEntity.h"
 #include "../../world/TileMap.h"
-#include "../GameTimer.h"
 
 
 
@@ -20,7 +19,7 @@
 WorldContext::WorldContext(TileMap *worldIn,
 		EntityManager *entites_ptr,
 		IEntity *playerIn,
-		GameTimer* timerIn)
+		Timer* timerIn)
 	: world(worldIn),
 	  entities(entites_ptr),
 	  player(playerIn),
@@ -61,17 +60,6 @@ EntityManager& WorldContext::getEntities(){
  */
 IEntity& WorldContext::getPlayer(){
 	return *this->player;
-}
-
-
-
-/*
- * @return	The amount of time since the last tick
- *
- * Gets the amount of time since the last tick
- */
-float WorldContext::getDeltaTime(){
-	return this->timer->getDelta();
 }
 
 
