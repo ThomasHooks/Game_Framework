@@ -1,5 +1,5 @@
-#ifndef AABB_H_
-#define AABB_H_
+#ifndef AXISALIGNEDBB_H_
+#define AXISALIGNEDBB_H_
 
 
 #include "utilities/physics/EnumSide.h"
@@ -9,15 +9,15 @@
 
 
 
-class AABB 
+class AxisAlignedBB 
 {
 public:
 
-	AABB();
+	AxisAlignedBB();
 
 
 
-	AABB(double x1, double y1, double x2, double y2);
+	AxisAlignedBB(double x1, double y1, double x2, double y2);
 
 
 
@@ -106,6 +106,14 @@ public:
 	 * Moves the Axis Aligned Bounding Box by the given amount
 	 */
 	void offset(const Pos3D& posIn);
+
+
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="posIn"></param>
+	void move(const Pos2D& posIn);
 
 
 

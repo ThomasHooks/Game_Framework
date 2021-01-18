@@ -11,7 +11,11 @@ class Loggers
 {
 public:
 
-	inline static std::shared_ptr<spdlog::logger> getLog() { return spdlog::get("fileLogger"); }
+	inline static std::shared_ptr<spdlog::logger> getLog() { return spdlog::get("Core"); }
+
+
+
+	inline static std::shared_ptr<spdlog::logger> assertLog() { return spdlog::get("Assertion"); }
 };
 
 

@@ -2,13 +2,12 @@
 
 #include "ExampleLayer.hpp"
 #include "Game.hpp"
-#include "utilities/GameCamera.h"
+#include "renderer/screen/GameCamera.h"
 #include "world/WorldStack.h"
 #include "world/TileMap.h"
 #include "renderer/Renderer.h"
 #include "audiomixer/AudioMixer.h"
-#include "entities/EntityManager.h"
-#include "entities/PlayerEntity.h"
+#include "entities/Entities.hpp"
 #include "utilities/Loggers.hpp"
 
 
@@ -37,27 +36,37 @@ void ExampleLayer::onAttach(Game& game)
 	game.audioMixer().registerSample("hit01", "./data/sfx/hit01.wav");
 	game.audioMixer().setSampleVolume("hit01", 0.75f);
 
-	game.entities().registerEntity("mario", new EntityBuilder<PlayerEntity>());
-	m_player = game.entities().spawn("mario", Pos2D(128.0, 224.0), EnumSide::RIGHT);
-	game.getCamera()->trackEntity(m_player);
+	game.entities().registerSpawner("mario", [this](Entity& entity)
+		{
+			entity
+				.add<KinematicCapability>(0.0, 0.0)
+				.add<ColliderCapability>(0.0, 0.0, 22.0, 32.0)
+				.add<RenderableCapability>("mario", 0, 0, 16, 16);
+		});
+	Entity player = game.entities().spawn("mario", Pos2D(128.0, 224.0));
+	m_entities.push_back(player);
+
+	//game.getCamera()->trackEntity(m_player);
 }
 
 
 
 void ExampleLayer::onTick(const GameCamera& cameraIn, TileMap& worldIn, float deltaTime)
 {
+	KinematicCapability& cap = m_entities[0].get<KinematicCapability>();
 	if (Game::isKeyPressed(SDL_SCANCODE_W))
-		m_player->updateVel(Pos2D(0.0, -576.0), 0.93f, deltaTime);
+		m_entities[0].movePos({ 0.0, -576.0 }, 0.93f, deltaTime);
 	else if (Game::isKeyPressed(SDL_SCANCODE_S))
-		m_player->updateVel(Pos2D(0.0, 576.0), 0.93f, deltaTime);
+	m_entities[0].movePos({ 0.0, 576.0 }, 0.93f, deltaTime);
 	
 	if (Game::isKeyPressed(SDL_SCANCODE_A))
-		m_player->updateVel(Pos2D(-288.0, 0.0), 0.93f, deltaTime);
+		m_entities[0].movePos({ -576.0, 0.0 }, 0.93f, deltaTime);
 	else if (Game::isKeyPressed(SDL_SCANCODE_D))
-		m_player->updateVel(Pos2D(288.0, 0.0), 0.93f, deltaTime);
+		m_entities[0].movePos({ 576.0, 0.0 }, 0.93f, deltaTime);
 
 	Pos2N windowSize(cameraIn.width(), cameraIn.height());
-	getGame().entities().tickAll(cameraIn.getPos(), windowSize, worldIn, deltaTime);
+	//getGame().entities().tickAll(cameraIn.getPos(), windowSize, worldIn, deltaTime);
+	m_entities[0].updatePos(0.93f, deltaTime);
 }
 
 
@@ -69,7 +78,10 @@ void ExampleLayer::onRender(const GameCamera& cameraIn, Renderer& rendererIn)
 
 	Pos2N windowSize(cameraIn.width(), cameraIn.height());
 	getGame().worldStack().draw(cameraIn.getPos(), windowSize, rendererIn);
-	getGame().entities().drawAll(cameraIn.getPos(), windowSize, rendererIn, true);
+
+	//getGame().entities().drawAll(cameraIn.getPos(), windowSize, rendererIn, true);
+	RenderableCapability& renCap = m_entities[0].get<RenderableCapability>();
+	rendererIn.drawSprite(renCap.sprite.tag(), m_entities[0].pos(), cameraIn.getPos(), renCap.sprite.getIndex(), false);
 
 	rendererIn.present();
 }

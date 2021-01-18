@@ -44,6 +44,13 @@ public:
 
 
 	/// <summary>
+	/// 
+	/// </summary>
+	void shutdown();
+
+
+
+	/// <summary>
 	/// Register a texture to the Rrenderer
 	/// </summary>
 	/// <param name="tag">The ID of the texture</param>
@@ -238,7 +245,7 @@ private:
 
 	struct SDL_Renderer *m_renderer;
 
-	std::map<std::string, std::unique_ptr<class SDLTextureWrapper>> m_textureMap;
+	std::map<std::string, std::unique_ptr<class Texture>> m_textureMap;
 
 	std::shared_ptr<spdlog::logger> m_logger;
 };

@@ -7,12 +7,13 @@
 #include "events/WindowEvent.hpp"
 #include "events/KeyboardEvent.hpp"
 #include "audiomixer/AudioMixer.h"
-#include "entities/EntityManager.h"
+#include "entities/EntityJournal.hpp"
 #include "renderer/Renderer.h"
 #include "world/TileMap.h"
-#include "utilities/GameCamera.h"
-#include "utilities/wrappers/SDLWindowWrapper.h"
+#include "renderer/screen/GameCamera.h"
+#include "renderer/screen/Window.h"
 #include "world/WorldStack.h"
+#include "utilities/Assertions.h"
 
 
 
@@ -55,20 +56,26 @@ Game::Game(const GameBuilder& builderIn)
 		: m_gameOver(false), m_tickRate(20) 
 {
 	spdlog::set_pattern("%^[%l] %n: %v - %x %T%$");
-	auto fileLogger = spdlog::basic_logger_mt("fileLogger", "logs/log.txt");
+	auto fileLogger = spdlog::basic_logger_mt("Core", "logs/log.txt");
 	fileLogger->set_level(spdlog::level::trace);
-	fileLogger->info("Logging started");
+	fileLogger->flush_on(spdlog::level::err);
 	m_logger = fileLogger;
+
+	std::shared_ptr<spdlog::logger> assertionLogger = spdlog::stdout_color_mt("Assertion");
+	assertionLogger->set_level(spdlog::level::warn);
+
+	m_logger->info("Logging started");
 
 	m_renderer = std::make_unique<Renderer>();
 	m_audioManager = std::make_unique<AudioMixer>();
 	m_worlds = std::make_unique<WorldStack>();
-	m_entityManager = std::make_unique<EntityManager>();
+	m_entities = std::make_unique<EntityJournal>();
 
 	m_logger->info("Initializing SDL Video and Audio");
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
 		m_logger->critical("Unable to initialize SDL: {0}", SDL_GetError());
 
+	GAME_ASSERT(builderIn.windowSize.w > 0 && builderIn.windowSize.h > 0);
 	this->initWindow(builderIn.windowTitle, builderIn.windowSize.w, builderIn.windowSize.h, builderIn.windowFlags);
 	this->audioMixer().init();
 
@@ -91,6 +98,7 @@ Game::Game(const GameBuilder& builderIn)
 Game::~Game() 
 {
 	EventBus::unsubscribe<WindowEvent>(m_onWindowEvent);
+	renderer().shutdown();
 	m_logger->info("Terminating SDL");
 	SDL_Quit();
 }
@@ -172,7 +180,28 @@ Renderer& Game::renderer()
 
 
 
-AudioMixer& Game::audioMixer() 
+void Game::registerTexture(const std::string& tagIn, const std::string& fileLocationIn, const Pos2N& sizeIn)
+{
+	m_renderer->registerTexture(tagIn, fileLocationIn, sizeIn);
+}
+
+
+
+void Game::deregisterTexture(const std::string& tagIn)
+{
+	m_renderer->deregisterTexture(tagIn);
+}
+
+
+
+void Game::deregisterAllTextures()
+{
+	m_renderer->deregisterAllTextures();
+}
+
+
+
+AudioMixer& Game::audioMixer()
 {
 	return *m_audioManager.get();
 }
@@ -186,14 +215,14 @@ WorldStack& Game::worldStack()
 
 
 
-EntityManager& Game::entities() 
+EntityJournal& Game::entities()
 {
-	return *m_entityManager.get();
+	return *m_entities.get();
 }
 
 
 
-const SDLWindowWrapper* Game::getWindow() const 
+const Window* Game::getWindow() const 
 {
 	return m_windowWrap.get();
 }
@@ -209,7 +238,7 @@ GameCamera* Game::getCamera()
 
 void Game::initWindow(const std::string& titleIn, int widthIn, int heightIn, uint32_t flags)
 {
-	m_windowWrap = std::make_unique<SDLWindowWrapper>(titleIn, Pos2N(widthIn, heightIn), flags);
+	m_windowWrap = std::make_unique<Window>(titleIn, Pos2N(widthIn, heightIn), flags);
 	this->renderer().init(m_windowWrap->get());
 	m_cameraWrap = std::make_unique<GameCamera>(m_windowWrap.get());
 }

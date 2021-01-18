@@ -1,12 +1,11 @@
-#include "GameCamera.h"
-#include "entities/IEntity.hpp"
-#include "wrappers/SDLWindowWrapper.h"
+#include "renderer/screen/GameCamera.h"
+#include "renderer/screen/Window.h"
 
 
 
 
-GameCamera::GameCamera(SDLWindowWrapper* windowIn)
-	: m_window(windowIn), m_posOffset(), m_posTract(), m_entityPtr(nullptr)
+GameCamera::GameCamera(Window* windowIn)
+	: m_window(windowIn), m_posOffset(), m_posTract()
 {
 	m_logger = Loggers::getLog();
 	m_logger->info("Camera has been built");
@@ -55,11 +54,11 @@ int GameCamera::height() const
  */
 void GameCamera::updatePos(const Pos2N& worldSize, bool keepInsideWindow)
 {
-	if (m_isTrackingEntity) 
-	{
-		//Update the Camera's tracking position to the Entity's current position
-		m_posTract.set(m_entityPtr->getPos().x(), m_entityPtr->getPos().y());
-	}
+	//if (m_isTrackingEntity) 
+	//{
+	//	//Update the Camera's tracking position to the Entity's current position
+	//	m_posTract.set(m_entityPtr->getPos().x(), m_entityPtr->getPos().y());
+	//}
 	double xOffset = m_posTract.x() - m_window->width()/2.0;
 	double yOffset = m_posTract.y() - m_window->height()/2.0;
 
@@ -86,6 +85,7 @@ void GameCamera::updatePos(const Pos2N& worldSize, bool keepInsideWindow)
  *
  * Sets the camera to track the given Entity
  */
+/*
 void GameCamera::trackEntity(IEntity *entityIn)
 {
 	if (entityIn != nullptr) 
@@ -98,7 +98,7 @@ void GameCamera::trackEntity(IEntity *entityIn)
 	else 
 		m_logger->warn("Null Pointer exception: Camera cannot track Entity!");
 }
-
+*/
 
 
 /*
@@ -108,18 +108,14 @@ void GameCamera::trackEntity(IEntity *entityIn)
  */
 void GameCamera::trackPos(const TilePos& posIn)
 {
-	if (m_entityPtr != nullptr)
-	{
-		m_logger->info("Camera has stopped tracking Entity '{0}'", m_entityPtr->getRegistryTag());
-		m_entityPtr = nullptr;
-	}
+	//if (m_entityPtr != nullptr)
+	//{
+	//	m_logger->info("Camera has stopped tracking Entity '{0}'", m_entityPtr->getRegistryTag());
+	//	m_entityPtr = nullptr;
+	//}
 	m_isTrackingEntity = false;
 	m_posTract.set(posIn.x(), posIn.y());
 }
-
-
-
-
 
 
 

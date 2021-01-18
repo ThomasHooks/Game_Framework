@@ -286,7 +286,7 @@ protected:
 	 *
 	 * @return	Pointer to the audio sample wrapper or null if the tag cannot be found
 	 */
-	class SDLMixChunkWrapper* getSample(const std::string& tag);
+	class SampleChunk* getSample(const std::string& tag);
 
 
 
@@ -296,7 +296,7 @@ private:
 
 	bool m_hasBeenInit;
 
-	std::unordered_map<std::string, std::unique_ptr<class SDLMixChunkWrapper>> m_samples;
+	std::unordered_map<std::string, std::unique_ptr<class SampleChunk>> m_samples;
 
 	std::shared_ptr<spdlog::logger> m_logger;
 };

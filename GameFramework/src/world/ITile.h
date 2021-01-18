@@ -4,7 +4,7 @@
 
 
 
-#include "utilities/physics/AABB.h"
+#include "utilities/physics/AxisAlignedBB.h"
 #include "utilities/math/Pos2.hpp"
 #include "utilities/physics/TilePos.h"
 
@@ -25,7 +25,7 @@ public:
 
 
 	//Gets this Tile's axis aligned bounding box
-	const AABB& getAabb() const { return m_boundingBox; }
+	const AxisAlignedBB& getAabb() const { return m_boundingBox; }
 
 
 
@@ -86,7 +86,7 @@ private:
 
 	TilePos m_pos;
 
-	AABB m_boundingBox;
+	AxisAlignedBB m_boundingBox;
 
 	bool m_isOpaque;
 

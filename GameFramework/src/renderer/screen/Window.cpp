@@ -1,6 +1,6 @@
 #include <SDL.h>
 
-#include "SDLWindowWrapper.h"
+#include "renderer/screen/Window.h"
 #include "events/EventBus.hpp"
 #include "events/WindowEvent.hpp"
 #include "events/KeyboardEvent.hpp"
@@ -52,7 +52,7 @@ int filterEventCallback(void *userdata, SDL_Event * event)
 
 
 
-SDLWindowWrapper::SDLWindowWrapper(const std::string& title, const Pos2N& sizeIn, unsigned int flags)
+Window::Window(const std::string& title, const Pos2N& sizeIn, unsigned int flags)
 	: m_size(sizeIn.w, sizeIn.h), m_window(nullptr), m_winData(title, sizeIn.w, sizeIn.h)
 {
 	m_logger = Loggers::getLog();
@@ -68,7 +68,7 @@ SDLWindowWrapper::SDLWindowWrapper(const std::string& title, const Pos2N& sizeIn
 
 
 
-SDLWindowWrapper::~SDLWindowWrapper()
+Window::~Window()
 {
 	m_logger->info("Closing Window");
 	SDL_DestroyWindow(m_window);
@@ -78,28 +78,28 @@ SDLWindowWrapper::~SDLWindowWrapper()
 
 
 
-int SDLWindowWrapper::width() const
+int Window::width() const
 {
 	return m_window != nullptr ? m_size.w : 0;
 }
 
 
 
-int SDLWindowWrapper::height() const
+int Window::height() const
 {
 	return m_window != nullptr ? m_size.h : 0;
 }
 
 
 
-bool SDLWindowWrapper::isOpen() const
+bool Window::isOpen() const
 {
 	return m_window != nullptr;
 }
 
 
 
-SDL_Window* SDLWindowWrapper::get()
+SDL_Window* Window::get()
 {
 	return m_window;
 }

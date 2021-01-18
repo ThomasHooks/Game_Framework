@@ -74,21 +74,21 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)dist\$(Platform)-$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)imt\$(Platform)-$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\example;$(SolutionDir)depd\SDL2-2.0.12\include;$(SolutionDir)depd\SDL2_image-2.0.5\include;$(SolutionDir)depd\SDL2_mixer-2.0.4\include;$(SolutionDir)depd\spdlog-1.x\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\example;$(SolutionDir)depd\SDL2-2.0.12\include;$(SolutionDir)depd\SDL2_image-2.0.5\include;$(SolutionDir)depd\SDL2_mixer-2.0.4\include;$(SolutionDir)depd\spdlog-1.x\include;$(SolutionDir)GameFramework\depd\entt\single_include;$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)dist\$(Platform)-$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)imt\$(Platform)-$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\example;$(SolutionDir)depd\SDL2-2.0.12\include;$(SolutionDir)depd\SDL2_image-2.0.5\include;$(SolutionDir)depd\SDL2_mixer-2.0.4\include;$(SolutionDir)depd\spdlog-1.x\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\example;$(SolutionDir)depd\SDL2-2.0.12\include;$(SolutionDir)depd\SDL2_image-2.0.5\include;$(SolutionDir)depd\SDL2_mixer-2.0.4\include;$(SolutionDir)depd\spdlog-1.x\include;$(SolutionDir)GameFramework\depd\entt\single_include;$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)dist\$(Platform)-$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)imt\$(Platform)-$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\example;$(SolutionDir)depd\SDL2-2.0.12\include;$(SolutionDir)depd\SDL2_image-2.0.5\include;$(SolutionDir)depd\SDL2_mixer-2.0.4\include;$(SolutionDir)depd\spdlog-1.x\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\example;$(SolutionDir)depd\SDL2-2.0.12\include;$(SolutionDir)depd\SDL2_image-2.0.5\include;$(SolutionDir)depd\SDL2_mixer-2.0.4\include;$(SolutionDir)depd\spdlog-1.x\include;$(SolutionDir)GameFramework\depd\entt\single_include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)depd\SDL2-2.0.12\lib\x64;$(SolutionDir)depd\SDL2_image-2.0.5\lib\x64;$(SolutionDir)depd\SDL2_mixer-2.0.4\lib\x64;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
@@ -96,7 +96,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)dist\$(Platform)-$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)imt\$(Platform)-$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\example;$(SolutionDir)depd\SDL2-2.0.12\include;$(SolutionDir)depd\SDL2_image-2.0.5\include;$(SolutionDir)depd\SDL2_mixer-2.0.4\include;$(SolutionDir)depd\spdlog-1.x\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\example;$(SolutionDir)depd\SDL2-2.0.12\include;$(SolutionDir)depd\SDL2_image-2.0.5\include;$(SolutionDir)depd\SDL2_mixer-2.0.4\include;$(SolutionDir)depd\spdlog-1.x\include;$(SolutionDir)GameFramework\depd\entt\single_include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)depd\SDL2-2.0.12\lib\x64;$(SolutionDir)depd\SDL2_image-2.0.5\lib\x64;$(SolutionDir)depd\SDL2_mixer-2.0.4\lib\x64;$(LibraryPath)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
@@ -106,7 +106,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)GameFramework\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\depd\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,7 +123,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)GameFramework\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\depd\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,7 +140,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)GameFramework\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\depd\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,7 +158,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)GameFramework\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)GameFramework\src;$(SolutionDir)GameFramework\depd\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -163,53 +171,58 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\entities\EntityJournal.cpp" />
     <ClCompile Include="example\layers\ExampleLayer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="src\audiomixer\AudioMixer.cpp" />
-    <ClCompile Include="src\entities\capabilities\HealthCapability.cpp" />
-    <ClCompile Include="src\entities\EntityManager.cpp" />
-    <ClCompile Include="src\entities\IEntity.cpp" />
-    <ClCompile Include="src\entities\PlayerEntity.cpp" />
     <ClCompile Include="src\events\EventBus.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
-    <ClCompile Include="src\renderer\SpriteLocation.cpp">
+    <ClCompile Include="src\renderer\texture\SpriteLocation.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="src\utilities\GameCamera.cpp" />
+    <ClCompile Include="src\utilities\Assertions.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="src\renderer\screen\GameCamera.cpp" />
     <ClCompile Include="src\utilities\Timer.cpp" />
-    <ClCompile Include="src\utilities\physics\AABB.cpp" />
+    <ClCompile Include="src\utilities\physics\AxisAlignedBB.cpp" />
     <ClCompile Include="src\utilities\physics\Collisions.cpp" />
     <ClCompile Include="src\utilities\physics\Direction.cpp" />
     <ClCompile Include="src\utilities\physics\TilePos.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="src\utilities\wrappers\SDLMixChunkWrapper.cpp" />
-    <ClCompile Include="src\utilities\wrappers\SDLMixMusWrapper.cpp" />
-    <ClCompile Include="src\utilities\wrappers\SDLTextureWrapper.cpp" />
-    <ClCompile Include="src\utilities\wrappers\SDLWindowWrapper.cpp" />
-    <ClCompile Include="src\utilities\wrappers\WorldContext.cpp" />
+    <ClCompile Include="src\audiomixer\samples\SampleChunk.cpp" />
+    <ClCompile Include="src\renderer\texture\Texture.cpp" />
+    <ClCompile Include="src\renderer\screen\Window.cpp" />
     <ClCompile Include="src\world\ITile.cpp" />
     <ClCompile Include="src\world\TileMap.cpp" />
     <ClCompile Include="src\world\WorldStack.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="depd\entt\single_include\entt\entt.hpp" />
+    <ClInclude Include="src\entities\capabilities\Capabilities.hpp">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="src\entities\Entity.hpp" />
+    <ClInclude Include="src\entities\EntityJournal.hpp" />
     <ClInclude Include="example\layers\ExampleLayer.hpp">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="src\audiomixer\AudioMixer.h" />
-    <ClInclude Include="src\entities\capabilities\HealthCapability.h" />
-    <ClInclude Include="src\entities\capabilities\IEntityCapability.h" />
-    <ClInclude Include="src\entities\EntityManager.h" />
-    <ClInclude Include="src\entities\EnumEntityType.h" />
-    <ClInclude Include="src\entities\IEntity.hpp" />
-    <ClInclude Include="src\entities\PlayerEntity.h" />
+    <ClInclude Include="src\entities\capabilities\ICapability.hpp" />
+    <ClInclude Include="src\entities\Entities.hpp">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="src\events\EventBus.hpp" />
     <ClInclude Include="src\events\EventDispatcher.hpp" />
     <ClInclude Include="src\events\IEvent.hpp" />
@@ -226,12 +239,15 @@
     </ClInclude>
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\RendererBlendMode.h" />
-    <ClInclude Include="src\renderer\SpriteLocation.hpp">
+    <ClInclude Include="src\renderer\texture\SpriteLocation.hpp">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="src\utilities\Builder.hpp" />
-    <ClInclude Include="src\utilities\GameCamera.h" />
+    <ClInclude Include="src\utilities\Assertions.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="src\renderer\screen\GameCamera.h" />
     <ClInclude Include="src\utilities\Timer.h" />
     <ClInclude Include="src\utilities\Loggers.hpp" />
     <ClInclude Include="src\utilities\math\Pos2.hpp">
@@ -242,7 +258,7 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="src\utilities\physics\AABB.h" />
+    <ClInclude Include="src\utilities\physics\AxisAlignedBB.h" />
     <ClInclude Include="src\utilities\physics\Collisions.h" />
     <ClInclude Include="src\utilities\physics\Direction.h" />
     <ClInclude Include="src\utilities\physics\EnumSide.h" />
@@ -250,11 +266,9 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="src\utilities\wrappers\SDLMixChunkWrapper.h" />
-    <ClInclude Include="src\utilities\wrappers\SDLMixMusWrapper.h" />
-    <ClInclude Include="src\utilities\wrappers\SDLTextureWrapper.h" />
-    <ClInclude Include="src\utilities\wrappers\SDLWindowWrapper.h" />
-    <ClInclude Include="src\utilities\wrappers\WorldContext.h" />
+    <ClInclude Include="src\audiomixer\samples\SampleChunk.h" />
+    <ClInclude Include="src\renderer\texture\Texture.h" />
+    <ClInclude Include="src\renderer\screen\Window.h" />
     <ClInclude Include="src\world\ITile.h" />
     <ClInclude Include="src\world\TileMap.h" />
     <ClInclude Include="src\world\WorldStack.h" />

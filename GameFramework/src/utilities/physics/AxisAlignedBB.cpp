@@ -1,52 +1,52 @@
 #include <algorithm>
 
-#include "AABB.h"
+#include "AxisAlignedBB.h"
 
 
 
 
 
-AABB::AABB()
+AxisAlignedBB::AxisAlignedBB()
 	: m_pos1(0.0, 0.0), m_pos2(0.0, 0.0)
 {}
 
 
 
-AABB::AABB(double x1, double y1, double x2, double y2)
+AxisAlignedBB::AxisAlignedBB(double x1, double y1, double x2, double y2)
 	: m_pos1(x1, y1), m_pos2(x2, y2) 
 {}
 
 
 
-double AABB::width() const 
+double AxisAlignedBB::width() const 
 {
 	return std::abs(m_pos2.x - m_pos1.x);
 }
 
 
 
-int AABB::widthN() const 
+int AxisAlignedBB::widthN() const 
 {
 	return static_cast<int>(this->width() + 0.5);
 }
 
 
 
-double AABB::height() const 
+double AxisAlignedBB::height() const 
 {
 	return std::abs(m_pos2.y - m_pos1.y);
 }
 
 
 
-int AABB::heightN() const 
+int AxisAlignedBB::heightN() const 
 {
 	return static_cast<int>(this->height() + 0.5);
 }
 
 
 
-Pos2D AABB::getCenter() const
+Pos2D AxisAlignedBB::getCenter() const
 {
 	double width = this->width();
 	double height = this->height();
@@ -55,14 +55,14 @@ Pos2D AABB::getCenter() const
 
 
 
-const Pos2D& AABB::getPos() const
+const Pos2D& AxisAlignedBB::getPos() const
 {
 	return m_pos1;
 }
 
 
 
-void AABB::grow(double amount)
+void AxisAlignedBB::grow(double amount)
 {
 	double delta = std::abs(amount);
 	m_pos1 += -delta;
@@ -71,7 +71,7 @@ void AABB::grow(double amount)
 
 
 
-void AABB::shrink(double amount)
+void AxisAlignedBB::shrink(double amount)
 {
 	double delta = std::abs(amount);
 	Pos2D center = this->getCenter();
@@ -84,7 +84,7 @@ void AABB::shrink(double amount)
 
 
 
-void AABB::modify(EnumSide direction, double amount)
+void AxisAlignedBB::modify(EnumSide direction, double amount)
 {
 	double delta = std::abs(amount);
 	switch (direction)
@@ -112,7 +112,7 @@ void AABB::modify(EnumSide direction, double amount)
 
 
 
-void AABB::offset(double x, double y)
+void AxisAlignedBB::offset(double x, double y)
 {
 	m_pos1.x += x;
 	m_pos2.x += x;
@@ -122,14 +122,21 @@ void AABB::offset(double x, double y)
 
 
 
-void AABB::offset(const Pos3D& posIn)
+void AxisAlignedBB::offset(const Pos3D& posIn)
 {
 	this->offset(posIn.x, posIn.y);
 }
 
 
 
-void AABB::nudge(EnumSide direction, double amount)
+void AxisAlignedBB::move(const Pos2D& posIn)
+{
+	offset(posIn.x, posIn.y);
+}
+
+
+
+void AxisAlignedBB::nudge(EnumSide direction, double amount)
 {
 	double delta = std::abs(amount);
 	switch (direction)
@@ -158,7 +165,7 @@ void AABB::nudge(EnumSide direction, double amount)
 
 
 
-bool AABB::isPoint() const 
+bool AxisAlignedBB::isPoint() const 
 {
 	return m_pos1 == m_pos2;
 }

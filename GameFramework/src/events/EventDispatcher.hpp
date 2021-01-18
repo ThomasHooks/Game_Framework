@@ -132,7 +132,7 @@ private:
 };
 
 
-#endif /* EVENTS_EVENTDISPATCHER_HPP_ */
+#endif
 
 
 

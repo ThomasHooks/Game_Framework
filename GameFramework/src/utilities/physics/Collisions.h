@@ -4,7 +4,7 @@
 #include "utilities/physics/EnumSide.h"
 #include "utilities/math/Pos2.hpp"
 #include "utilities/physics/TilePos.h"
-#include "utilities/physics/AABB.h"
+#include "utilities/physics/AxisAlignedBB.h"
 
 
 
@@ -43,7 +43,7 @@ bool RectVsPt(const Pos2D& posRect, const Pos2N& dimRect, const Pos2D& posPt);
 /// <param name="rect">The axis aligned bounding box of the rectangle</param>
 /// <param name="posPt">The coordinates of the point</param>
 /// <returns>True if the point is inside of the rectangle</returns>
-bool RectVsPt(const AABB& rect, const Pos2D& posPt);
+bool RectVsPt(const AxisAlignedBB& rect, const Pos2D& posPt);
 
 
 
@@ -53,7 +53,7 @@ bool RectVsPt(const AABB& rect, const Pos2D& posPt);
 /// <param name="rect">The axis aligned bounding box of the rectangle</param>
 /// <param name="posPt">The coordinates of the point</param>
 /// <returns>True if the point is inside of the rectangle</returns>
-bool RectVsPt(const AABB& rect, const TilePos& posPt);
+bool RectVsPt(const AxisAlignedBB& rect, const TilePos& posPt);
 
 
 
@@ -91,7 +91,7 @@ bool RectVsRect(const Pos2D& pos1, const Pos2N& dim1, const Pos2D& pos2, const P
 /// <param name="rect1">The axis aligned bounding box of the first rectangle</param>
 /// <param name="rect2">The axis aligned bounding box of the second rectangle</param>
 /// <returns>True if the rectangles are overlapping/colliding</returns>
-bool RectVsRect(const AABB &rect1, const AABB &rect2);
+bool RectVsRect(const AxisAlignedBB &rect1, const AxisAlignedBB &rect2);
 
 
 
@@ -117,11 +117,11 @@ EnumSide RectEdge(double x1, double y1, double w1, double h1, double x2, double 
 /// <param name="rect1">The axis aligned bounding box of the first rectangle</param>
 /// <param name="rect2">The axis aligned bounding box of the second rectangle</param>
 /// <returns>Which side of two rectangles is colliding</returns>
-EnumSide RectEdge(const AABB &rect1, const AABB &rect2);
+EnumSide RectEdge(const AxisAlignedBB &rect1, const AxisAlignedBB &rect2);
 }
 
 
-#endif
+#endif /* COLLISIONS_H_ */
 
 
 

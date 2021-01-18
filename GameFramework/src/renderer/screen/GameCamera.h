@@ -13,7 +13,7 @@ class GameCamera
 {
 public:
 
-	GameCamera(class SDLWindowWrapper* windowIn);
+	GameCamera(class Window* windowIn);
 
 
 
@@ -65,7 +65,7 @@ public:
 	 *
 	 * Sets the camera to track the given Entity
 	 */
-	void trackEntity(class IEntity *entityIn);
+	//void trackEntity(class IEntity *entityIn);
 
 
 
@@ -80,7 +80,7 @@ public:
 
 protected:
 
-	class SDLWindowWrapper *m_window;
+	class Window *m_window;
 
 
 
@@ -92,13 +92,11 @@ private:
 
 	TilePos m_posTract;
 
-	class IEntity *m_entityPtr;
-
 	bool m_isTrackingEntity = false;
 };
 
 
-#endif
+#endif /* GAMECAMERA_H_ */
 
 
 

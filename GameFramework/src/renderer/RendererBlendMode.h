@@ -3,10 +3,11 @@
 
 
 
-
+/// <summary>
+/// Encapsulates the SDL blend modes
+/// </summary>
 enum struct RendererBlendMode : unsigned char 
 {
-	//This enumeration encapsulates the SDL blend modes
 	NONE = 0,
 	BLEND,
 	ADD,
@@ -14,7 +15,7 @@ enum struct RendererBlendMode : unsigned char
 };
 
 
-#endif /* RENDERERBLENDMODE_H_ */
+#endif
 
 
 

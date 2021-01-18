@@ -24,13 +24,13 @@ bool Collision::RectVsPt(const Pos2D& posRect, const Pos2N &dimRect, const Pos2D
 
 
 
-bool Collision::RectVsPt(const AABB& rect, const Pos2D& posPt){
+bool Collision::RectVsPt(const AxisAlignedBB& rect, const Pos2D& posPt){
 	return RectVsPt(rect.getPos().x, rect.getPos().y, rect.width(), rect.height(), posPt.x, posPt.y);
 }
 
 
 
-bool Collision::RectVsPt(const AABB& rect, const TilePos& posPt)
+bool Collision::RectVsPt(const AxisAlignedBB& rect, const TilePos& posPt)
 {
 	return RectVsPt(rect.getPos().x, rect.getPos().y, rect.width(), rect.height(), posPt.x(), posPt.y());
 }
@@ -54,7 +54,7 @@ bool Collision::RectVsRect(const Pos2D& pos1, const Pos2N& dim1, const Pos2D& po
 
 
 
-bool Collision::RectVsRect(const AABB &rect1, const AABB &rect2)
+bool Collision::RectVsRect(const AxisAlignedBB &rect1, const AxisAlignedBB &rect2)
 {
 	return RectVsRect(rect1.getPos().x, rect1.getPos().y, rect1.width(), rect1.height(),
 			rect2.getPos().x, rect2.getPos().y, rect2.width(), rect2.height());
@@ -93,7 +93,7 @@ EnumSide Collision::RectEdge(double x1, double y1, double w1, double h1, double 
 
 
 
-EnumSide Collision::RectEdge(const AABB &rect1, const AABB &rect2)
+EnumSide Collision::RectEdge(const AxisAlignedBB &rect1, const AxisAlignedBB &rect2)
 {
 	return RectEdge(rect1.getPos().x, rect1.getPos().y, rect1.width(), rect1.height(), rect2.getPos().x, rect2.getPos().y, rect2.width(), rect2.height());
 }

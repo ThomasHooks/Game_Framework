@@ -2,7 +2,9 @@
 #define Pos3_HPP_
 
 
-#include <assert.h>
+#include <cmath>
+
+#include "utilities/Assertions.h"
 
 
 
@@ -32,10 +34,74 @@ struct Pos3
 	/// Calculates the dot product of this position and the given position
 	/// </summary>
 	/// <param name="other">The other position</param>
-	/// <returns></returns>
+	/// <returns>The dot product</returns>
 	T dot(const Pos3<T>& other)
 	{
 		return (x * other.x) + (y * other.y) + (z * other.z);
+	}
+
+
+
+	/// <summary>
+	/// Calculates the cross product of this position and the given position
+	/// </summary>
+	/// <param name="other">The other position</param>
+	/// <returns>The cross product</returns>
+	Pos3<T> cross(const Pos3<T>& other)
+	{
+		return Pos3<T>(
+			(y * other.z) - (z * other.y),
+			(z * other.x) - (x * other.z),
+			(x * other.y) - (y * other.x)
+		);
+	}
+
+
+
+	/// <summary>
+	/// Calculates the absolute value of this position
+	/// </summary>
+	/// <returns>The absolute value of this position</returns>
+	Pos3<T> abs() const
+	{
+		return Pos3<T>(std::abs(x), std::abs(y), std::abs(z));
+	}
+
+
+
+	/// <summary>
+	/// Rounds the components of this position downwards
+	/// </summary>
+	/// <returns>The rounded components of this position</returns>
+	Pos3<T> floor() const
+	{
+		return Pos3<T>(std::floor(x), std::floor(y), std::floor(z));
+	}
+
+
+
+	/// <summary>
+	/// Rounds the components of this position upwards
+	/// </summary>
+	/// <returns>The rounded components of this position</returns>
+	Pos3<T> ceil() const
+	{
+		return Pos3<T>(std::ceil(x), std::ceil(y), std::ceil(z));
+	}
+
+
+
+	/// <summary>
+	/// Calculates the unit vector of this position
+	/// </summary>
+	/// <returns>The unit vector</returns>
+	Pos3<T> normal() const
+	{
+		T length = std::sqrt(x * x + y * y + z * z);
+		if (length == 0)
+			return Pos3<T>();
+		else
+			return Pos3<T>(x / length, y / length, z / length);
 	}
 
 
@@ -200,7 +266,7 @@ struct Pos3
 
 	Pos3<T> operator*(const Pos3<T>& other) const
 	{
-		return Pos3<T>(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
+		return Pos3<T>(x * other.x, y * other.y, z * other.z);
 	}
 
 
@@ -232,17 +298,36 @@ struct Pos3
 
 
 
+	Pos3<T> operator/(const Pos3<T>& other) const
+	{
+		GAME_ASSERT(other.x != 0 && other.y != 0 && other.z != 0);
+		return Pos3<T>(x / other.x, y / other.y, z / other.z);
+	}
+
+
+
 	Pos3<T> operator/(T scalar) const
 	{
-		assert(scalar != 0);
+		GAME_ASSERT(scalar != 0);
 		return Pos3<T>(x / scalar, y / scalar, z / scalar);
+	}
+
+
+
+	Pos3<T>& operator/=(const Pos3<T>& other)
+	{
+		GAME_ASSERT(other.x != 0 && other.y != 0 && other.z != 0);
+		x /= other.x;
+		y /= other.y;
+		z /= other.z;
+		return *this;
 	}
 
 
 
 	Pos3<T>& operator/=(T scalar)
 	{
-		assert(scalar != 0);
+		GAME_ASSERT(scalar != 0);
 		x /= scalar;
 		y /= scalar;
 		z /= scalar;
@@ -266,21 +351,21 @@ protected:
 
 
 
-struct Pos3D : public Pos3<double>
+struct Pos3N : public Pos3<int>
 {
-	Pos3D()
-		: Pos3<double>(0.0, 0.0, 0.0)
+	Pos3N()
+		: Pos3<int>(0, 0, 0)
 	{}
 
 
 
-	Pos3D(double xIn, double yIn, double zIn)
-		: Pos3<double>(xIn, yIn, zIn)
+	Pos3N(int xIn, int yIn, int zIn)
+		: Pos3<int>(xIn, yIn, zIn)
 	{}
 
 
 
-	Pos3D(const Pos3<double> & other)
+	Pos3N(const Pos3<int>& other)
 	{
 		if (this != &other)
 		{
@@ -316,25 +401,32 @@ struct Pos3F : public Pos3<float>
 			z = other.z;
 		}
 	}
+
+
+
+	operator Pos3N() const
+	{
+		return Pos3N(static_cast<int>(x + 0.5), static_cast<int>(y + 0.5), static_cast<int>(z + 0.5));
+	}
 };
 
 
 
-struct Pos3N : public Pos3<int>
+struct Pos3D : public Pos3<double>
 {
-	Pos3N()
-		: Pos3<int>(0, 0, 0)
+	Pos3D()
+		: Pos3<double>(0.0, 0.0, 0.0)
 	{}
 
 
 
-	Pos3N(int xIn, int yIn, int zIn)
-		: Pos3<int>(xIn, yIn, zIn)
+	Pos3D(double xIn, double yIn, double zIn)
+		: Pos3<double>(xIn, yIn, zIn)
 	{}
 
 
 
-	Pos3N(const Pos3<int>& other)
+	Pos3D(const Pos3<double>& other)
 	{
 		if (this != &other)
 		{
@@ -342,6 +434,13 @@ struct Pos3N : public Pos3<int>
 			y = other.y;
 			z = other.z;
 		}
+	}
+
+
+
+	operator Pos3N() const
+	{
+		return Pos3N(static_cast<int>(x + 0.5), static_cast<int>(y + 0.5), static_cast<int>(z + 0.5));
 	}
 };
 

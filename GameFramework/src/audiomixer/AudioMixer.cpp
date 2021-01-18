@@ -3,10 +3,10 @@
 #include "SDL_mixer.h"
 
 #include "AudioMixer.h"
-#include "utilities/GameCamera.h"
+#include "renderer/screen/GameCamera.h"
 #include "utilities/physics/TilePos.h"
 #include "utilities/math/Pos2.hpp"
-#include "utilities/wrappers/SDLMixChunkWrapper.h"
+#include "audiomixer/samples/SampleChunk.h"
 
 
 
@@ -98,14 +98,14 @@ bool AudioMixer::registerSample(const std::string &tag, const std::string &locat
 	}
 
 	m_logger->info("Registering sample '{0}' at {1}", tag, location);
-	auto itr = m_samples.insert({tag, std::make_unique<SDLMixChunkWrapper>(location)});
+	auto itr = m_samples.insert({tag, std::make_unique<SampleChunk>(location)});
 	if(!itr.second) 
 	{
 		//Tag isn't unique
 		m_logger->error("The sample was not registered tag: '{0}' is not unique!", tag);
 		return itr.second;
 	}
-	if(itr.first->second->get() == nullptr) 
+	if(itr.first->second->expose() == nullptr) 
 	{
 		//Failed to load the audio file
 		std::string mixerErrorCode = Mix_GetError();
@@ -337,14 +337,14 @@ void AudioMixer::setSampleVolume(const std::string &tag, float volume)
 		return;
 	}
 
-	SDLMixChunkWrapper *sample = getSample(tag);
+	SampleChunk *sample = getSample(tag);
 	if(sample == nullptr) 
 	{
 		m_logger->error("Cannot set the volume for sample, '{0}' sample cannot be found!", tag);
 		return;
 	}
 
-	std::abs(volume) > 1.0f ? Mix_VolumeChunk(sample->get(), 128) : Mix_VolumeChunk(sample->get(), static_cast<int>(128.0f * std::abs(volume) + 0.5f));
+	std::abs(volume) > 1.0f ? Mix_VolumeChunk(sample->expose(), 128) : Mix_VolumeChunk(sample->expose(), static_cast<int>(128.0f * std::abs(volume) + 0.5f));
 }
 
 
@@ -475,14 +475,14 @@ int AudioMixer::playSample(const std::string &tag, int channel, int loops, uint3
 		return -1;
 	}
 
-	SDLMixChunkWrapper *sample = getSample(tag);
+	SampleChunk *sample = getSample(tag);
 	if(sample == nullptr) 
 	{
 		m_logger->error("Cannot play sample, '{0}' cannot be found!", tag);
 		return -1;
 	}
 
-	return Mix_PlayChannelTimed(channel, sample->get(), loops, ticks);
+	return Mix_PlayChannelTimed(channel, sample->expose(), loops, ticks);
 }
 
 
@@ -492,7 +492,7 @@ int AudioMixer::playSample(const std::string &tag, int channel, int loops, uint3
  *
  * @return	Pointer to the audio sample wrapper or null if the tag cannot be found
  */
-SDLMixChunkWrapper* AudioMixer::getSample(const std::string &tag) 
+SampleChunk* AudioMixer::getSample(const std::string &tag) 
 {
 	auto itr = m_samples.find(tag);
 	return itr == m_samples.end() ? nullptr : itr->second.get();

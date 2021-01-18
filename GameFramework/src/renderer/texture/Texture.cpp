@@ -1,14 +1,14 @@
-#include "SDLTextureWrapper.h"
-
 #include <SDL.h>
 #include "SDL_image.h"
 
+#include "renderer/texture/Texture.h"
+#include "utilities/math/Pos2.hpp"
 #include "utilities/Loggers.hpp"
 
 
 
 
-SDLTextureWrapper::SDLTextureWrapper(SDL_Renderer* rendererIn, SDL_Surface* surfaceIn, const Pos2N& sizeIn)
+Texture::Texture(SDL_Renderer* rendererIn, SDL_Surface* surfaceIn, const Pos2N& sizeIn)
 	: m_tileSize(sizeIn.w, sizeIn.h) 
 {
 	m_texture = SDL_CreateTextureFromSurface(rendererIn, surfaceIn);
@@ -18,7 +18,7 @@ SDLTextureWrapper::SDLTextureWrapper(SDL_Renderer* rendererIn, SDL_Surface* surf
 
 
 
-SDLTextureWrapper::~SDLTextureWrapper() 
+Texture::~Texture() 
 {
 	SDL_DestroyTexture(m_texture);
 	m_texture = nullptr;
@@ -26,14 +26,14 @@ SDLTextureWrapper::~SDLTextureWrapper()
 
 
 
-SDL_Texture* SDLTextureWrapper::getTexture() const 
+SDL_Texture* Texture::expose() const 
 {
 	return m_texture;
 }
 
 
 
-const Pos2N& SDLTextureWrapper::getTileSize() const 
+const Pos2N& Texture::getTileSize() const 
 {
 	return m_tileSize;
 }

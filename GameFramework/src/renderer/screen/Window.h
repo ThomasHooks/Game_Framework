@@ -1,5 +1,5 @@
-#ifndef SDLWINDOWWRAPPER_H_
-#define SDLWINDOWWRAPPER_H_
+#ifndef WINDOW_H_
+#define WINDOW_H_
 
 
 #include <memory>
@@ -31,23 +31,23 @@ int filterEventCallback(void *userdata, SDL_Event * event);
 
 
 
-class SDLWindowWrapper
+class Window
 {
 public:
 
-	SDLWindowWrapper(const std::string &title, const Pos2N &sizeIn, unsigned int flags);
+	Window(const std::string &title, const Pos2N &sizeIn, unsigned int flags);
 
 
 
-	~SDLWindowWrapper();
+	~Window();
 
 
 
-	SDLWindowWrapper(SDLWindowWrapper &&other) = delete;
+	Window(Window &&other) = delete;
 
 
 
-	SDLWindowWrapper(const SDLWindowWrapper &other) = delete;
+	Window(const Window &other) = delete;
 
 
 

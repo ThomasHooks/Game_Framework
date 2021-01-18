@@ -1,12 +1,3 @@
-//============================================================================
-// Name       		: IEvent
-// Author     		: Thomas Hooks
-// Last Modified	: Apr 19, 2020
-//============================================================================
-
-
-
-
 #ifndef EVENTS_IEVENT_HPP_
 #define EVENTS_IEVENT_HPP_
 
@@ -15,9 +6,8 @@
 
 typedef unsigned long long EventID;
 
-
-class BaseEvent {
-
+class BaseEvent 
+{
 public:
 
 	virtual ~BaseEvent() {}
@@ -26,7 +16,8 @@ public:
 
 protected:
 
-	static EventID getNextType() {
+	static EventID getNextType() 
+	{
 		static EventID nextType = 0;
 		return nextType++;
 	}
@@ -35,8 +26,8 @@ protected:
 
 
 template<class EventType>
-class IEvent : public BaseEvent {
-
+class IEvent : public BaseEvent 
+{
 public:
 
 	static EventID type() {
@@ -46,7 +37,7 @@ public:
 };
 
 
-#endif /* EVENTS_IEVENT_HPP_ */
+#endif
 
 
 

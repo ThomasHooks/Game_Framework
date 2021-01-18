@@ -2,7 +2,10 @@
 #define ExampleLayer_H_
 
 
+#include <vector>
+
 #include "layers/IGameLayer.hpp"
+#include "entities/Entity.hpp"
 
 
 
@@ -39,9 +42,7 @@ private:
 
 	class Game& m_game;
 
-
-
-	class IEntity* m_player = nullptr;
+	std::vector<Entity> m_entities;
 }; 
 
 
