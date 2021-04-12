@@ -9,6 +9,7 @@
 #include "audiomixer/AudioMixer.h"
 #include "entities/Entities.hpp"
 #include "utilities/Loggers.hpp"
+#include "renderer/texture/Sprite.hpp"
 
 
 
@@ -38,10 +39,12 @@ void ExampleLayer::onAttach(Game& game)
 
 	game.entities().registerSpawner("mario", [this](Entity& entity)
 		{
+			Pos2N tileSize(16, 16);
+			Sprite sprite("mario", tileSize);
 			entity
 				.add<KinematicCapability>(0.0, 0.0)
 				.add<ColliderCapability>(0.0, 0.0, 22.0, 32.0)
-				.add<RenderableCapability>("mario", 0, 0, 16, 16);
+				.add<RenderableCapability>(sprite, tileSize);
 		});
 	Entity player = game.entities().spawn("mario", Pos2D(128.0, 224.0));
 	m_entities.push_back(player);
@@ -81,7 +84,7 @@ void ExampleLayer::onRender(const GameCamera& cameraIn, Renderer& rendererIn)
 
 	//getGame().entities().drawAll(cameraIn.getPos(), windowSize, rendererIn, true);
 	RenderableCapability& renCap = m_entities[0].get<RenderableCapability>();
-	rendererIn.drawSprite(renCap.sprite.tag(), m_entities[0].pos(), cameraIn.getPos(), renCap.sprite.getIndex(), false);
+	rendererIn.drawSprite(renCap.sprite.tag(), m_entities[0].pos(), cameraIn.getPos(), renCap.sprite.index, false);
 
 	rendererIn.present();
 }

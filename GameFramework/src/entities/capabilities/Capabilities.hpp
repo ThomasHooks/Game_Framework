@@ -8,7 +8,7 @@
 #include "utilities/math/Pos2.hpp"
 #include "utilities/physics/AxisAlignedBB.h"
 #include "utilities/physics/EnumSide.h"
-#include "renderer/texture/SpriteLocation.hpp"
+#include "renderer/texture/Sprite.hpp"
 
 
 
@@ -23,16 +23,13 @@ class PositionCapability : public ICapability<PositionCapability>
 {
 public:
 
-	/// <summary>
-	/// The 2-dimensional position for this Entity
-	/// </summary>
-	Pos2D pos;
-
-
-
 	PositionCapability(double xIn, double yIn)
 		: ICapability(), pos(xIn, yIn)
 	{}
+
+
+
+	Pos2D pos;
 
 
 
@@ -85,13 +82,6 @@ class KinematicCapability : public ICapability<KinematicCapability>
 {
 public:
 
-	/// <summary>
-	/// This Entity's current velocity
-	/// </summary>
-	Pos2D velocity;
-
-
-
 	KinematicCapability()
 		: ICapability(), velocity()
 	{}
@@ -107,6 +97,13 @@ public:
 	KinematicCapability(Pos2D& velocityIn)
 		: ICapability(), velocity(velocityIn)
 	{}
+
+
+
+	/// <summary>
+	/// This Entity's current velocity
+	/// </summary>
+	Pos2D velocity;
 };
 
 
@@ -119,16 +116,16 @@ class FacingCapability : public ICapability<FacingCapability>
 {
 public:
 
+	FacingCapability(EnumSide facingIn)
+		: ICapability(), facing(facingIn)
+	{}
+
+
+
 	/// <summary>
 	/// The direction in 2-dimensional space that this Entity is pointing towards
 	/// </summary>
 	EnumSide facing;
-
-
-
-	FacingCapability(EnumSide facingIn)
-		: ICapability(), facing(facingIn)
-	{}
 };
 
 
@@ -165,6 +162,66 @@ public:
 
 
 /// <summary>
+/// This Capability gives an Entity the ability of a rigid-body, i.e. the ability to both movie in 2-dimensional space and collide with other rigid-bodies.
+/// <para>
+/// The coordinates of the Axis-Aligned Bounding Box should be relative to this Entity position, which is located in the top-left corner 
+/// For example, if an Entity is occupying a 32x32px space it would be (0.0, 0.0, 32.0, 32.0).
+/// </para>
+/// <para>
+/// When creating a rigid-body the mass should be specified in its non-inverse amount, and if the Entity has infinite mass use 0.0f 
+/// </para>
+/// </summary>
+/// <param name="velocityIn">Specifies the initial velocity vector of this Entity</param>
+/// <param name="aabbIn">Specifies the Axis-Aligned Bounding Box of this Entity</param>
+/// <param name="frictionIn">Specifies the initial friction of this Entity</param>
+/// <param name="massIn">Specifies the initial mass of this Entity</param>
+class RigidbodyCapability : ICapability<RigidbodyCapability>
+{
+public:
+
+	RigidbodyCapability(const AxisAlignedBB& aabbIn, float massIn, float frictionIn = 1.0f)
+		: acceleration(), velocity(), aabb(aabbIn), friction(frictionIn), inverseMass(0.0f)
+	{
+		if (massIn != 0.0f)
+			inverseMass = 1.0f / massIn;
+	}
+
+
+
+	RigidbodyCapability(const Pos2D& velocityIn, const AxisAlignedBB& aabbIn, float massIn, float frictionIn = 1.0f)
+		: acceleration(), velocity(velocityIn), aabb(aabbIn), friction(frictionIn), inverseMass(0.0f)
+	{
+		if (massIn != 0.0f)
+			inverseMass = 1.0f / massIn;
+	}
+
+
+
+	Pos2D acceleration;
+
+
+
+	Pos2D velocity;
+
+
+
+	/// <summary>
+	/// The Axis-Aligned Bounding Box for this Entity
+	/// </summary>
+	AxisAlignedBB aabb;
+
+
+
+	float friction;
+
+
+
+	float inverseMass;
+};
+
+
+
+/// <summary>
 /// This Capability gives an Entity the ability to be rendered as a 2-dimensional sprite
 /// </summary>
 /// <param name="tagIn">Specifies the texture atlas/sprite sheet's name</param>
@@ -176,6 +233,12 @@ class RenderableCapability : ICapability<RenderableCapability>
 {
 public:
 
+	RenderableCapability(Sprite& spriteIn, Pos2N& sizeIn)
+		: ICapability(), size(sizeIn), sprite(spriteIn)
+	{}
+
+
+
 	/// <summary>
 	/// Specifies the dimensions of this Entity's sprite
 	/// </summary>
@@ -186,18 +249,17 @@ public:
 	/// <summary>
 	/// Specifies both the texture atlas this Entity uses, and the texture's coordinates within the atlas
 	/// </summary>
-	SpriteLocation sprite;
+	Sprite sprite;
+};
 
 
 
-	RenderableCapability(SpriteLocation& spriteIn, Pos2N& sizeIn)
-		: ICapability(), size(sizeIn), sprite(spriteIn) 
-	{}
+class TickableCapability : ICapability<TickableCapability>
+{
+public:
 
-
-
-	RenderableCapability(const std::string& tagIn, int uIn, int vIn, int wIn, int hIn)
-		: ICapability(), size(wIn, hIn), sprite(tagIn, uIn, vIn)
+	TickableCapability()
+		: ICapability()
 	{}
 };
 

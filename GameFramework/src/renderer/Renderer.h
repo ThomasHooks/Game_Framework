@@ -192,6 +192,16 @@ public:
 
 
 	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="spriteIn"></param>
+	/// <param name="pos"></param>
+	/// <param name="cameraOffset"></param>
+	void drawSprite(const class Sprite& spriteIn, const TilePos& pos, const TilePos& cameraOffset);
+
+
+
+	/// <summary>
 	/// The new scale cannot be zero or negative, and if scaleIn is either it will default to 1.0
 	/// </summary>
 	/// <param name="scaleIn">The new scale for all rendering</param>

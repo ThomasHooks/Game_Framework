@@ -8,6 +8,7 @@
 
 #include "Renderer.h"
 #include "renderer/texture/Texture.h"
+#include "renderer/texture/Sprite.hpp"
 #include "utilities/Assertions.h"
 
 
@@ -262,6 +263,51 @@ void Renderer::drawSprite(const std::string& tag, const TilePos& pos, const Tile
 void Renderer::drawSprite(const std::string& tag, const TilePos& pos, const TilePos& cameraOffset, const Pos2N& spriteLocation, const bool flipSprite)
 {
 	this->drawSprite(tag, pos, cameraOffset, spriteLocation, 0.0, flipSprite);
+}
+
+
+
+void Renderer::drawSprite(const Sprite& spriteIn, const TilePos& pos, const TilePos& cameraOffset)
+{
+	Pos2N spriteSize(this->getTextureTileWidth(spriteIn.tag()), this->getTextureTileHeight(spriteIn.tag()));
+	SDL_Rect spriteRect = {
+		spriteIn.index.u * spriteSize.w,
+		spriteIn.index.v * spriteSize.h,
+		(spriteIn.size.w + 1) * spriteSize.w - 1,
+		(spriteIn.size.h + 1 ) * spriteSize.h - 1
+	};
+
+	float width = static_cast<float>(spriteSize.w) * spriteIn.scale;
+	float height = static_cast<float>(spriteSize.h) * spriteIn.scale;
+	double xPos = pos.x() - cameraOffset.x();
+	double yPos = pos.y() - cameraOffset.y();
+
+	SDL_Rect entityRect = {
+		static_cast<int>(xPos + 0.5),
+		static_cast<int>(yPos + 0.5),
+		static_cast<int>(width + 0.5f),
+		static_cast<int>(height + 0.5f)
+	};
+
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	switch (spriteIn.fliped) 
+	{
+	case Sprite::Flip::NONE:
+		flip = SDL_FLIP_NONE;
+		break;
+
+	case Sprite::Flip::HORIZONTAL:
+		flip = SDL_FLIP_HORIZONTAL;
+		break;
+
+	case Sprite::Flip::VERTICAL:
+		flip = SDL_FLIP_VERTICAL;
+		break;
+	}
+
+	int code = SDL_RenderCopyEx(m_renderer, this->getTexture(spriteIn.tag()), &spriteRect, &entityRect, 0.0, NULL, flip);
+	if (code < 0)
+		m_logger->error("SDL Error while trying to draw '{0}' sprite: {1}", spriteIn.tag(), SDL_GetError());
 }
 
 

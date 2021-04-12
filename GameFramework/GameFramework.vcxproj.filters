@@ -1,192 +1,237 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="example">
+      <UniqueIdentifier>{F1997D81-5D79-FC1C-6691-87F3D2EF627E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="example\layers">
+      <UniqueIdentifier>{B08B0E3A-9C59-0240-85ED-7266715ADEA4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\audiomixer">
+      <UniqueIdentifier>{73DECB18-5FAC-BF1E-4840-304534AD9B83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\audiomixer\samples">
+      <UniqueIdentifier>{B71868D0-A312-9122-8C7F-27337818F78E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\entities">
+      <UniqueIdentifier>{A142F00B-8DA5-7FB0-362B-B866226D4B33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\entities\capabilities">
+      <UniqueIdentifier>{1A9B17BC-865D-4B46-CF0D-DAD23B0F2424}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\events">
+      <UniqueIdentifier>{91766759-7D2E-A9A6-E635-8202D20C4497}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\layers">
+      <UniqueIdentifier>{6C614A68-5819-8CB5-C120-6511ADF726A6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\physics">
+      <UniqueIdentifier>{BF23DBB5-2BD9-53AB-B4CD-4D8220824AAF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\renderer">
+      <UniqueIdentifier>{936D1A48-7FD0-A9EC-2856-E2A21498756F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\renderer\screen">
+      <UniqueIdentifier>{222ABDCD-8E8B-9ADB-17F9-E08D8359D19A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\renderer\texture">
+      <UniqueIdentifier>{130E7CD7-FF9C-05A1-A8BB-199C94291647}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities">
+      <UniqueIdentifier>{F88BC812-644C-4449-2D87-8DC699068925}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\math">
+      <UniqueIdentifier>{F1B7E692-DD9B-A7E8-46FC-A13B32FF916A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utilities\physics">
+      <UniqueIdentifier>{8A9FA8CD-F60B-64C8-BFFF-FB252B2B8630}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\world">
+      <UniqueIdentifier>{C44364B6-30AE-182D-79EC-C9D2E595F681}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\audiomixer\AudioMixer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\events\EventBus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderer\Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utilities\physics\Collisions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\world\ITile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\world\TileMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\world\WorldStack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utilities\physics\TilePos.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utilities\physics\Direction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="example\layers\ExampleLayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utilities\Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderer\texture\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderer\texture\SpriteLocation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utilities\Assertions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderer\screen\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\renderer\screen\GameCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audiomixer\samples\SampleChunk.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utilities\physics\AxisAlignedBB.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\entities\EntityJournal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\audiomixer\AudioMixer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\events\EventBus.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\events\EventDispatcher.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\events\IEvent.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\events\KeyboardEvent.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\events\WindowEvent.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\RendererBlendMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\physics\Collisions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\physics\Direction.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\physics\EnumSide.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\world\ITile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\world\TileMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\world\WorldStack.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="example\layers\ExampleLayer.hpp">
+      <Filter>example\layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Game.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\utilities\Loggers.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\math\Pos2.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\math\Pos3.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\physics\TilePos.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\layers\LayerStack.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\layers\IGameLayer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="example\layers\ExampleLayer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\texture\Texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\texture\SpriteLocation.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\Assertions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\screen\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\renderer\screen\GameCamera.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\audiomixer\AudioMixer.h">
+      <Filter>src\audiomixer</Filter>
     </ClInclude>
     <ClInclude Include="src\audiomixer\samples\SampleChunk.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utilities\physics\AxisAlignedBB.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entities\capabilities\ICapability.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="depd\entt\single_include\entt\entt.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entities\EntityJournal.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entities\Entity.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entities\capabilities\Capabilities.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>src\audiomixer\samples</Filter>
     </ClInclude>
     <ClInclude Include="src\entities\Entities.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>src\entities</Filter>
     </ClInclude>
+    <ClInclude Include="src\entities\Entity.hpp">
+      <Filter>src\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\EntityJournal.hpp">
+      <Filter>src\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\capabilities\Capabilities.hpp">
+      <Filter>src\entities\capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\capabilities\ICapability.hpp">
+      <Filter>src\entities\capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\EventBus.hpp">
+      <Filter>src\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\EventDispatcher.hpp">
+      <Filter>src\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\IEvent.hpp">
+      <Filter>src\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\KeyboardEvent.hpp">
+      <Filter>src\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\events\WindowEvent.hpp">
+      <Filter>src\events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\IGameLayer.hpp">
+      <Filter>src\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\LayerStack.hpp">
+      <Filter>src\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\IntersectionDetector.hpp">
+      <Filter>src\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\Line2D.hpp">
+      <Filter>src\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\Renderer.h">
+      <Filter>src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\RendererBlendMode.h">
+      <Filter>src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\screen\GameCamera.h">
+      <Filter>src\renderer\screen</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\screen\Window.h">
+      <Filter>src\renderer\screen</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\texture\Sprite.hpp">
+      <Filter>src\renderer\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\texture\Texture.h">
+      <Filter>src\renderer\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\Assertions.h">
+      <Filter>src\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\Loggers.hpp">
+      <Filter>src\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\Timer.h">
+      <Filter>src\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\math\Pos2.hpp">
+      <Filter>src\utilities\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\math\Pos3.hpp">
+      <Filter>src\utilities\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\physics\AxisAlignedBB.h">
+      <Filter>src\utilities\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\physics\Collisions.h">
+      <Filter>src\utilities\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\physics\Direction.h">
+      <Filter>src\utilities\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\physics\EnumSide.h">
+      <Filter>src\utilities\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\physics\TilePos.h">
+      <Filter>src\utilities\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\ITile.h">
+      <Filter>src\world</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\TileMap.h">
+      <Filter>src\world</Filter>
+    </ClInclude>
+    <ClInclude Include="src\world\WorldStack.h">
+      <Filter>src\world</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="example\layers\ExampleLayer.cpp">
+      <Filter>example\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audiomixer\AudioMixer.cpp">
+      <Filter>src\audiomixer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audiomixer\samples\SampleChunk.cpp">
+      <Filter>src\audiomixer\samples</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\EntityJournal.cpp">
+      <Filter>src\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\events\EventBus.cpp">
+      <Filter>src\events</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physics\IntersectionDetector.cpp">
+      <Filter>src\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\Renderer.cpp">
+      <Filter>src\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\screen\GameCamera.cpp">
+      <Filter>src\renderer\screen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\screen\Window.cpp">
+      <Filter>src\renderer\screen</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\texture\Sprite.cpp">
+      <Filter>src\renderer\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\texture\Texture.cpp">
+      <Filter>src\renderer\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\Assertions.cpp">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\Timer.cpp">
+      <Filter>src\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\physics\AxisAlignedBB.cpp">
+      <Filter>src\utilities\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\physics\Collisions.cpp">
+      <Filter>src\utilities\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\physics\Direction.cpp">
+      <Filter>src\utilities\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utilities\physics\TilePos.cpp">
+      <Filter>src\utilities\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\ITile.cpp">
+      <Filter>src\world</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\TileMap.cpp">
+      <Filter>src\world</Filter>
+    </ClCompile>
+    <ClCompile Include="src\world\WorldStack.cpp">
+      <Filter>src\world</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
