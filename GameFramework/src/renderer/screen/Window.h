@@ -52,6 +52,13 @@ public:
 
 
 	/// <summary>
+	/// 
+	/// </summary>
+	void update();
+
+
+
+	/// <summary>
 	/// Gets the Window's width or '0' if the window has not been initialized
 	/// </summary>
 	/// <returns></returns>
@@ -89,6 +96,8 @@ private:
 	Pos2N m_size;
 
 	SDL_Window* m_window;
+
+	SDL_GLContext m_glContext;
 
 	WindowData m_winData;
 

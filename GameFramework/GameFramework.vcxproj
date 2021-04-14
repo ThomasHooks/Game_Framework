@@ -58,14 +58,14 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;example;depd\entt\single_include;..\depd\spdlog-1.x\include;..\depd\SDL2-2.0.12\include;..\depd\SDL2_image-2.0.5\include;..\depd\SDL2_mixer-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;example;depd\entt\single_include;..\depd\spdlog-1.x\include;..\depd\SDL2-2.0.12\include;..\depd\SDL2_image-2.0.5\include;..\depd\SDL2_mixer-2.0.4\include;depd\glad\include;depd\glm-0.9.9.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\depd\SDL2-2.0.12\lib\x64;..\depd\SDL2_image-2.0.5\lib\x64;..\depd\SDL2_mixer-2.0.4\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -73,14 +73,14 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;example;depd\entt\single_include;..\depd\spdlog-1.x\include;..\depd\SDL2-2.0.12\include;..\depd\SDL2_image-2.0.5\include;..\depd\SDL2_mixer-2.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;example;depd\entt\single_include;..\depd\spdlog-1.x\include;..\depd\SDL2-2.0.12\include;..\depd\SDL2_image-2.0.5\include;..\depd\SDL2_mixer-2.0.4\include;depd\glad\include;depd\glm-0.9.9.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\depd\SDL2-2.0.12\lib\x64;..\depd\SDL2_image-2.0.5\lib\x64;..\depd\SDL2_mixer-2.0.4\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -146,6 +146,14 @@
     <ClCompile Include="src\world\ITile.cpp" />
     <ClCompile Include="src\world\TileMap.cpp" />
     <ClCompile Include="src\world\WorldStack.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="depd\glad\Glad.vcxproj">
+      <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
+    </ProjectReference>
+    <ProjectReference Include="depd\glm-0.9.9.8\glm.vcxproj">
+      <Project>{6577880B-D180-887C-5AFC-9E7CC604947C}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

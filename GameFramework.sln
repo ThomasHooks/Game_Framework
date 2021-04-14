@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameFramework", "GameFramework\GameFramework.vcxproj", "{CD9F039D-3960-7FD3-029B-C8506E1AC4AF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Glad", "GameFramework\depd\glad\Glad.vcxproj", "{BDD6857C-A90D-870D-52FA-6C103E10030F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glm", "GameFramework\depd\glm-0.9.9.8\glm.vcxproj", "{6577880B-D180-887C-5AFC-9E7CC604947C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -13,6 +17,14 @@ Global
 		{CD9F039D-3960-7FD3-029B-C8506E1AC4AF}.Debug|x64.Build.0 = Debug|x64
 		{CD9F039D-3960-7FD3-029B-C8506E1AC4AF}.Release|x64.ActiveCfg = Release|x64
 		{CD9F039D-3960-7FD3-029B-C8506E1AC4AF}.Release|x64.Build.0 = Release|x64
+		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Debug|x64.ActiveCfg = Debug|x64
+		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Debug|x64.Build.0 = Debug|x64
+		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Release|x64.ActiveCfg = Release|x64
+		{BDD6857C-A90D-870D-52FA-6C103E10030F}.Release|x64.Build.0 = Release|x64
+		{6577880B-D180-887C-5AFC-9E7CC604947C}.Debug|x64.ActiveCfg = Debug|x64
+		{6577880B-D180-887C-5AFC-9E7CC604947C}.Debug|x64.Build.0 = Debug|x64
+		{6577880B-D180-887C-5AFC-9E7CC604947C}.Release|x64.ActiveCfg = Release|x64
+		{6577880B-D180-887C-5AFC-9E7CC604947C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -75,8 +75,10 @@ Game::Game(const GameBuilder& builderIn)
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
 		m_logger->critical("Unable to initialize SDL: {0}", SDL_GetError());
 
+	SDL_GL_LoadLibrary(NULL);
+
 	GAME_ASSERT(builderIn.windowSize.w > 0 && builderIn.windowSize.h > 0);
-	this->initWindow(builderIn.windowTitle, builderIn.windowSize.w, builderIn.windowSize.h, builderIn.windowFlags);
+	this->initWindow(builderIn.windowTitle, builderIn.windowSize.w, builderIn.windowSize.h, builderIn.windowFlags | SDL_WINDOW_OPENGL);
 	this->audioMixer().init();
 
 	m_onWindowEvent = EventBus::subscribe<WindowEvent>([this](const WindowEvent& e)
