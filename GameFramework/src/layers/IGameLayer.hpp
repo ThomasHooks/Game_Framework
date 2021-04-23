@@ -1,6 +1,8 @@
 #ifndef IGameLayer_H_
 #define IGameLayer_H_
 
+#include <memory>
+
 
 
 
@@ -43,7 +45,7 @@ public:
 	/// <param name="cameraIn"></param>
 	/// <param name="worldIn"></param>
 	/// <param name="deltaTime"></param>
-	virtual void onTick(const class GameCamera& cameraIn, class TileMap& worldIn, float deltaTime) {}
+	virtual void onTick(const class Camera& cameraIn, class TileMap& worldIn, float deltaTime) {}
 
 
 
@@ -52,7 +54,7 @@ public:
 	/// </summary>
 	/// <param name="cameraIn"></param>
 	/// <param name="rendererIn"></param>
-	virtual void onRender(const class GameCamera& cameraIn, class Renderer& rendererIn) {}
+	virtual void onRender(const std::shared_ptr<class Camera>& cameraIn, class Renderer& rendererIn) {}
 
 
 

@@ -114,7 +114,7 @@
     <ClInclude Include="src\renderer\RendererBlendMode.h">
       <Filter>src\renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\screen\GameCamera.h">
+    <ClInclude Include="src\renderer\screen\Camera.h">
       <Filter>src\renderer\screen</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\screen\Window.h">
@@ -123,7 +123,7 @@
     <ClInclude Include="src\renderer\texture\Sprite.hpp">
       <Filter>src\renderer\texture</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\texture\Texture.h">
+    <ClInclude Include="src\renderer\texture\TextureSDL.h">
       <Filter>src\renderer\texture</Filter>
     </ClInclude>
     <ClInclude Include="src\utilities\Assertions.h">
@@ -165,6 +165,16 @@
     <ClInclude Include="src\world\WorldStack.h">
       <Filter>src\world</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\buffers\VertexBuffer.h" />
+    <ClInclude Include="src\renderer\buffers\IndexBuffer.h" />
+    <ClInclude Include="src\renderer\shaders\ShaderUniform.h" />
+    <ClInclude Include="src\renderer\shaders\Shader.h" />
+    <ClInclude Include="src\renderer\shaders\ShaderLibrarian.h" />
+    <ClInclude Include="src\renderer\materials\IMaterial.h" />
+    <ClInclude Include="src\renderer\materials\FlatColorMaterial.h" />
+    <ClInclude Include="src\renderer\texture\Texture.h" />
+    <ClInclude Include="depd\stb\stb_image\stb_image.h" />
+    <ClInclude Include="src\renderer\RendererFondation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="example\layers\ExampleLayer.cpp">
@@ -194,7 +204,7 @@
     <ClCompile Include="src\renderer\Renderer.cpp">
       <Filter>src\renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\screen\GameCamera.cpp">
+    <ClCompile Include="src\renderer\screen\Camera.cpp">
       <Filter>src\renderer\screen</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\screen\Window.cpp">
@@ -203,7 +213,7 @@
     <ClCompile Include="src\renderer\texture\Sprite.cpp">
       <Filter>src\renderer\texture</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\texture\Texture.cpp">
+    <ClCompile Include="src\renderer\texture\TextureSDL.cpp">
       <Filter>src\renderer\texture</Filter>
     </ClCompile>
     <ClCompile Include="src\utilities\Assertions.cpp">
@@ -233,5 +243,13 @@
     <ClCompile Include="src\world\WorldStack.cpp">
       <Filter>src\world</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\buffers\VertexBuffer.cpp" />
+    <ClCompile Include="src\renderer\buffers\IndexBuffer.cpp" />
+    <ClCompile Include="src\renderer\shaders\ShaderUniform.cpp" />
+    <ClCompile Include="src\renderer\shaders\Shader.cpp" />
+    <ClCompile Include="src\renderer\shaders\ShaderLibrarian.cpp" />
+    <ClCompile Include="src\renderer\materials\FlatColorMaterial.cpp" />
+    <ClCompile Include="src\renderer\texture\Texture.cpp" />
+    <ClCompile Include="depd\stb\stb_image\stb_image.cpp" />
   </ItemGroup>
 </Project>

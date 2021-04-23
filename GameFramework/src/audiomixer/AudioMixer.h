@@ -165,7 +165,7 @@ public:
 	 *
 	 * Plays an audio sample given by its tag once at the given position and volume
 	 */
-	int playSample(const class GameCamera& camera, const class TilePos& origin, const std::string& tag, float volume);
+	int playSample(const class Camera& camera, const class TilePos& origin, const std::string& tag, float volume);
 
 
 

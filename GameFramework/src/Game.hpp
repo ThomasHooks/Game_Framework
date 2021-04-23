@@ -219,7 +219,7 @@ public:
 	/// <para>nullable</para>
 	/// Gets this game's Camera
 	/// </summary>
-	class GameCamera* getCamera();
+	class Camera* getCamera();
 
 
 
@@ -255,9 +255,9 @@ private:
 
 	std::unique_ptr<class EntityJournal> m_entities;
 
-	std::unique_ptr<class Window> m_windowWrap;
+	std::unique_ptr<class Window> m_window;
 
-	std::unique_ptr<class GameCamera> m_cameraWrap;
+	std::shared_ptr<class Camera> m_camera;
 
 	Timer m_timer;
 

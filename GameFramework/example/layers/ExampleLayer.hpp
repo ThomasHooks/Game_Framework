@@ -26,11 +26,11 @@ public:
 
 
 
-	void onTick(const class GameCamera& cameraIn, class TileMap& worldIn, float deltaTime) override;
+	void onTick(const class Camera& cameraIn, class TileMap& worldIn, float deltaTime) override;
 
 
 
-	void onRender(const class GameCamera& cameraIn, class Renderer& rendererIn) override;
+	void onRender(const std::shared_ptr<class Camera>& cameraIn, class Renderer& rendererIn) override;
 
 
 

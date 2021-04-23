@@ -1,20 +1,26 @@
-#ifndef RENDERERMANAGER_H_
-#define RENDERERMANAGER_H_
+#ifndef RENDERER_H_
+#define RENDERER_H_
 
 
 #include <string>
 #include <map>
 #include <memory>
 
+#include <glm/glm.hpp>
+
+#include "renderer/shaders/ShaderLibrarian.h"
 #include "RendererBlendMode.h"
 #include "utilities/math/Pos2.hpp"
 #include "utilities/math/Pos3.hpp"
 #include "utilities/physics/TilePos.h"
 #include "utilities/Loggers.hpp"
 
+#include "renderer/buffers/VertexBuffer.h"
+#include "renderer/buffers/IndexBuffer.h"
 
 
-//TODO add SDL2 TTF support
+
+//TODO add TTF support
 class Renderer 
 {
 public:
@@ -124,14 +130,6 @@ public:
 
 
 	/// <summary>
-	/// Clears the screen and fill it in with the current draw color
-	/// </summary>
-	/// <returns>True if the renderer was cleared</returns>
-	bool clear();
-
-
-
-	/// <summary>
 	/// Presents what has been drawn by the Renderer to the screen
 	/// </summary>
 	/// <returns>True if the renderer was presented</returns>
@@ -207,6 +205,57 @@ public:
 	/// <param name="scaleIn">The new scale for all rendering</param>
 	void setScale(float scaleIn);
 
+	//**************************************************************************************************************************************************************************
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="cameraIn"></param>
+	void begin(const std::shared_ptr<class Camera>& cameraIn);
+
+
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void end();
+
+
+
+	/// <summary>
+	/// Clears the screen and fills it in with the given color
+	/// </summary>
+	/// <param name="red">Specifies the amount of red</param>
+	/// <param name="green">Specifies the amount of green</param>
+	/// <param name="blue">Specifies the amount of blue</param>
+	/// <param name="alpha">Specifies the amount of alpha</param>
+	void clear(float red, float green, float blue, float alpha);
+
+
+
+	/// <summary>
+	/// Clears the screen and fills it with black
+	/// </summary>
+	void clear();
+
+
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="size"></param>
+	/// <param name="material"></param>
+	void drawQuad(const Pos3F& pos, const Pos2N& size, class IMaterial& material);
+
+
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	ShaderLibrarian& shaderLibrarian();
+
 
 
 protected:
@@ -249,19 +298,27 @@ protected:
 
 private:
 
+	std::shared_ptr<spdlog::logger> m_logger;
+
+	ShaderLibrarian m_shaders;
+
+	std::shared_ptr<class Camera> m_camera;
+
 	bool m_hasBeenInit;
 
 	float m_scale;
 
 	struct SDL_Renderer *m_renderer;
 
-	std::map<std::string, std::unique_ptr<class Texture>> m_textureMap;
+	std::map<std::string, std::unique_ptr<class TextureSDL>> m_textureMap;
 
-	std::shared_ptr<spdlog::logger> m_logger;
+	VertexBuffer m_vbo;
+
+	IndexBuffer m_ibo;
 };
 
 
-#endif
+#endif /* RENDERER_H_ */
 
 
 

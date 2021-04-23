@@ -13,8 +13,8 @@ int main(int argc, char** argv)
 	//To add multiple flags use the bitwise or operator
 	//when windowFlags = 0 no flags are set
 	const unsigned int windowFlags = 0;
-	const int windowWidth = 640;
-	const int windowHeight = 480;
+	const int windowWidth = 1280;
+	const int windowHeight = 960;
 
 	GameBuilder builder;
 	builder

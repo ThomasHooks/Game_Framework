@@ -63,13 +63,19 @@ Window::Window(const std::string& title, const Pos2N& sizeIn, unsigned int flags
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
 
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
+
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-	m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_size.w, m_size.h, flags);
+	m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_size.w, m_size.h, flags | SDL_WINDOW_OPENGL);
 	if (m_window == nullptr)
 	{
-		m_logger->critical("SDL was unable to create the window: {0}", SDL_GetError());
+		m_logger->critical("SDL was unable to create the window: SDL error: {0}", SDL_GetError());
 		__debugbreak();
 	}
 	m_winData.window = m_window;
@@ -77,7 +83,7 @@ Window::Window(const std::string& title, const Pos2N& sizeIn, unsigned int flags
 	m_glContext = SDL_GL_CreateContext(m_window);
 	if (m_glContext == nullptr)
 	{
-		m_logger->critical("SDL was unable to create the OpenGL context: {0}", SDL_GetError());
+		m_logger->critical("SDL was unable to create the OpenGL context: SDL error: {0}", SDL_GetError());
 		__debugbreak();
 	}
 
@@ -87,11 +93,11 @@ Window::Window(const std::string& title, const Pos2N& sizeIn, unsigned int flags
 		__debugbreak();
 	}
 
-	printf("Vendor:   %s\n", glGetString(GL_VENDOR));
-	printf("Renderer: %s\n", glGetString(GL_RENDERER));
-	printf("Version:  %s\n", glGetString(GL_VERSION));
+	//0 for immediate updates, 1 for updates synchronized with the vertical retrace, -1 for adaptive vsync
+	if (SDL_GL_SetSwapInterval(1) != 0)
+		m_logger->warn("Unable to set the swap interval: SDL error: {0}", SDL_GetError());
 
-	SDL_GL_SetSwapInterval(1);
+	m_logger->info("Vendor: {0} GPU: {1} Version: {2}", glGetString(GL_VENDOR), glGetString(GL_RENDERER), glGetString(GL_VERSION));
 
 	SDL_SetEventFilter(filterEventCallback, &m_winData);
 

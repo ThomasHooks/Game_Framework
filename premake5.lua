@@ -11,6 +11,7 @@ includes["SDL2_image"] = "depd/SDL2_image-2.0.5/include"
 includes["SDL2_mixer"] = "depd/SDL2_mixer-2.0.4/include"
 includes["Glad"] = "GameFramework/depd/glad/include"
 includes["glm"] = "GameFramework/depd/glm-0.9.9.8/include"
+includes["stb_image"] = "GameFramework/depd/stb"
 
 include "GameFramework/depd/glad"
 include "GameFramework/depd/glm-0.9.9.8"
@@ -30,13 +31,16 @@ project "GameFramework"
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/example/**.h", 
 		"%{prj.name}/example/**.hpp", 
-		"%{prj.name}/example/**.cpp"
+		"%{prj.name}/example/**.cpp",
+		"%{prj.name}/depd/stb/**.c",
+		"%{prj.name}/depd/stb/**.h"
 	}
 
 	includedirs
 	{ 
 		"%{prj.name}/src",
 		"%{prj.name}/example",
+		"%{includes.stb_image}",
 		"%{prj.name}/depd/entt/single_include",
 		"depd/spdlog-1.x/include",
 		"%{includes.SDL2}",

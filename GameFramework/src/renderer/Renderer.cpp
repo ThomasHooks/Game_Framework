@@ -6,9 +6,13 @@
 #include "SDL_image.h"
 #include <spdlog/spdlog.h>
 
-#include "Renderer.h"
-#include "renderer/texture/Texture.h"
+#include "renderer/Renderer.h"
+#include "renderer/RendererFondation.h"
+#include "renderer/texture/TextureSDL.h"
 #include "renderer/texture/Sprite.hpp"
+#include "renderer/shaders/Shader.h"
+#include "renderer/materials/IMaterial.h"
+#include "renderer/screen/Camera.h"
 #include "utilities/Assertions.h"
 
 
@@ -37,6 +41,27 @@ void Renderer::init(SDL_Window *windowIn)
 		m_renderer = SDL_CreateRenderer(windowIn, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		m_logger->info("Renderer has been initialized");
 		m_hasBeenInit = true;
+
+		/*float vertices[] = {
+		-0.5f, -0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
+		 0.5f,  0.5f, 0.0f,
+		-0.5f,  0.5f, 0.0f
+		}; */
+
+		float vertices[] = {
+		200.0f, 200.0f, 0.0f,
+		100.0f, 200.0f, 0.0f,
+		100.0f, 100.0f, 0.0f,
+		200.0f, 100.0f, 0.0f
+		};
+		m_vbo.create(nullptr, sizeof(vertices), VertexBuffer::Usage::Dynamic);
+		m_vbo.setLayout(VertexBuffer::Layout().add(VertexBuffer::Attribute::Float3, "a_pos"));
+
+		unsigned int indices[] = { 0, 1, 2, 2, 3, 0 };
+		m_ibo.create(indices, 6, IndexBuffer::Usage::Static);
+
+		m_shaders.add("FlatColor", "data/shaders/flatColor.vsh", "data/shaders/flatColor.psh");
 	}
 }
 
@@ -47,6 +72,8 @@ void Renderer::shutdown()
 	m_logger->info("Shutting down Renderer");
 	if (m_hasBeenInit)
 	{
+		m_vbo.destroy();
+
 		m_logger->info("Freeing SDL renderer");
 		SDL_DestroyRenderer(m_renderer);
 		m_renderer = nullptr;
@@ -75,14 +102,14 @@ bool Renderer::registerTexture(const std::string& tag, const std::string& fileLo
 		//Register this tag with the missing texture
 		tmpSurface = IMG_Load("./data/gfx/null.png");
 		Pos2N nullSize(16, 16);
-		m_textureMap.insert({tag, std::unique_ptr<Texture>(new Texture(m_renderer, tmpSurface, nullSize))});
+		m_textureMap.insert({tag, std::unique_ptr<TextureSDL>(new TextureSDL(m_renderer, tmpSurface, nullSize))});
 		SDL_FreeSurface(tmpSurface);
 		tmpSurface = nullptr;
 		return false;
 	}
 	else 
 	{
-		m_textureMap.insert({ tag, std::unique_ptr<Texture>(new Texture(m_renderer, tmpSurface, tileSize)) });
+		m_textureMap.insert({ tag, std::unique_ptr<TextureSDL>(new TextureSDL(m_renderer, tmpSurface, tileSize)) });
 		SDL_FreeSurface(tmpSurface);
 		tmpSurface = nullptr;
 		m_logger->info("Texture file '{0}' has been registered", fileLocation);
@@ -171,14 +198,6 @@ bool Renderer::setTextureBlendMode(const std::string &tag, RendererBlendMode ble
 		SDL_SetTextureBlendMode(this->getTexture(tag), SDL_BLENDMODE_MOD);
 		break;
 	}
-	return true;
-}
-
-
-
-bool Renderer::clear()
-{
-	SDL_RenderClear(m_renderer);
 	return true;
 }
 
@@ -315,6 +334,68 @@ void Renderer::drawSprite(const Sprite& spriteIn, const TilePos& pos, const Tile
 void Renderer::setScale(float scaleIn)
 {
 	scaleIn <= 0.0f ? m_scale = 1.0f : m_scale = scaleIn;
+}
+
+
+
+void Renderer::begin(const std::shared_ptr<Camera>& cameraIn)
+{
+	m_camera = cameraIn;
+}
+
+
+
+void Renderer::end()
+{
+	m_camera.reset();
+}
+
+
+
+void Renderer::clear(float red, float green, float blue, float alpha)
+{
+	glClearColor(red, green, blue, alpha);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+
+
+void Renderer::clear()
+{
+	clear(0.1f, 0.1f, 0.1f, 1.0f);
+}
+
+
+
+void Renderer::drawQuad(const Pos3F& pos, const Pos2N& size, IMaterial& material)
+{
+	m_vbo.bind();
+	m_ibo.bind();
+
+	float vertices[] = {
+		pos.x + static_cast<float>(size.w), pos.y + static_cast<float>(size.h), pos.z, 
+		pos.x, pos.y + static_cast<float>(size.h), pos.z,
+		pos.x, pos.y, pos.z,
+		pos.x + static_cast<float>(size.w), pos.y, pos.z};
+	m_vbo.submitData(vertices, sizeof(vertices));
+
+	auto shaderPtr = m_shaders.get(material.getShaderName());
+	auto shader = shaderPtr.lock();
+	shader->bind();
+	shader->setUniform("u_camera", ShaderUniform::Type::Mat4, m_camera->getViewProjection());
+	material.submitData(shader);
+
+	if (shader->validate())
+		glDrawElements(GL_TRIANGLES, m_ibo.count(), GL_UNSIGNED_INT, nullptr);
+	else
+		m_logger->error("Shader '{0}' failed validation", material.getShaderName());
+}
+
+
+
+ShaderLibrarian& Renderer::shaderLibrarian()
+{
+	return m_shaders;
 }
 
 

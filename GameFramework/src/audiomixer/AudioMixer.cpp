@@ -3,7 +3,7 @@
 #include "SDL_mixer.h"
 
 #include "AudioMixer.h"
-#include "renderer/screen/GameCamera.h"
+#include "renderer/screen/Camera.h"
 #include "utilities/physics/TilePos.h"
 #include "utilities/math/Pos2.hpp"
 #include "audiomixer/samples/SampleChunk.h"
@@ -288,12 +288,12 @@ int AudioMixer::playSample(const std::string &tag, float volume)
  *
  * Plays an audio sample given by its tag once at the given position and volume
  */
-int AudioMixer::playSample(const GameCamera& camera, const TilePos& origin, const std::string& tag, float volume) 
+int AudioMixer::playSample(const Camera& camera, const TilePos& origin, const std::string& tag, float volume) 
 {
 	int channel = playSample(tag, -1, 0, -1);
 	if(channel != -1) 
 	{
-		Pos2D listener(camera.getPos().x(), camera.getPos().y());
+		Pos2D listener(camera.pos().x, camera.pos().y);
 
 		/*
 		 * The angle ranges from 0 degrees to 360 degrees

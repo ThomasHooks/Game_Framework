@@ -10,7 +10,7 @@
 #include "entities/EntityJournal.hpp"
 #include "renderer/Renderer.h"
 #include "world/TileMap.h"
-#include "renderer/screen/GameCamera.h"
+#include "renderer/screen/Camera.h"
 #include "renderer/screen/Window.h"
 #include "world/WorldStack.h"
 #include "utilities/Assertions.h"
@@ -66,7 +66,6 @@ Game::Game(const GameBuilder& builderIn)
 
 	m_logger->info("Logging started");
 
-	m_renderer = std::make_unique<Renderer>();
 	m_audioManager = std::make_unique<AudioMixer>();
 	m_worlds = std::make_unique<WorldStack>();
 	m_entities = std::make_unique<EntityJournal>();
@@ -78,7 +77,7 @@ Game::Game(const GameBuilder& builderIn)
 	SDL_GL_LoadLibrary(NULL);
 
 	GAME_ASSERT(builderIn.windowSize.w > 0 && builderIn.windowSize.h > 0);
-	this->initWindow(builderIn.windowTitle, builderIn.windowSize.w, builderIn.windowSize.h, builderIn.windowFlags | SDL_WINDOW_OPENGL);
+	this->initWindow(builderIn.windowTitle, builderIn.windowSize.w, builderIn.windowSize.h, builderIn.windowFlags);
 	this->audioMixer().init();
 
 	m_onWindowEvent = EventBus::subscribe<WindowEvent>([this](const WindowEvent& e)
@@ -122,13 +121,13 @@ void Game::run()
 		else 
 		{
 			Pos2N worldSize(world->width() * world->tileWidth(), world->height() * world->tileHeight());
-			this->getCamera()->updatePos(worldSize, true);
+			m_camera->update();
 
 			//Render loop
 			for (auto& layer : m_layerStack)
 			{
 				if (layer->isActive())
-					layer->onRender(*getCamera(), renderer());
+					layer->onRender(m_camera, renderer());
 			}
 			//Logic loop
 			if (m_timer.getMil() >= m_tickRate)
@@ -142,6 +141,7 @@ void Game::run()
 			}
 		}
 		EventBus::dispatchAllEvents();
+		m_window->update();
 	}
 	m_timer.stop();
 }
@@ -226,23 +226,24 @@ EntityJournal& Game::entities()
 
 const Window* Game::getWindow() const 
 {
-	return m_windowWrap.get();
+	return m_window.get();
 }
 
 
 
-GameCamera* Game::getCamera() 
+Camera* Game::getCamera() 
 {
-	return m_cameraWrap.get();
+	return m_camera.get();
 }
 
 
 
 void Game::initWindow(const std::string& titleIn, int widthIn, int heightIn, uint32_t flags)
 {
-	m_windowWrap = std::make_unique<Window>(titleIn, Pos2N(widthIn, heightIn), flags);
-	this->renderer().init(m_windowWrap->get());
-	m_cameraWrap = std::make_unique<GameCamera>(m_windowWrap.get());
+	m_window = std::make_unique<Window>(titleIn, Pos2N(widthIn, heightIn), flags);
+	m_renderer = std::make_unique<Renderer>();
+	this->renderer().init(m_window->get());
+	m_camera = std::make_shared<Camera>(static_cast<float>(widthIn), static_cast<float>(heightIn));
 }
 
 
@@ -265,10 +266,6 @@ void Game::updateSDL()
 		}
 	}
 }
-
-
-
-
 
 
 
