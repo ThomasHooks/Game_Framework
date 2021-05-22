@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="depd">
+      <UniqueIdentifier>{E2A1957C-CED8-960D-77C5-7C1063DB120F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="depd\stb">
+      <UniqueIdentifier>{3A819330-264E-EE3B-4F67-DCE33B9323CA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="depd\stb\stb_image">
+      <UniqueIdentifier>{548264AF-4066-2505-A9C6-1F5895C90F87}</UniqueIdentifier>
+    </Filter>
     <Filter Include="example">
       <UniqueIdentifier>{F1997D81-5D79-FC1C-6691-87F3D2EF627E}</UniqueIdentifier>
     </Filter>
@@ -34,8 +43,17 @@
     <Filter Include="src\renderer">
       <UniqueIdentifier>{936D1A48-7FD0-A9EC-2856-E2A21498756F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\renderer\buffers">
+      <UniqueIdentifier>{2FA8E891-1B37-725B-C455-8656B0C38201}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\renderer\materials">
+      <UniqueIdentifier>{44E4276F-30DE-50C1-194B-E7D105E4B62D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\renderer\screen">
       <UniqueIdentifier>{222ABDCD-8E8B-9ADB-17F9-E08D8359D19A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\renderer\shaders">
+      <UniqueIdentifier>{8C0DD88F-789C-6159-21BB-75540D2972FF}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\renderer\texture">
       <UniqueIdentifier>{130E7CD7-FF9C-05A1-A8BB-199C94291647}</UniqueIdentifier>
@@ -54,6 +72,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="depd\stb\stb_image\stb_image.h">
+      <Filter>depd\stb\stb_image</Filter>
+    </ClInclude>
     <ClInclude Include="example\layers\ExampleLayer.hpp">
       <Filter>example\layers</Filter>
     </ClInclude>
@@ -114,16 +135,34 @@
     <ClInclude Include="src\renderer\RendererBlendMode.h">
       <Filter>src\renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\RendererFondation.h">
+      <Filter>src\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\buffers\IndexBuffer.h">
+      <Filter>src\renderer\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\buffers\VertexBuffer.h">
+      <Filter>src\renderer\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\materials\FlatColorMaterial.h">
+      <Filter>src\renderer\materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\materials\IMaterial.h">
+      <Filter>src\renderer\materials</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\screen\Camera.h">
       <Filter>src\renderer\screen</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\screen\Window.h">
       <Filter>src\renderer\screen</Filter>
     </ClInclude>
+    <ClInclude Include="src\renderer\shaders\Shader.h">
+      <Filter>src\renderer\shaders</Filter>
+    </ClInclude>
     <ClInclude Include="src\renderer\texture\Sprite.hpp">
       <Filter>src\renderer\texture</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\texture\TextureSDL.h">
+    <ClInclude Include="src\renderer\texture\Texture.h">
       <Filter>src\renderer\texture</Filter>
     </ClInclude>
     <ClInclude Include="src\utilities\Assertions.h">
@@ -165,18 +204,13 @@
     <ClInclude Include="src\world\WorldStack.h">
       <Filter>src\world</Filter>
     </ClInclude>
-    <ClInclude Include="src\renderer\buffers\VertexBuffer.h" />
-    <ClInclude Include="src\renderer\buffers\IndexBuffer.h" />
-    <ClInclude Include="src\renderer\shaders\ShaderUniform.h" />
-    <ClInclude Include="src\renderer\shaders\Shader.h" />
-    <ClInclude Include="src\renderer\shaders\ShaderLibrarian.h" />
-    <ClInclude Include="src\renderer\materials\IMaterial.h" />
-    <ClInclude Include="src\renderer\materials\FlatColorMaterial.h" />
-    <ClInclude Include="src\renderer\texture\Texture.h" />
-    <ClInclude Include="depd\stb\stb_image\stb_image.h" />
-    <ClInclude Include="src\renderer\RendererFondation.h" />
+    <ClInclude Include="src\renderer\AssetLibrarian.h" />
+    <ClInclude Include="src\renderer\texture\TextureAtlas.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="depd\stb\stb_image\stb_image.cpp">
+      <Filter>depd\stb\stb_image</Filter>
+    </ClCompile>
     <ClCompile Include="example\layers\ExampleLayer.cpp">
       <Filter>example\layers</Filter>
     </ClCompile>
@@ -204,16 +238,28 @@
     <ClCompile Include="src\renderer\Renderer.cpp">
       <Filter>src\renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\buffers\IndexBuffer.cpp">
+      <Filter>src\renderer\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\buffers\VertexBuffer.cpp">
+      <Filter>src\renderer\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\materials\FlatColorMaterial.cpp">
+      <Filter>src\renderer\materials</Filter>
+    </ClCompile>
     <ClCompile Include="src\renderer\screen\Camera.cpp">
       <Filter>src\renderer\screen</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\screen\Window.cpp">
       <Filter>src\renderer\screen</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\shaders\Shader.cpp">
+      <Filter>src\renderer\shaders</Filter>
+    </ClCompile>
     <ClCompile Include="src\renderer\texture\Sprite.cpp">
       <Filter>src\renderer\texture</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\texture\TextureSDL.cpp">
+    <ClCompile Include="src\renderer\texture\Texture.cpp">
       <Filter>src\renderer\texture</Filter>
     </ClCompile>
     <ClCompile Include="src\utilities\Assertions.cpp">
@@ -243,13 +289,7 @@
     <ClCompile Include="src\world\WorldStack.cpp">
       <Filter>src\world</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\buffers\VertexBuffer.cpp" />
-    <ClCompile Include="src\renderer\buffers\IndexBuffer.cpp" />
-    <ClCompile Include="src\renderer\shaders\ShaderUniform.cpp" />
-    <ClCompile Include="src\renderer\shaders\Shader.cpp" />
-    <ClCompile Include="src\renderer\shaders\ShaderLibrarian.cpp" />
-    <ClCompile Include="src\renderer\materials\FlatColorMaterial.cpp" />
-    <ClCompile Include="src\renderer\texture\Texture.cpp" />
-    <ClCompile Include="depd\stb\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\renderer\AssetLibrarian.cpp" />
+    <ClCompile Include="src\renderer\texture\TextureAtlas.cpp" />
   </ItemGroup>
 </Project>

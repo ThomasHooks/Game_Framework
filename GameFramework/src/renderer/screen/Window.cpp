@@ -106,21 +106,21 @@ Window::Window(const std::string& title, const Pos2N& sizeIn, unsigned int flags
 
 
 
-Window::~Window()
+void Window::update()
+{
+	SDL_GL_SwapWindow(m_window);
+}
+
+
+
+void Window::shutdown()
 {
 	m_logger->info("Closing Window");
 	SDL_GL_DeleteContext(m_glContext);
 	m_glContext = nullptr;
 	SDL_DestroyWindow(m_window);
 	m_window = nullptr;
-	m_logger->info("Window has been closed ");
-}
-
-
-
-void Window::update()
-{
-	SDL_GL_SwapWindow(m_window);
+	m_logger->info("Window has been closed");
 }
 
 

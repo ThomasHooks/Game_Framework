@@ -39,10 +39,6 @@ public:
 
 
 
-	~Window();
-
-
-
 	Window(Window &&other) = delete;
 
 
@@ -55,6 +51,10 @@ public:
 	/// 
 	/// </summary>
 	void update();
+
+
+
+	void shutdown();
 
 
 

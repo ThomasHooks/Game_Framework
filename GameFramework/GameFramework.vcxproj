@@ -73,7 +73,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;example;depd\entt\single_include;..\depd\spdlog-1.x\include;..\depd\SDL2-2.0.12\include;..\depd\SDL2_image-2.0.5\include;..\depd\SDL2_mixer-2.0.4\include;depd\glad\include;depd\glm-0.9.9.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;example;depd\stb;depd\entt\single_include;..\depd\spdlog-1.x\include;..\depd\SDL2-2.0.12\include;..\depd\SDL2_image-2.0.5\include;..\depd\SDL2_mixer-2.0.4\include;depd\glad\include;depd\glm-0.9.9.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -104,48 +104,26 @@
     <ClInclude Include="src\layers\LayerStack.hpp" />
     <ClInclude Include="src\physics\IntersectionDetector.hpp" />
     <ClInclude Include="src\physics\Line2D.hpp" />
-    <ClInclude Include="src\renderer\buffers\IndexBuffer.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="src\renderer\buffers\VertexBuffer.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="src\renderer\materials\FlatColorMaterial.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="src\renderer\materials\IMaterial.h">
+    <ClInclude Include="src\renderer\AssetLibrarian.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="src\renderer\Renderer.h" />
     <ClInclude Include="src\renderer\RendererBlendMode.h" />
-    <ClInclude Include="src\renderer\RendererFondation.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
+    <ClInclude Include="src\renderer\RendererFondation.h" />
+    <ClInclude Include="src\renderer\buffers\IndexBuffer.h" />
+    <ClInclude Include="src\renderer\buffers\VertexBuffer.h" />
+    <ClInclude Include="src\renderer\materials\FlatColorMaterial.h" />
+    <ClInclude Include="src\renderer\materials\IMaterial.h" />
     <ClInclude Include="src\renderer\screen\Camera.h" />
     <ClInclude Include="src\renderer\screen\Window.h" />
-    <ClInclude Include="src\renderer\shaders\Shader.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="src\renderer\shaders\ShaderLibrarian.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="src\renderer\shaders\ShaderUniform.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
+    <ClInclude Include="src\renderer\shaders\Shader.h" />
     <ClInclude Include="src\renderer\texture\Sprite.hpp" />
-    <ClInclude Include="src\renderer\texture\Texture.h">
+    <ClInclude Include="src\renderer\texture\Texture.h" />
+    <ClInclude Include="src\renderer\texture\TextureAtlas.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="src\renderer\texture\TextureSDL.h" />
     <ClInclude Include="src\utilities\Assertions.h" />
     <ClInclude Include="src\utilities\Loggers.hpp" />
     <ClInclude Include="src\utilities\Timer.h" />
@@ -170,39 +148,23 @@
     <ClCompile Include="src\events\EventBus.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\physics\IntersectionDetector.cpp" />
-    <ClCompile Include="src\renderer\buffers\IndexBuffer.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="src\renderer\buffers\VertexBuffer.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="src\renderer\materials\FlatColorMaterial.cpp">
+    <ClCompile Include="src\renderer\AssetLibrarian.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="src\renderer\Renderer.cpp" />
+    <ClCompile Include="src\renderer\buffers\IndexBuffer.cpp" />
+    <ClCompile Include="src\renderer\buffers\VertexBuffer.cpp" />
+    <ClCompile Include="src\renderer\materials\FlatColorMaterial.cpp" />
     <ClCompile Include="src\renderer\screen\Camera.cpp" />
     <ClCompile Include="src\renderer\screen\Window.cpp" />
-    <ClCompile Include="src\renderer\shaders\Shader.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="src\renderer\shaders\ShaderLibrarian.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="src\renderer\shaders\ShaderUniform.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
+    <ClCompile Include="src\renderer\shaders\Shader.cpp" />
     <ClCompile Include="src\renderer\texture\Sprite.cpp" />
-    <ClCompile Include="src\renderer\texture\Texture.cpp">
+    <ClCompile Include="src\renderer\texture\Texture.cpp" />
+    <ClCompile Include="src\renderer\texture\TextureAtlas.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="src\renderer\texture\TextureSDL.cpp" />
     <ClCompile Include="src\utilities\Assertions.cpp" />
     <ClCompile Include="src\utilities\Timer.cpp" />
     <ClCompile Include="src\utilities\physics\AxisAlignedBB.cpp" />

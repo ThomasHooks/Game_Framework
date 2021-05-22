@@ -12,7 +12,7 @@ FlatColorMaterial::FlatColorMaterial(const glm::vec4& colorIn)
 
 void FlatColorMaterial::submitData(const std::weak_ptr<Shader>& shaderIn)
 {
-	shaderIn.lock()->setUniform("u_color", ShaderUniform::Type::Float4, color);
+	//shaderIn.lock()->setUniformFloat4("u_color", color);
 }
 
 

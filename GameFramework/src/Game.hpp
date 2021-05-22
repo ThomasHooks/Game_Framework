@@ -10,6 +10,7 @@
 
 #include "utilities/math/Pos2.hpp"
 #include "layers/LayerStack.hpp"
+#include "renderer/AssetLibrarian.h"
 #include "utilities/Timer.h"
 
 
@@ -162,27 +163,18 @@ public:
 
 
 	/// <summary>
-	/// Register a texture to the Renderer
+	/// Loads and register the specified texture
 	/// </summary>
-	/// <param name="tagIn">Specifies the name of the texture atlas/sprite sheet</param>
-	/// <param name="fileLocationIn">Specifies the location of the texture atlas/sprite sheet file</param>
-	/// <param name="sizeIn">Specifies the dimensions of the texture atlas/sprite sheet</param>
-	void registerTexture(const std::string& tagIn, const std::string& fileLocationIn, const Pos2N& sizeIn);
+	/// <param name="fileLocationIn">Specifies the location of the texture/texture atlas file</param>
+	void registerTexture(const std::string& fileLocationIn);
 
 
 
 	/// <summary>
-	/// Deregister a texture specified by it's tag
+	/// 
 	/// </summary>
-	/// <param name="tagIn">Specifies the name of the texture to be deregistered</param>
-	void deregisterTexture(const std::string& tagIn);
-
-
-
-	/// <summary>
-	/// Deregister all textures in the Renderer
-	/// </summary>
-	void deregisterAllTextures();
+	/// <returns></returns>
+	AssetLibrarian& assetLibrarian();
 
 
 

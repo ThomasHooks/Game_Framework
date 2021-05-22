@@ -89,8 +89,13 @@ void IndexBuffer::create(unsigned int* indices, unsigned int count, Usage usage)
 
 void IndexBuffer::destroy()
 {
-	if (!m_movedOrDestroyed)
+	if (!m_movedOrDestroyed) 
+	{
+		m_logger->trace("Index buffer '{0}' has been deleted", m_id);
 		glDeleteBuffers(1, &m_id);
+		m_id = 0;
+		m_movedOrDestroyed = true;
+	}
 }
 
 
@@ -143,6 +148,13 @@ void IndexBuffer::unbind() const
 unsigned int IndexBuffer::count() const 
 {
 	return m_indexCount;
+}
+
+
+
+IndexBuffer::Usage IndexBuffer::getUsage() const
+{
+	return m_usage;
 }
 
 

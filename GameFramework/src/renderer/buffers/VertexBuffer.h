@@ -94,6 +94,14 @@ public:
 
 
 
+		/// <summary>
+		/// Gets the number of components in this vertex buffer layout
+		/// </summary>
+		/// <returns></returns>
+		unsigned int count() const;
+
+
+
 	private:
 
 		/// <summary>
@@ -170,7 +178,7 @@ public:
 	/// </summary>
 	/// <param name="vertices">Specifies the new vertex data</param>
 	/// <param name="size">Specifies the size of the new vertex data</param>
-	/// <param name="offset">Specifies the start location of the new vertex data</param>
+	/// <param name="offset">Specifies the starting location of the new vertex data, measured in bytes</param>
 	void submitData(float* vertices, unsigned int size, unsigned int offset);
 
 
@@ -198,6 +206,14 @@ public:
 	/// Makes the currently active vertex buffer inactive
 	/// </summary>
 	void unbind() const;
+
+
+
+	/// <summary>
+	/// Gets the expected usage pattern of this buffer
+	/// </summary>
+	/// <returns></returns>
+	Usage getUsage() const;
 
 
 

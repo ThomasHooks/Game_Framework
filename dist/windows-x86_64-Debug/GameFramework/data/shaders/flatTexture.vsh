@@ -1,13 +1,13 @@
 #version 330 core
 
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec2 aTexPos;
+layout(location = 0) in vec3 a_pos;
+layout(location = 1) in vec2 a_texPos;
 
-uniform mat4 mvp;
+uniform mat4 u_camera;
 
-out vec2 texPos;
+out vec2 v_texPos;
 
 void main() {
-	texPos = aTexPos;
-	gl_Position = mvp * vec4(aPos, 1.0);
+	v_texPos = a_texPos;
+	gl_Position = u_camera * vec4(a_pos, 1.0);
 }

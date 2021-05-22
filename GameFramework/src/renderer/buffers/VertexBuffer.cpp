@@ -107,6 +107,18 @@ const std::vector<VertexBuffer::Element>& VertexBuffer::Layout::get() const
 
 
 
+unsigned int VertexBuffer::Layout::count() const
+{
+	unsigned int length = 0;
+	for (auto& element : m_elements)
+	{
+		length += element.count();
+	}
+	return length;
+}
+
+
+
 void VertexBuffer::Layout::update()
 {
 	m_stride = 0;
@@ -212,8 +224,10 @@ void VertexBuffer::destroy()
 	{
 		m_logger->trace("Vertex array '{0}' has been deleted", m_id);
 		glDeleteVertexArrays(1, &m_id);
+		m_id = 0;
 		m_logger->trace("Vertex buffer '{0}' has been deleted", m_vbo);
 		glDeleteBuffers(1, &m_vbo);
+		m_vbo = 0;
 		m_movedOrDestroyed = true;
 	}
 }
@@ -300,6 +314,13 @@ void VertexBuffer::unbind() const
 {
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+
+
+VertexBuffer::Usage VertexBuffer::getUsage() const
+{
+	return m_usage;
 }
 
 

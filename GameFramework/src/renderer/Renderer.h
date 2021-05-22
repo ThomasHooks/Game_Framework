@@ -3,33 +3,74 @@
 
 
 #include <string>
-#include <map>
+#include <vector>
+#include <queue>
+#include <unordered_map>
 #include <memory>
+#include <functional>
 
 #include <glm/glm.hpp>
 
-#include "renderer/shaders/ShaderLibrarian.h"
-#include "RendererBlendMode.h"
-#include "utilities/math/Pos2.hpp"
-#include "utilities/math/Pos3.hpp"
-#include "utilities/physics/TilePos.h"
-#include "utilities/Loggers.hpp"
-
+#include "renderer/AssetLibrarian.h"
+#include "renderer/texture/Texture.h"
 #include "renderer/buffers/VertexBuffer.h"
 #include "renderer/buffers/IndexBuffer.h"
+#include "utilities/Loggers.hpp"
 
 
 
-//TODO add TTF support
+
+/*
+TODO: add TTF support and text rendering
+*/
 class Renderer 
 {
+	struct QuadDrawCommand
+	{
+		QuadDrawCommand(const glm::vec3& posIn, const glm::vec2& sizeIn, const glm::vec4& colorIn);
+
+
+
+		QuadDrawCommand(const glm::vec3& posIn, const glm::vec2& sizeIn, const glm::vec4& colorIn, int TextureIdIn);
+
+
+
+		QuadDrawCommand(const glm::vec3& posIn, const glm::vec2& sizeIn, const glm::vec4& colorIn, int TextureIdIn, unsigned int subTextureIndexIn);
+
+
+
+		bool operator>(const QuadDrawCommand& other) const
+		{
+			return textureID > other.textureID;
+		}
+
+
+
+		bool operator<(const QuadDrawCommand& other) const
+		{
+			return textureID < other.textureID;
+		}
+
+
+
+		glm::vec3 pos;
+
+		glm::vec2 size;
+
+		glm::vec4 color;
+
+		int textureID;
+
+		unsigned int subTextureIndex;
+
+		bool hasTexture;
+	};
+
+
+
 public:
 
 	Renderer();
-
-
-
-	~Renderer();
 
 
 
@@ -44,8 +85,8 @@ public:
 	/// <summary>
 	/// Initializes the Renderer and must be called before using any other methods
 	/// </summary>
-	/// <param name="windowIn">A pointer to the current window</param>
-	void init(struct SDL_Window *windowIn);
+	/// <param name="windowIn"></param>
+	void init(unsigned int maxQuadsPerBatch);
 
 
 
@@ -55,157 +96,6 @@ public:
 	void shutdown();
 
 
-
-	/// <summary>
-	/// Register a texture to the Rrenderer
-	/// </summary>
-	/// <param name="tag">The ID of the texture</param>
-	/// <param name="fileLocation">The location of the texture file</param>
-	/// <param name="dim">The dimensions of tiles in the texture</param>
-	/// <returns>True if the texture was successfully registered</returns>
-	bool registerTexture(const std::string &tag, const std::string &fileLocation, const Pos2N& dim);
-
-
-
-	/// <summary>
-	/// Deregister the texture specified by it's tag
-	/// </summary>
-	/// <param name="tag">The ID of the texture to be deregistered</param>
-	/// <returns>True if the texture was successfully deregistered</returns>
-	bool deregisterTexture(const std::string &tag);
-
-
-
-	//Deregister all textures in the Renderer Manager
-
-	/// <summary>
-	/// Deregister all textures in the Renderer
-	/// </summary>
-	void deregisterAllTextures();
-
-
-
-	/// <summary>
-	/// Sets the drawing color
-	/// </summary>
-	/// <param name="red">The amount of red in the new color</param>
-	/// <param name="green">The amount of green in the new color</param>
-	/// <param name="blue">The amount of blue in the new color</param>
-	/// <param name="alpha">The new opacity</param>
-	/// <returns>True if the draw color was successfully changed</returns>
-	bool setDrawColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
-
-
-
-	/// <summary>
-	/// Sets the given texture's color
-	/// </summary>
-	/// <param name="tag">The ID of the texture</param>
-	/// <param name="red">The amount of red in the new color</param>
-	/// <param name="green">The amount of green in the new color</param>
-	/// <param name="blue">The amount of blue in the new color</param>
-	/// <returns>True if the textures color was successfully changed</returns>
-	bool setTextureColor(const std::string &tag, uint8_t red, uint8_t green, uint8_t blue);
-
-
-
-	/// <summary>
-	/// Sets the given texture's opacity
-	/// </summary>
-	/// <param name="tag">The ID of the texture</param>
-	/// <param name="alpha">alpha The new opacity for the texture</param>
-	/// <returns>True if the textures opacity was successfully changed</returns>
-	bool setTextureAlpha(const std::string &tag, uint8_t alpha);
-
-
-
-	/// <summary>
-	/// Sets the given textures blend mode
-	/// </summary>
-	/// <param name="tag">The ID of the texture</param>
-	/// <param name="blendMode">The new blending mode</param>
-	/// <returns>True if the textures blend mode was successfully changed</returns>
-	bool setTextureBlendMode(const std::string &tag, RendererBlendMode blendMode);
-
-
-
-	/// <summary>
-	/// Presents what has been drawn by the Renderer to the screen
-	/// </summary>
-	/// <returns>True if the renderer was presented</returns>
-	bool present();
-
-
-
-	/// <summary>
-	/// Draws a point at the given coordinates
-	/// </summary>
-	/// <param name="pos"></param>
-	void drawPoint(const Pos2D& pos);
-
-
-
-	/// <summary>
-	/// Draws a line to the screen
-	/// </summary>
-	/// <param name="startPos">The coordinates of the starting point of the Line</param>
-	/// <param name="endPos">The coordinates of the ending point of the Line</param>
-	void drawLine(const Pos2D& startPos, const Pos2D& endPos);
-
-
-
-	/// <summary>
-	/// Draws a rectangle to the screen
-	/// </summary>
-	/// <param name="pos">The coordinates of the rectangle</param>
-	/// <param name="dim">The dimensions of the rectangle</param>
-	/// <param name="fill">Flag to draw a filled in rectangle</param>
-	void drawRect(const Pos2D& pos, const Pos2N& dim, bool fill);
-
-
-
-	/// <summary>
-	/// Draws a sprite given by tag to the renderer
-	/// </summary>
-	/// <param name="tag">The tag ID of the entity/tile</param>
-	/// <param name="pos">The coordinates of the entity/tile</param>
-	/// <param name="cameraOffset">The coordinates of the camera</param>
-	/// <param name="spriteLocation">The location of the sprite in the sprite sheet</param>
-	/// <param name="flipSprite">If the sprite should be flipped</param>
-	void drawSprite(const std::string& tag, const TilePos& pos, const TilePos& cameraOffset, const Pos2N& spriteLocation, const bool flipSprite);
-
-
-
-	/// <summary>
-	/// Draws a sprite given by tag to the screen
-	/// </summary>
-	/// <param name="tag">The tag ID of the entity/tile</param>
-	/// <param name="pos">The coordinates of the entity/tile</param>
-	/// <param name="cameraOffset">The coordinates of the camera</param>
-	/// <param name="spriteLocation">The location of the sprite in the sprite sheet</param>
-	/// <param name="angle">Specifies the rotation in degrees that will be applied to the sprite</param>
-	/// <param name="flipSprite">If the sprite should be flipped</param>
-	void drawSprite(const std::string& tag, const TilePos& pos, const TilePos& cameraOffset, const Pos2N& spriteLocation, const double angle, const bool flipSprite);
-
-
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="spriteIn"></param>
-	/// <param name="pos"></param>
-	/// <param name="cameraOffset"></param>
-	void drawSprite(const class Sprite& spriteIn, const TilePos& pos, const TilePos& cameraOffset);
-
-
-
-	/// <summary>
-	/// The new scale cannot be zero or negative, and if scaleIn is either it will default to 1.0
-	/// </summary>
-	/// <param name="scaleIn">The new scale for all rendering</param>
-	void setScale(float scaleIn);
-
-	//**************************************************************************************************************************************************************************
 
 	/// <summary>
 	/// 
@@ -219,6 +109,13 @@ public:
 	/// 
 	/// </summary>
 	void end();
+
+
+
+	/// <summary>
+	/// Forces the renderer to draw the current batch
+	/// </summary>
+	void flush();
 
 
 
@@ -243,10 +140,33 @@ public:
 	/// <summary>
 	/// 
 	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="size"></param>
-	/// <param name="material"></param>
-	void drawQuad(const Pos3F& pos, const Pos2N& size, class IMaterial& material);
+	/// <param name="posIn"></param>
+	/// <param name="sizeIn"></param>
+	/// <param name="colorIn"></param>
+	void drawQuad(const glm::vec3& posIn, const glm::vec2& sizeIn, const glm::vec4& colorIn);
+
+
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="posIn"></param>
+	/// <param name="sizeIn"></param>
+	/// <param name="colorIn"></param>
+	/// <param name="textureNameIn"></param>
+	void drawQuad(const glm::vec3& posIn, const glm::vec2& sizeIn, const glm::vec4& colorIn, const std::string& textureNameIn);
+
+
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="posIn"></param>
+	/// <param name="sizeIn"></param>
+	/// <param name="colorIn"></param>
+	/// <param name="textureNameIn"></param>
+	/// <param name="spriteIndexIn"></param>
+	void drawQuad(const glm::vec3& posIn, const glm::vec2& sizeIn, const glm::vec4& colorIn, const std::string& textureNameIn, unsigned int spriteIndexIn);
 
 
 
@@ -254,67 +174,75 @@ public:
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	ShaderLibrarian& shaderLibrarian();
-
-
-
-protected:
-
-	/// <summary>
-	/// <para>nullable</para>
-	/// Gets the texture specified by the tag. If it doesn't find the texture it will return a null pointer
-	/// </summary>
-	/// <param name="tag">The ID of the texture</param>
-	struct SDL_Texture* getTexture(const std::string &tag);
-
-
-
-	/// <summary>
-	/// Gets the tile width of the texture specified by the tag
-	/// </summary>
-	/// <param name="tag">The ID of the texture</param>
-	/// <returns>The tile width of the textures, or 0 if not found</returns>
-	int getTextureTileWidth(const std::string &tag);
-
-
-
-	/// <summary>
-	/// Gets the tile height of the texture specified by the tag
-	/// </summary>
-	/// <param name="tag">The ID of the texture</param>
-	/// <returns>The tile height of the textures, or 0 if not found</returns>
-	int getTextureTileHeight(const std::string &tag);
-
-
-
-	/// <summary>
-	/// Gets a copy of tile dimensions of the texture specified by the tag. If it doesn't find the texture it will return a size of (0, 0)
-	/// </summary>
-	/// <param name="tag">The ID of the texture</param>
-	/// <returns>The dimensions of the texture, or (0, 0) if not found</returns>
-	Pos2N getTextureSize(const std::string &tag);
+	AssetLibrarian& assetLibrarian();
 
 
 
 private:
 
+	/// <summary>
+	/// Adds a new quad to the current renderer batch
+	/// <para>increments the number of quads in the current batch</para>
+	/// </summary>
+	/// <param name="posIn"></param>
+	/// <param name="sizeIn"></param>
+	/// <param name="colorIn"></param>
+	/// <param name="subTextureIn"></param>
+	void bakeQuad(const glm::vec3& posIn, const glm::vec2& sizeIn, const glm::vec4& colorIn, const SubTexture& subTextureIn, float textureSlotIn);
+
+
+
 	std::shared_ptr<spdlog::logger> m_logger;
 
-	ShaderLibrarian m_shaders;
+	bool m_hasBeenInit = false;
 
-	std::shared_ptr<class Camera> m_camera;
 
-	bool m_hasBeenInit;
-
-	float m_scale;
-
-	struct SDL_Renderer *m_renderer;
-
-	std::map<std::string, std::unique_ptr<class TextureSDL>> m_textureMap;
 
 	VertexBuffer m_vbo;
 
 	IndexBuffer m_ibo;
+
+	static constexpr int NUMBER_OF_VERTICES_PER_QUAD = 4;
+
+	static constexpr int NUMBER_OF_INDICES_PER_QUAD = 6;
+
+	int m_maxQuadsPerBatch = 1000;
+
+	int m_quadsInCurrentBatch = 0;
+
+	unsigned int m_nextVertexOffset = 0;
+
+	int m_nextIndexOffset = 0;
+
+
+
+	std::unordered_map<std::string, int> m_activeTexturesLookup;
+
+	std::vector<std::weak_ptr<Texture>> m_activeTextures;
+
+	static constexpr int DEFAULT_NUMBER_OF_TEXTURE_SLOTS = 16;
+
+	int m_nextTextureSlot = 0;
+
+	int m_maxTexturesSlotsPerBatch = 16;
+
+	int m_textureSlotsInCurrentBatch = 0;
+
+	int m_textureSlotOffset = 0;
+
+
+
+	std::priority_queue<QuadDrawCommand, std::vector<QuadDrawCommand>, std::greater<QuadDrawCommand>> m_quadDrawQueue;
+
+
+
+	AssetLibrarian m_librarian;
+
+
+
+	std::string m_defaultShaderName;
+
+	std::shared_ptr<class Camera> m_camera;
 };
 
 

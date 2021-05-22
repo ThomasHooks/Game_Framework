@@ -3,6 +3,25 @@
 
 #include <filesystem>
 
+#include <glm/glm.hpp>
+
+
+
+
+struct SubTexture
+{
+	/// <summary>
+	/// Bottom-left most coordinate 
+	/// </summary>
+	glm::vec2 min;
+
+
+
+	/// <summary>
+	/// Top-right most coordinate 
+	/// </summary>
+	glm::vec2 max;
+};
 
 
 
@@ -10,11 +29,7 @@ class Texture
 {
 public:
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="filepath"></param>
-	Texture(const std::filesystem::path& filepath);
+	Texture(const std::filesystem::path& filepath, unsigned int GuidIn);
 
 
 
@@ -26,7 +41,7 @@ public:
 
 
 
-	~Texture();
+	virtual ~Texture();
 
 
 
@@ -42,6 +57,23 @@ public:
 	/// Unbinds the currently bound texture
 	/// </summary>
 	void unbind() const;
+
+
+
+	/// <summary>
+	/// Gets the sub-texture in this texture specified by its index
+	/// </summary>
+	/// <param name="spriteIndex">Specifies the sub-texture's index</param>
+	/// <returns></returns>
+	virtual SubTexture getSubTexture(unsigned int spriteIndex) const;
+
+
+
+	/// <summary>
+	/// Gets the total number of sub-textures in this texture atlas
+	/// </summary>
+	/// <returns></returns>
+	virtual int getNumberOfSubTextures() const;
 
 
 
@@ -81,17 +113,25 @@ public:
 
 
 
-private:
+	unsigned int getID() const { return m_guid; }
+
+
+
+protected:
+
+	void destroy();
+
+
 
 	unsigned int m_id;
 
 	mutable int m_slot = 0;
 
-	bool m_moved = false;
+	bool m_movedOrDestroyed = false;
 
 	std::filesystem::path m_filepath;
 
-	unsigned int m_width, m_height, m_channels;
+	unsigned int m_width, m_height, m_channels, m_guid;
 }; 
 
 

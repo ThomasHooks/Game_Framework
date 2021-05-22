@@ -100,6 +100,7 @@ Game::~Game()
 {
 	EventBus::unsubscribe<WindowEvent>(m_onWindowEvent);
 	renderer().shutdown();
+	m_window->shutdown();
 	m_logger->info("Terminating SDL");
 	SDL_Quit();
 }
@@ -182,23 +183,16 @@ Renderer& Game::renderer()
 
 
 
-void Game::registerTexture(const std::string& tagIn, const std::string& fileLocationIn, const Pos2N& sizeIn)
+void Game::registerTexture(const std::string& fileLocationIn)
 {
-	m_renderer->registerTexture(tagIn, fileLocationIn, sizeIn);
+	m_renderer->assetLibrarian().addTexture(fileLocationIn);
 }
 
 
 
-void Game::deregisterTexture(const std::string& tagIn)
+AssetLibrarian& Game::assetLibrarian()
 {
-	m_renderer->deregisterTexture(tagIn);
-}
-
-
-
-void Game::deregisterAllTextures()
-{
-	m_renderer->deregisterAllTextures();
+	return m_renderer->assetLibrarian();
 }
 
 
@@ -242,7 +236,7 @@ void Game::initWindow(const std::string& titleIn, int widthIn, int heightIn, uin
 {
 	m_window = std::make_unique<Window>(titleIn, Pos2N(widthIn, heightIn), flags);
 	m_renderer = std::make_unique<Renderer>();
-	this->renderer().init(m_window->get());
+	this->renderer().init(1000);
 	m_camera = std::make_shared<Camera>(static_cast<float>(widthIn), static_cast<float>(heightIn));
 }
 

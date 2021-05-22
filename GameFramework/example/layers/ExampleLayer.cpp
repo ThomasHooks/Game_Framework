@@ -30,10 +30,11 @@ void ExampleLayer::onAttach(Game& game)
 {
 	game.worldStack().pushMap("tiletest", "data/map/test.map");
 
-	/*Pos2N tileDim(16, 16);
-	game.renderer().registerTexture("mario", "./data/gfx/Mario.png", tileDim);
-	game.renderer().registerTexture("tiletest", "./data/gfx/tile_test.png", tileDim);
-	game.renderer().setScale(2.0f); */
+	game.assetLibrarian().addTexture("data/gfx/Mario.png");
+	game.assetLibrarian().addTexture("data/gfx/flappy_bird_sprite_sheet.png");
+	game.assetLibrarian().addTexture("data/gfx/null.png");
+	game.assetLibrarian().addTexture("data/gfx/tile_test.png", { 16, 16 });
+	game.assetLibrarian().addTexture("data/gfx/overworld sheet.png", { 16, 16 });
 
 	game.audioMixer().registerSample("hit01", "./data/sfx/hit01.wav");
 	game.audioMixer().setSampleVolume("hit01", 0.75f);
@@ -44,8 +45,7 @@ void ExampleLayer::onAttach(Game& game)
 			Sprite sprite("mario", tileSize);
 			entity
 				.add<KinematicCapability>(0.0, 0.0)
-				.add<ColliderCapability>(0.0, 0.0, 22.0, 32.0)
-				.add<RenderableCapability>(sprite, tileSize);
+				.add<ColliderCapability>(0.0, 0.0, 22.0, 32.0);
 		});
 	Entity player = game.entities().spawn("mario", Pos2D(128.0, 224.0));
 	m_entities.push_back(player);
@@ -66,8 +66,6 @@ void ExampleLayer::onTick(const Camera& cameraIn, TileMap& worldIn, float deltaT
 	else if (Game::isKeyPressed(SDL_SCANCODE_D))
 		m_entities[0].movePos({ 576.0, 0.0 }, 0.93f, deltaTime);
 
-	//Pos2N windowSize(cameraIn.width(), cameraIn.height());
-	//getGame().entities().tickAll(cameraIn.getPos(), windowSize, worldIn, deltaTime);
 	m_entities[0].updatePos(0.93f, deltaTime);
 }
 
@@ -79,18 +77,49 @@ void ExampleLayer::onRender(const std::shared_ptr<Camera>& cameraIn, Renderer& r
 
 	rendererIn.clear(0.1f, 0.1f, 0.1f, 1.0f);
 
-	FlatColorMaterial material({ 0.8f, 0.2f, 0.3f, 1.0f });
-	rendererIn.drawQuad({ (float)m_entities[0].pos().x, (float)m_entities[0].pos().y, 0.0f }, { 32, 32 }, material);
+	rendererIn.drawQuad({ 256.0f, 256.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "null");
 
-	material.color = { 0.2f, 0.3f, 0.8f, 1.0f };
-	rendererIn.drawQuad({ 600.0f, 300.0f, 0.0f }, { 64, 128 }, material);
+	rendererIn.drawQuad({ 328.0f, 256.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "flappy_bird_sprite_sheet");
+
+	rendererIn.drawQuad({ 400.0f, 112.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "tile_test", 0);
+	rendererIn.drawQuad({ 400.0f, 184.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "tile_test", 1);
+	rendererIn.drawQuad({ 400.0f, 256.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "tile_test", 2);
+	rendererIn.drawQuad({ 400.0f, 328.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "tile_test", 3);
+	rendererIn.drawQuad({ 400.0f, 400.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "tile_test", 4);
+	rendererIn.drawQuad({ 400.0f, 472.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "tile_test", 5);
+	rendererIn.drawQuad({ 400.0f, 544.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "tile_test", 6);
+
+	rendererIn.drawQuad({ 472.0f, 112.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 1);
+	rendererIn.drawQuad({ 472.0f, 184.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 2);
+	rendererIn.drawQuad({ 472.0f, 256.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 3);
+	rendererIn.drawQuad({ 472.0f, 328.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 4);
+	rendererIn.drawQuad({ 472.0f, 400.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 5);
+	rendererIn.drawQuad({ 472.0f, 472.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 6);
+	rendererIn.drawQuad({ 472.0f, 544.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 7);
+	rendererIn.drawQuad({ 472.0f, 616.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 8);
+	rendererIn.drawQuad({ 544.0f, 112.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 9);
+	rendererIn.drawQuad({ 544.0f, 184.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 10);
+	rendererIn.drawQuad({ 544.0f, 256.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 11);
+	rendererIn.drawQuad({ 544.0f, 328.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 12);
+	rendererIn.drawQuad({ 544.0f, 400.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 13);
+	rendererIn.drawQuad({ 544.0f, 472.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 14);
+	rendererIn.drawQuad({ 544.0f, 544.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 15);
+	rendererIn.drawQuad({ 544.0f, 616.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 16);
+	rendererIn.drawQuad({ 616.0f, 112.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 17);
+	rendererIn.drawQuad({ 616.0f, 184.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 18);
+	rendererIn.drawQuad({ 616.0f, 256.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 19);
+	rendererIn.drawQuad({ 616.0f, 328.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 20);
+	rendererIn.drawQuad({ 616.0f, 400.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 21);
+	rendererIn.drawQuad({ 616.0f, 472.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 22);
+	rendererIn.drawQuad({ 616.0f, 544.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 23);
+	rendererIn.drawQuad({ 616.0f, 616.0f, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "overworld sheet", 24);
+
+	rendererIn.drawQuad({ 688.0f, 256.0f, 0.0f }, { 64, 64 }, { 0.2f, 0.6f, 0.8f, 1.0f });
+
+	rendererIn.drawQuad({ (float)m_entities[0].pos().x, (float)m_entities[0].pos().y, 0.0f }, { 64, 64 }, { 1.0f, 1.0f, 1.0f, 1.0f }, "Mario");
 
 	rendererIn.end();
 }
-
-
-
-
 
 
 

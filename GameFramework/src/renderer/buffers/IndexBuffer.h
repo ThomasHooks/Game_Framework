@@ -62,7 +62,7 @@ public:
 	/// </summary>
 	/// <param name="indices">Specifies the index data to be stored</param>
 	/// <param name="count">Specifies the number of new indices</param>
-	/// <param name="offset">Specifies the start location of the new index data</param>
+	/// <param name="offset">Specifies the starting location of the new index data, measured in bytes</param>
 	void submitData(unsigned int* indices, unsigned int count, unsigned int offset);
 
 
@@ -98,6 +98,14 @@ public:
 	/// </summary>
 	/// <returns>Number of indices</returns>
 	unsigned int count() const;
+
+
+
+	/// <summary>
+	/// Gets the expected usage pattern of this buffer
+	/// </summary>
+	/// <returns></returns>
+	Usage getUsage() const;
 
 
 

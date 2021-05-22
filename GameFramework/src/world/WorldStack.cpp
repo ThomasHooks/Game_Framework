@@ -38,7 +38,7 @@ void WorldStack::popMap()
 
 void WorldStack::draw(const TilePos& cameraPos, const Pos2N& windowSize, Renderer& renderer)
 {
-	TileMap* world = this->getWorld();
+	/*TileMap* world = this->getWorld();
 	if (world == nullptr) 
 	{
 		m_logger->critical("Null Pointer exception: Tried to render World, but world stack is empty!");
@@ -76,7 +76,7 @@ void WorldStack::draw(const TilePos& cameraPos, const Pos2N& windowSize, Rendere
 			 * This is to prevent the map from being indexed out of
 			 * also doing this can cause some tiles to be rendered more than once
 			 */
-			if (xCord < 0) 
+			/*if (xCord < 0) 
 				xCord = 0;
 			else if (xCord > world->width()) 
 				xCord = world->width();
@@ -93,7 +93,7 @@ void WorldStack::draw(const TilePos& cameraPos, const Pos2N& windowSize, Rendere
 			else
 				renderer.drawSprite(world->getTag(), tile->getPos(), cameraPos, tile->getSprite(), false);
 		}
-	}
+	}*/
 }
 
 
