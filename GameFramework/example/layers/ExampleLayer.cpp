@@ -1,7 +1,7 @@
 #include <SDL.h>
 
 #include "ExampleLayer.hpp"
-#include "Game.hpp"
+#include "Application.hpp"
 #include "renderer/screen/Camera.h"
 #include "world/WorldStack.h"
 #include "world/TileMap.h"
@@ -15,8 +15,8 @@
 
 
 
-ExampleLayer::ExampleLayer(Game& game)
-	: m_game(game)
+ExampleLayer::ExampleLayer(Application& app)
+	: m_game(app)
 {}
 
 
@@ -26,20 +26,20 @@ ExampleLayer::~ExampleLayer()
 
 
 
-void ExampleLayer::onAttach(Game& game)
+void ExampleLayer::onAttach(Application& app)
 {
-	game.worldStack().pushMap("tiletest", "data/map/test.map");
+	app.worldStack().pushMap("tiletest", "data/map/test.map");
 
-	game.assetLibrarian().addTexture("data/gfx/Mario.png");
-	game.assetLibrarian().addTexture("data/gfx/flappy_bird_sprite_sheet.png");
-	game.assetLibrarian().addTexture("data/gfx/null.png");
-	game.assetLibrarian().addTexture("data/gfx/tile_test.png", { 16, 16 });
-	game.assetLibrarian().addTexture("data/gfx/overworld sheet.png", { 16, 16 });
+	app.assetLibrarian().addTexture("data/gfx/Mario.png");
+	app.assetLibrarian().addTexture("data/gfx/flappy_bird_sprite_sheet.png");
+	app.assetLibrarian().addTexture("data/gfx/null.png");
+	app.assetLibrarian().addTexture("data/gfx/tile_test.png", { 16, 16 });
+	app.assetLibrarian().addTexture("data/gfx/overworld sheet.png", { 16, 16 });
 
-	game.audioMixer().registerSample("hit01", "./data/sfx/hit01.wav");
-	game.audioMixer().setSampleVolume("hit01", 0.75f);
+	app.audioMixer().registerSample("hit01", "./data/sfx/hit01.wav");
+	app.audioMixer().setSampleVolume("hit01", 0.75f);
 
-	game.entities().registerSpawner("mario", [this](Entity& entity)
+	app.entities().registerSpawner("mario", [this](Entity& entity)
 		{
 			Pos2N tileSize(16, 16);
 			Sprite sprite("mario", tileSize);
@@ -47,23 +47,23 @@ void ExampleLayer::onAttach(Game& game)
 				.add<KinematicCapability>(0.0, 0.0)
 				.add<ColliderCapability>(0.0, 0.0, 22.0, 32.0);
 		});
-	Entity player = game.entities().spawn("mario", Pos2D(128.0, 224.0));
+	Entity player = app.entities().spawn("mario", Pos2D(128.0, 224.0));
 	m_entities.push_back(player);
 }
 
 
 
-void ExampleLayer::onTick(const Camera& cameraIn, TileMap& worldIn, float deltaTime)
+void ExampleLayer::onTick(const Camera& cameraIn, float deltaTime)
 {
 	KinematicCapability& cap = m_entities[0].get<KinematicCapability>();
-	if (Game::isKeyPressed(SDL_SCANCODE_W))
+	if (Application::isKeyPressed(SDL_SCANCODE_W))
 		m_entities[0].movePos({ 0.0, -576.0 }, 0.93f, deltaTime);
-	else if (Game::isKeyPressed(SDL_SCANCODE_S))
+	else if (Application::isKeyPressed(SDL_SCANCODE_S))
 	m_entities[0].movePos({ 0.0, 576.0 }, 0.93f, deltaTime);
 	
-	if (Game::isKeyPressed(SDL_SCANCODE_A))
+	if (Application::isKeyPressed(SDL_SCANCODE_A))
 		m_entities[0].movePos({ -576.0, 0.0 }, 0.93f, deltaTime);
-	else if (Game::isKeyPressed(SDL_SCANCODE_D))
+	else if (Application::isKeyPressed(SDL_SCANCODE_D))
 		m_entities[0].movePos({ 576.0, 0.0 }, 0.93f, deltaTime);
 
 	m_entities[0].updatePos(0.93f, deltaTime);

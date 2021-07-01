@@ -11,9 +11,6 @@
 
 
 
- /*
-  * Dispatches all queued events for all registered event types
-  */
 void EventBus::dispatchAllEvents()
 {
 	getInstance().dispatchAllEvents_impl();

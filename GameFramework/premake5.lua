@@ -1,5 +1,5 @@
 project "GameFramework"
-	kind "ConsoleApp"
+	kind "StaticLib"
 	language "C++"
 
 	targetdir ("%{wks.location}/dist/" .. outputdir .. "/%{prj.name}")
@@ -10,17 +10,13 @@ project "GameFramework"
 		"src/**.h", 
 		"src/**.hpp", 
 		"src/**.cpp",
-		"example/**.h", 
-		"example/**.hpp", 
-		"example/**.cpp",
-		"depd/stb/**.cpp",
-		"depd/stb/**.h"
+		"%{wks.location}/depd/stb/stb_image/stb_image.cpp",
+		"%{wks.location}/depd/stb/stb_image/stb_image.h"
 	}
 
 	includedirs
 	{ 
 		"src",
-		"example",
 		"%{includes.stb_image}",
 		"%{includes.entt}",
 		"%{includes.spdlog}",

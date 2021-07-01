@@ -3,8 +3,9 @@
 
 #include "renderer/screen/Window.h"
 #include "events/EventBus.hpp"
-#include "events/WindowEvent.hpp"
-#include "events/KeyboardEvent.hpp"
+#include "events/WindowEvent.h"
+#include "events/KeyboardEvent.h"
+#include "events/MouseEvent.h"
 
 
 
@@ -21,29 +22,47 @@ int filterEventCallback(void *userdata, SDL_Event * event)
 			data->width = 0;
 			data->height = 0;
 			EventBus::publish<WindowEvent>(data->width, data->height, WindowEvent::Action::CLOSE);
-			return 0;
+			return 1;
 
 		case SDL_WINDOWEVENT_SIZE_CHANGED:
 			data->width = event->window.data1;
 			data->height = event->window.data2;
 			EventBus::publish<WindowEvent>(data->width, data->height, WindowEvent::Action::RESIZE);
-			return 0;
+			return 1;
 
 		default:
 			break;
 		}
 		break;
 
+	// Keyboard events
 	case SDL_KEYDOWN:
 		if (event->key.repeat)
 			EventBus::publish<KeyboardEvent>(event->key.keysym.sym, event->key.keysym.scancode, KeyboardEvent::Action::REPEAT);
 		else
 			EventBus::publish<KeyboardEvent>(event->key.keysym.sym, event->key.keysym.scancode, KeyboardEvent::Action::PRESS);
-		return 0;
+		return 1;
 
 	case SDL_KEYUP:
 		EventBus::publish<KeyboardEvent>(event->key.keysym.sym, event->key.keysym.scancode, KeyboardEvent::Action::RELEASE);
-		return 0;
+		return 1;
+
+	// Mouse events
+	case SDL_MOUSEMOTION:
+		EventBus::publish<MouseEvent>(0, event->motion.x, event->motion.y, MouseEvent::Action::MOVE);
+		return 1;
+
+	case SDL_MOUSEWHEEL:
+		EventBus::publish<MouseEvent>(0, event->wheel.x, event->wheel.y, MouseEvent::Action::SCROLL);
+		return 1;
+
+	case SDL_MOUSEBUTTONDOWN:
+		EventBus::publish<MouseEvent>(event->button.button, event->button.x, event->button.y, MouseEvent::Action::PRESS);
+		return 1;
+
+	case SDL_MOUSEBUTTONUP:
+		EventBus::publish<MouseEvent>(event->button.button, event->button.x, event->button.y, MouseEvent::Action::RELEASE);
+		return 1;
 
 	default:
 		break;
@@ -106,6 +125,13 @@ Window::Window(const std::string& title, const Pos2N& sizeIn, unsigned int flags
 
 
 
+Window::~Window()
+{
+	shutdown();
+}
+
+
+
 void Window::update()
 {
 	SDL_GL_SwapWindow(m_window);
@@ -115,12 +141,16 @@ void Window::update()
 
 void Window::shutdown()
 {
-	m_logger->info("Closing Window");
-	SDL_GL_DeleteContext(m_glContext);
-	m_glContext = nullptr;
-	SDL_DestroyWindow(m_window);
-	m_window = nullptr;
-	m_logger->info("Window has been closed");
+	if (!m_destroyed)
+	{
+		m_logger->info("Closing Window");
+		SDL_GL_DeleteContext(m_glContext);
+		m_glContext = nullptr;
+		SDL_DestroyWindow(m_window);
+		m_window = nullptr;
+		m_destroyed = true;
+		m_logger->info("Window has been closed");
+	}
 }
 
 
@@ -153,7 +183,24 @@ SDL_Window* Window::get()
 
 
 
+const SDL_Window* Window::get() const
+{
+	return m_window;
+}
 
+
+
+SDL_GLContext Window::getGlContext()
+{
+	return m_glContext;
+}
+
+
+
+const SDL_GLContext Window::getGlContext() const
+{
+	return m_glContext;
+}
 
 
 

@@ -15,13 +15,16 @@
 
 struct WindowData
 {
-	WindowData(const std::string& titleIn = "Name of Game", unsigned int widthIn = 640, unsigned int heightIn = 480)
+	WindowData(const std::string& titleIn = "Name of Application", unsigned int widthIn = 640, unsigned int heightIn = 480)
 		: title(titleIn), width(widthIn), height(heightIn) 
 	{};
 
 	std::string title;
+
 	unsigned int width, height;
+
 	bool hidden = false;
+
 	SDL_Window* window = nullptr;
 };
 
@@ -47,13 +50,20 @@ public:
 
 
 
+	~Window();
+
+
+
 	/// <summary>
-	/// 
+	/// Updates this window should be called each frame
 	/// </summary>
 	void update();
 
 
 
+	/// <summary>
+	/// Destroies this window
+	/// </summary>
 	void shutdown();
 
 
@@ -84,14 +94,43 @@ public:
 
 	/// <summary>
 	/// <para>nullable</para>
-	/// Exposes the SDL_Window inside of this wrapper
+	/// Exposes this window's SDL window
 	/// </summary>
 	/// <returns>A SDL_Window pointer or null if the window has not been initialized</returns>
 	SDL_Window* get();
 
 
 
+	/// <summary>
+	/// <para>nullable</para>
+	/// Exposes this window's SDL window
+	/// </summary>
+	/// <returns>A SDL_Window pointer or null if the window has not been initialized</returns>
+	const SDL_Window* get() const;
+
+
+
+	/// <summary>
+	/// <para>nullable</para>
+	/// Exposes this window's OpenGL context
+	/// </summary>
+	/// <returns></returns>
+	SDL_GLContext getGlContext();
+
+
+
+	/// <summary>
+	/// <para>nullable</para>
+	/// Exposes this window's OpenGL context
+	/// </summary>
+	/// <returns></returns>
+	const SDL_GLContext getGlContext() const;
+
+
+
 private:
+
+	std::shared_ptr<spdlog::logger> m_logger;
 
 	Pos2N m_size;
 
@@ -101,11 +140,11 @@ private:
 
 	WindowData m_winData;
 
-	std::shared_ptr<spdlog::logger> m_logger;
+	bool m_destroyed = false;
 };
 
 
-#endif
+#endif /* WINDOW_H_ */
 
 
 

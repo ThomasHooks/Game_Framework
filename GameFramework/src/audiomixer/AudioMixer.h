@@ -153,7 +153,7 @@ public:
 
 
 	/*
-	 * @param	camera Reference to the Game's Camera
+	 * @param	camera Reference to the Application's Camera
 	 *
 	 * @param	origin Coordinates where the sample is being played from
 	 *

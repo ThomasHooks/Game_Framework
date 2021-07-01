@@ -1,11 +1,11 @@
-#ifndef LayerStack_H_
-#define LayerStack_H_
+#ifndef LAYERSTACK_HPP_
+#define LAYERSTACK_HPP_
 
 
 #include <memory>
 #include <vector>
 
-#include "layers/IGameLayer.hpp"
+#include "layers/IApplicationLayer.hpp"
 
 
 
@@ -38,7 +38,7 @@ public:
 
 
 	template<class LayerType, typename... Args>
-	void push(class Game& game, Args&&... args) 
+	void push(class Application& game, Args&&... args) 
 	{
 		m_layers.emplace_back(new LayerType((args)...));
 		m_layers.back()->onAttach(game);
@@ -46,21 +46,21 @@ public:
 
 
 
-	std::vector<IGameLayer*>::iterator begin() { return m_layers.begin(); }
+	std::vector<IApplicationLayer*>::iterator begin() { return m_layers.begin(); }
 
 
 
-	std::vector<IGameLayer*>::iterator end() { return m_layers.end(); }
+	std::vector<IApplicationLayer*>::iterator end() { return m_layers.end(); }
 
 
 
 private:
 
-	std::vector<IGameLayer*> m_layers;
+	std::vector<IApplicationLayer*> m_layers;
 }; 
 
 
-#endif
+#endif /* LAYERSTACK_HPP_ */
 
 
 
